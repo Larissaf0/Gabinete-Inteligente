@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gabinete Inteligente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Fredoka:wght@700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}?v=3.0">
+</head>
+<body>
+
+    <div class="login-wrapper">
+        
+        <header class="header-plataforma">
+            
+            <div class="logo-container">
+                <img src="{{ url_for('static', path='/imagens/lo_go.png') }}" alt="Vetor Gabinete" class="logo-img">
+
+                    <h1 class="titulo-plataforma">
+                    Gabinete <br>
+                    <span class="titulo-destaque">Inteligente</span>
+                </h1>
+            
+            </div>
+            
+            <p class="subtitulo-prefeitura">
+                Plataforma para Gestão e Acompanhamento de demandas e reuniões
+            </p>
+        </header>
+
+    <div class="login-area-direita">
+        <main class="login-card">
+            <h2 class="card-title">Acesse sua conta</h2>
+            
+            <form action="/login" method="POST" id="form-login">
+                <div class="input-group">
+                    <i class="fa-regular fa-user input-icon"></i>
+                    <input type="text" name="username" placeholder="Usuário" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" name="password" id="input-senha" placeholder="Senha" required>
+                    <i class="fa-regular fa-eye-slash toggle-password" onclick="toggleSenhaView()"></i>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: left; width: 100%; margin-top: 15px; margin-bottom: 20px;">
+                    <a href="/solicitar-acesso" class=" solicitar-acesso" style="font-weight: bold; color: #656d77; text-decoration: none; font-size: 0.9rem;">
+                         Solicitar Acesso
+                    </a>
+                    <a href="#" class="forgot-password" style= "font-weight: bold; color: #656d77; text-decoration: none; font-size: 0.9rem;">
+                        Esqueci minha senha
+                    </a>
+                </div>
+
+            <div class="display: flex; justify-content: space-between; align-items: left; width 100%; margin-top: 15px; margin-bottom: 20px;">
+                <div class="captcha-container" style="display: flex; justify-content: center; margin-bottom: 25px;">
+                    <div class="g-recaptcha" data-sitekey="6LfImgQtAAAAAIi4oGKnHyZJ6GSV6Ef0lKihR00W"></div>
+                </div>
+                <button type="submit" class="btn-entrar" id="btn-submit">Entrar</button>
+            </form>
+            </div>
+        </main>
+
+        <footer class="login-footer">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Acesso restrito e seguro</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // Função para mostrar/esconder a senha
+        function toggleSenhaView() {
+            const inputSenha = document.getElementById('input-senha');
+            const icon = document.querySelector('.toggle-password');
+            if (inputSenha.type === 'password') {
+                inputSenha.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                inputSenha.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+
+        // Libera o botão Entrar apenas se o robô for desmarcado
+        function validarCaptcha() {
+            const checkbox = document.getElementById('captcha-checkbox');
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.disabled = !checkbox.checked;
+        }
+    </script>
+</body>
+</html>

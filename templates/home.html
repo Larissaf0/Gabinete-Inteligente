@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row col-12 mb-4">
+    <h2 class="page-title fs-1">O que deseja iniciar?</h2>
+    <p class="text-muted">Selecione uma opção para continuar</p>
+</div>
+
+<div class="row g-4 align-items-start">
+
+    <div class="col-lg-8">
+        <h3 class="mb-3 h4 text-muted font-weight-normal">Escolha uma secretaria</h3>
+
+        <!-- Cards de seleção das secretarias-->
+        <div class="row g-3">
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/Administracao" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-dark mb-2 fs-2">
+                        <i class="fa-solid fa-clipboard"></i>
+                    </div>
+                    <div class="font-weight-bold">Administração</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/Financas" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-success mb-2 fs-2"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="font-weight-bold">Finanças</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/Educacao" class="card card-link"></a>
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-primary mb-2 fs-2"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="font-weight-bold">Educação</div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/Saude" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-danger mb-2 fs-2"><i class="fa-regular fa-heart"></i></div>
+                    <div class="font-weight-bold">Saúde</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/Infraestrutura" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-warning mb-2 fs-2"><i class="fa-solid fa-helmet-safety"></i></div>
+                    <div class="font-weight-bold">Desenvolvimento Urbano e Obras</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/DesenvolvimentoSocial" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-secondary mb-2 fs-2"><i class="fa-solid fa-users"></i></div>
+                    <div class="font-weight-bold">Desenvolvimento Social</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/Planejamento" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-success mb-2 fs-2"><i class="fa-solid fa-tree-city"></i></div>
+                    <div class="font-weight-bold">Planejamento e Meio Ambiente</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/DesenvolvimentoRural" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-orange mb-2 fs-2"><i class="fa-solid fa-tractor"></i></div>
+                    <div class="font-weight-bold">Desenvolvimento Rural</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/CulturaEEsportes" class="card card-link">
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-purple mb-2 fs-2"><i class="fa-solid fa-masks-theater"></i> <i class="fa-solid fa-futbol"></i></div>
+                    <div class="font-weight-bold">Cultura e Esportes</div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/DesenvolvimentoEconomico" class="card card-link"></a>
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-info mb-2 fs-2"><i class="fa-solid fa-briefcase"></i> <i class="fa-solid fa-microscope"></i> <i class="fa-solid fa-laptop-code"></i></div>
+                    <div class="font-weight-bold">Desenvolvimento Econômico, Ciência e Tecnologia</div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/nova-reuniao/ServicosPublicos" class="card card-link"></a>
+                <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
+                    <div class="text-gray mb-2 fs-2"><i class="fa-solid fa-trash"></i> <i class="fa-solid fa-traffic-light"></i></div>                
+                    <div class="font-weight-bold">Serviços Públicos</div>
+                </div>
+            </div>
+
+    <!-- Opção de pauta livre -->
+
+        </div> </div> <div class="col-lg-4">
+        <div class="d-flex align-items-center justify-content-between h-100 position-relative">
+            
+            <div class="d-none d-lg-flex align-items-center justify-content-center position-relative px-3" style="border-left: 1px solid #e6e8eb; min-height: 380px;">
+                <span class="badge bg-light text-muted p-2 fs-4 position-absolute top-50 start-0 translate-middle" style="z-index: 2; background-color: #f6f8fb !important;">
+                    OU
+                </span>
+            </div>
+
+            <div class="flex-fill">
+                <div class="card text-center p-4 shadow-sm d-flex flex-column justify-content-center" style="min-height: 380px;">
+                    <div class="mb-3 text-primary">
+                        <span class="avatar avatar-xl rounded-circle bg-blue-lt"><i class="fa-regular fa-comment-dots fs-1"></i></span>
+                    </div>
+                    <h3 class="card-title h2 mb-2">Pauta de Reunião Livre</h3>
+                    <p class="text-muted small mb-4">Inicie uma reunião sem vincular a uma secretaria específica.</p>
+                    <button class="btn btn-primary w-100 py-2 font-weight-bold">Criar Pauta Livre</button>
+                </div>
+            </div>
+
+        </div>
+    </div> </div> 
+    {% endblock %}

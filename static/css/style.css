@@ -1,0 +1,344 @@
+/* Reset e Configurações Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Fredoka", sans-serif;
+}
+
+body {
+    background-color: #0b1a30;
+    font-family: 'Montserrat', sans-serif; /*fonte da tela login */
+    min-height: 100vh;
+}
+
+/* Wrapper para centralização vertical e horizontal na tela */
+.login-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* Ajuste do Cabeçalho para combinar com a tela de login */
+.header-plataforma {
+    flex: 1;
+    text-align: left;
+    color: #ffffff;
+    margin-bottom: 0;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.login-area-direita{
+    flex: 1;
+    max-width: 450px;
+    width: 100%;
+}
+
+.logo-img {
+    max-height: 120px; /* Reduzido levemente para equilibrar com o card */
+    width: auto;
+    object-fit: contain;
+    border-radius: 24px;
+    overflow: hidden;
+    transform: scale(0.96);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.titulo-plataforma {
+    font-family: 'Fredoka', sans-serif; /*fonte do título da logo*/
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.1;
+    text-align: left;
+}
+
+.titulo-destaque {
+    color: #008cff;
+    display: block; 
+    font-weight: 800;
+}
+
+.subtitulo-prefeitura {
+    font-size: 0.85rem;
+    color: #a0aec0;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: left;
+    max-width: 450px;
+}
+
+/* Card Branco de Login*/
+.login-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px){
+    .login-wrapper{
+        flex-direction:column;
+        gap:40px;
+        padding-top: 20px;
+    }
+    .header-plataforma{
+        text-align: center;
+    }
+    .logo-container{
+        justify-content: center;
+    }
+}
+
+.card-title {
+    color: #0f2441;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Grupos de Input (Campos de texto e ícones) */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+    font-size: 1.1rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 16px 16px 16px 48px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #2d3748;
+    background-color: #ffffff;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #008cff;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #a0aec0;
+    cursor: pointer;
+}
+
+/* Opções Adicionais (Checkbox e Link) */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 0.9rem;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a5568;
+    cursor: pointer;
+}
+
+.forgot-password {
+    color: #008cff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Componente "Não sou um robô" (Custom Captcha Box) */
+.captcha-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8fafc;
+    border: 1px solid #d8e2ef;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 25px;
+}
+
+.captcha-checkbox-label {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #333333;
+    user-select: none;
+}
+
+.captcha-checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 24px;
+    width: 24px;
+    background-color: #ffffff;
+    border: 2px solid #c1c1c1;
+    border-radius: 2px;
+}
+
+.captcha-checkbox-label:hover input ~ .checkmark {
+    border-color: #b2b2b2;
+}
+
+.captcha-checkbox-label input:checked ~ .checkmark {
+    background-color: #ffffff;
+    border-color: #04b45f;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.captcha-checkbox-label input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Símbolo do 'Check' Verde ao marcar */
+.captcha-checkbox-label .checkmark:after {
+    left: 7px;
+    top: 2px;
+    width: 5px;
+    height: 12px;
+    border: solid #04b45f;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+.captcha-brand {
+    text-align: center;
+    color: #555555;
+}
+
+.captcha-brand i {
+    font-size: 1.4rem;
+    color: #1a73e8;
+    margin-bottom: 2px;
+}
+
+.captcha-brand span {
+    display: block;
+    font-size: 0.65rem;
+    line-height: 1.2;
+    color: #777777;
+}
+
+/* Botão Entrar */
+.btn-entrar {
+    width: 100%;
+    padding: 16px;
+    background-color: #008cff;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.btn-entrar:hover:not(:disabled) {
+    background-color: #0076d6;
+}
+
+.btn-entrar:disabled {
+    background-color: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Rodapé Inferior */
+.login-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: #718096;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Customização para os cards clicáveis */
+.card-hover-efeito {
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* O que acontece quando passa o mouse em cima */
+.card-hover-efeito:hover {
+    transform: translateY(-2px) !important; /* Sobe o card sutilmente */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important; /* Sombra mais visível */
+    background-color: #ffffff !important; /* Garante que o fundo continua firme */
+}
+
+/* Rodapé Inferior */
+.login-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;         /* Cria um espaço perfeito de 8px entre o ícone e o texto */
+    color: #718096;   /* Cor cinza elegante para o texto e o ícone */
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Garante que o ícone herde as propriedades corretas e fique bem formatado */
+.login-footer i {
+    font-size: 1rem;  /* Deixa o ícone ligeiramente maior que o texto para dar destaque */
+    color: #a0aec0;   /* Deixa o escudo com uma cor um pouco mais clara e nítida */
+}
+

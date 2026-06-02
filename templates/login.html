@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesse sua Conta - Gabinete Inteligente</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+</head>
+<body class="d-flex flex-column bg-light">
+    <div class="page page-center">
+        <div class="container container-tight py-4">
+            <div class="card card-md shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Acesse sua conta</h2>
+                    
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Usuário</label>
+                            <input type="text" name="username" class="form-control" placeholder="Seu usuário" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Senha</label>
+                            <input type="password" name="password" class="form-control" placeholder="Sua senha" required>
+                        </div>
+                        
+                        <div class="form-footer mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-2 font-weight-bold">Entrar</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center text-muted mt-4">
+                        Ainda não tem acesso? 
+                        <a href="/solicitar-acesso" class="font-weight-bold text-primary" style="text-decoration: none;">
+                            Solicitar Acesso
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
