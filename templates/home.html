@@ -1,3 +1,4 @@
+<!--importa o painel lateral na  página-->
 {% extends "base.html" %}
 
 {% block content %}
@@ -15,7 +16,7 @@
         <div class="row g-3">
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/Administracao" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-dark mb-2 fs-2">
                         <i class="fa-solid fa-clipboard"></i>
@@ -26,7 +27,7 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/Financas" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-success mb-2 fs-2"><i class="fa-solid fa-wallet"></i></div>
                     <div class="font-weight-bold">Finanças</div>
@@ -35,15 +36,16 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/Educacao" class="card card-link"></a>
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-primary mb-2 fs-2"><i class="fa-solid fa-book-open"></i></div>
                     <div class="font-weight-bold">Educação</div>
                 </div>
+                </a>
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/Saude" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-danger mb-2 fs-2"><i class="fa-regular fa-heart"></i></div>
                     <div class="font-weight-bold">Saúde</div>
@@ -52,7 +54,7 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/Infraestrutura" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-warning mb-2 fs-2"><i class="fa-solid fa-helmet-safety"></i></div>
                     <div class="font-weight-bold">Desenvolvimento Urbano e Obras</div>
@@ -61,7 +63,7 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/DesenvolvimentoSocial" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-secondary mb-2 fs-2"><i class="fa-solid fa-users"></i></div>
                     <div class="font-weight-bold">Desenvolvimento Social</div>
@@ -70,7 +72,7 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/Planejamento" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-success mb-2 fs-2"><i class="fa-solid fa-tree-city"></i></div>
                     <div class="font-weight-bold">Planejamento e Meio Ambiente</div>
@@ -79,7 +81,7 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/DesenvolvimentoRural" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-orange mb-2 fs-2"><i class="fa-solid fa-tractor"></i></div>
                     <div class="font-weight-bold">Desenvolvimento Rural</div>
@@ -88,7 +90,7 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/CulturaEEsportes" class="card card-link">
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-purple mb-2 fs-2"><i class="fa-solid fa-masks-theater"></i> <i class="fa-solid fa-futbol"></i></div>
                     <div class="font-weight-bold">Cultura e Esportes</div>
@@ -97,19 +99,21 @@
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/DesenvolvimentoEconomico" class="card card-link"></a>
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-info mb-2 fs-2"><i class="fa-solid fa-briefcase"></i> <i class="fa-solid fa-microscope"></i> <i class="fa-solid fa-laptop-code"></i></div>
                     <div class="font-weight-bold">Desenvolvimento Econômico, Ciência e Tecnologia</div>
                 </div>
+                </a>
             </div>
 
             <div class="col-sm-6 col-md-4">
-                <a href="/nova-reuniao/ServicosPublicos" class="card card-link"></a>
+                <a href="/sec-home" class="card card-link">
                 <div class="card card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm">
                     <div class="text-gray mb-2 fs-2"><i class="fa-solid fa-trash"></i> <i class="fa-solid fa-traffic-light"></i></div>                
                     <div class="font-weight-bold">Serviços Públicos</div>
                 </div>
+                </a>
             </div>
 
     <!-- Opção de pauta livre -->
@@ -130,7 +134,8 @@
                     </div>
                     <h3 class="card-title h2 mb-2">Pauta de Reunião Livre</h3>
                     <p class="text-muted small mb-4">Inicie uma reunião sem vincular a uma secretaria específica.</p>
-                    <button class="btn btn-primary w-100 py-2 font-weight-bold">Criar Pauta Livre</button>
+                    <a href="/pauta-livre" class="card card-link">
+                    <button class="btn btn-primary w-100 py-2 font-weight-bold">Criar Pauta Livre</button> </a>
                 </div>
             </div>
 

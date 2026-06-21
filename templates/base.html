@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gabinete Inteligente</title>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- offline -->
+    <link rel="stylesheet" href="{{url_for('static', path='css/tabler.min.css')}}">
+
+    <!-- online -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
     
     <style>
         .navbar-vertical {
@@ -81,7 +85,7 @@
                     </ul>
                     
                     <div class="mt-auto mb-3 px-3">
-                        <a href="/login" class="nav-link text-danger">
+                        <a href="/" class="nav-link text-danger">
                             <span class="nav-link-icon"><i class="fa-solid fa-door-open"></i></span>
                             <span>Sair</span>
                         </a>
@@ -115,6 +119,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script> -->
+    <script src="{{url_for('static', path='js/tabler.min.js')}}"></script>
 </body>
 </html>

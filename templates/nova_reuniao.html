@@ -1,12 +1,21 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova Reunião</title>
+
+    <!-- offline -->
+    <link rel="stylesheet" href="{{url_for('static', path='css/tabler-icons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', path='css/tabler.min.css')}}">
+
+    <!-- online
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
     
     <style>
         * {
@@ -150,6 +159,12 @@
                                 <i class="fa-solid fa-chevron-right text-muted small"></i>
                             </a>
 
+                            <!-- <div class="text-center text-muted mt-3">
+                                <a href="/home" class="fs-3 text-secondary" style="text-decoration: none">
+                                    <button class="btn btn-primary w-100 py-2 font-weight-bold">VOLTAR </button>
+                                </a>
+                            </div> -->
+
                         </div>
                     </div> </div>
             </div>
@@ -159,3 +174,4 @@
 </div>
 </body>
 </html>
+{% endblock %}
