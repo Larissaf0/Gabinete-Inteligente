@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabinete Inteligente</title>
+    
+  <!--  CÓDIGO REF A BARRA QUE APARECE NAS DEMAIS PÁGINAS -->
+
+    <!-- offline -->
+    <link rel="stylesheet" href="{{url_for('static', path='css/tabler-icons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', path='css/tabler.min.css')}}">
+    <!-- online
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/sidebar.css') }}">
+
+</head>
+<body class="bg-light">
+    <div class="page">
+        <!-- Barra Lateral Fixa na Esquerda -->
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                
+                <!-- Brand / Logo -->
+                <div class="px-3 py-3" style="width: 100%;">
+                    <h1 style="color: #ffffff; text-align: center; font-size: 1.2rem; line-height: 1.3; margin: 0; letter-spacing: 0.5px;">
+                        <strong>GABINETE</strong> <br>
+                        <span style="color: #008cff; font-weight: 800; display: block;">INTELIGENTE</span>
+                    </h1>
+                </div>
+                
+                <!-- Links de Navegação -->
+                <div class="collapse navbar-collapse" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/home">
+                                <span class="nav-link-icon"><i class="fa-solid fa-house"></i></span>
+                                <span class="nav-link-title">Início</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="nav-link-icon"><i class="fa-regular fa-calendar"></i></span>
+                                <span class="nav-link-title">Reuniões</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="nav-link-icon"><i class="fa-solid fa-share-nodes"></i></span>
+                                <span class="nav-link-title">Encaminhamentos</span>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="nav-link-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                                <span class="nav-link-title">Acompanhamento</span>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="nav-link-icon"><i class="fa-regular fa-file-lines"></i></span>
+                                <span class="nav-link-title">Relatórios</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="nav-link-icon"><i class="fa-regular fa-bell"></i></span>
+                                <span class="nav-link-title">Notificações</span>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="nav-link-icon"><i class="fa-solid fa-gear"></i></span>
+                                <span class="nav-link-title">Configurações</span>
+                            </a>
+                        </li>
+                    </ul> -->
+                    
+                    <!-- Botão de Saída
+                    <div class="mt-auto mb-3 px-3 w-100">
+                        <a href="/home" class="nav-link text-danger">
+                            <span class="nav-link-icon"><i class="fa-solid fa-door-open"></i></span>
+                            <span>Voltar</span>
+                        </a>
+                    </div> -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Lado Direito: Onde a mágica acontece -->
+        <div class="page-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- ONLINE
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script> -->
+
+    <!-- OFFLINE -->
+    <script src="{{url_for('static', path='js/tabler.min.js')}}"></script>
+</body>
+</html>

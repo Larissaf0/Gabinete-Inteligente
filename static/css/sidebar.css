@@ -1,0 +1,58 @@
+/* Customização de Cores Fixas */
+.navbar-vertical {
+    background-color: #0b1a30 !important;
+    transition: all 0.3s ease-in-out;
+    width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1030;
+}
+
+.navbar-vertical .nav-link, .navbar-vertical .navbar-brand {
+    color: #ffffff !important;
+    white-space: nowrap;
+}
+
+.navbar-vertical .nav-link.active {
+    background-color: #008cff !important;
+    color: #ffffff !important;
+    border-radius: 8px;
+}
+
+/* Efeito de Esconder e Revelar (Hover) em Telas Grandes */
+@media (min-width: 992px) {
+    .navbar-vertical {
+        width: 60px;
+        overflow: hidden;
+    }
+
+    .navbar-vertical .nav-link-title, 
+    .navbar-vertical h1 {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .navbar-vertical:hover {
+        width: 260px;
+    }
+
+    .navbar-vertical:hover .nav-link-title,
+    .navbar-vertical:hover h1 {
+        opacity: 1;
+    }
+
+    .page-wrapper {
+        margin-left: 60px;
+        transition: margin-left 0.3s ease-in-out;
+    }
+}
+
+/* Estilos dos Cards Internos do Dashboard */
+.card-status-dot { height: 40px; width: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; }
+.kpi-value { font-size: 24px; font-weight: bold; display: block; }
+.kpi-label { font-size: 13px; color: #666; font-weight: 500; }
+.deadline-item { border-left: 4px solid transparent; padding-left: 15px; margin-bottom: 15px; }
+.deadline-red { border-color: #d63939; background-color: #fef5f5; }
+.deadline-yellow { border-color: #f76707; background-color: #fff9f5; }

@@ -1,0 +1,176 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pauta Livre</title>
+
+    <!-- offline -->
+    <link rel="stylesheet" href="{{url_for('static', path='css/tabler-icons.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', path='css/tabler.min.css')}}">
+    <!-- online
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+    
+    <style>
+        * {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif !important;
+        }
+        body { background-color: #f6f8fb; }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="page-wrapper">
+        
+        <div class="page-header d-print-none mb-4 py-3 bg-white border-bottom shadow-sm px-4">
+            <div class="container-xl d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="page-title h1 text-dark mb-1">Nova Reunião</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: left; width: 100%; margin-top: 15px; margin-bottom: 20px;">
+                        <p class="text-muted small mb-0">Registre os principais pontos da reunião. A IA irá organizar e gerar os encaminhamentos.</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 text-muted">
+                    <div class="bg-light px-3 py-2 rounded border text-center">
+                        <i class="ti ti-calendar text-primary me-2"></i>
+                        <span class="font-weight-bold text-dark">{{ data_atual }}</span>
+                    </div>
+                    <div class="bg-light px-3 py-2 rounded border text-center">
+                        <i class="ti ti-clock text-primary me-2"></i>
+                        <span class="font-weight-bold text-dark">{{ hora_atual }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body px-4">
+            <div class="container-xl">
+                <div class="row row-cards">
+                    
+                    <div class="col-lg-8">
+                        <div class="card p-4 border-0 shadow-sm mb-4">
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-7">
+                                    <!--
+                                    <label class="form-label font-weight-bold text-dark mb-2">Tipo de Reunião</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="tipo_r" id="type1" checked>
+                                        <label class="btn btn-outline-primary py-2 d-flex align-items-center justify-content-center gap-2" for="type1">
+                                            <i class="fa-solid fa-building-user"></i> Secretaria
+                                        </label>
+                                        <input type="radio" class="btn-check" name="tipo_r" id="type2">
+                                        <label class="btn btn-outline-primary py-2 d-flex align-items-center justify-content-center gap-2" for="type2">
+                                            <i class="fa-solid fa-chess-knight"></i> Agenda Estratégica
+                                        </label>
+                                    </div> -->
+                                <!-- </div>
+                                <div class="col-md-7">
+                                    <label class="form-label font-weight-bold text-dark mb-2">Secretaria vinculada</label>
+                                    <input type="text" class="form-control bg-light py-2 font-weight-bold text-dark" value="{{ secretaria }}" readonly style="border: 1px solid #cbd5e1;">
+                                </div>
+                            </div> -->
+
+                            <div class="mb-4">
+                                <label class="form-label font-weight-bold text-dark mb-1">Anotações da Reunião</label>
+                                <p class="text-muted small mb-2">Escreva livremente os pontos discutidos.</p>
+                                <div class="position-relative">
+                                    <textarea class="form-control" rows="12" placeholder="Digite aqui o resumo dos acontecimentos..." style="resize: none; font-size: 1.05rem; line-height: 1.6; padding: 15px; border-radius: 8px;"></textarea>
+                                    <span class="position-absolute bottom-0 end-0 m-2 text-muted small" style="font-size: 0.75rem;">Caracteres</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label font-weight-bold text-dark mb-0">Participantes da Reunião</label>
+                                    <button class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Adicionar</button>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Secretaria de Educação <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
+                                    <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Diretor de Infraestrutura <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
+                                    <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Coordenador Pedagógico <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-3 pt-3 border-top">
+                                <button class="btn btn-outline-secondary px-4 py-2 font-weight-bold"><i class="ti ti-device-floppy me-2"></i> Salvar rascunho</button>
+                                <button class="btn btn-primary flex-fill py-2 font-weight-bold d-flex align-items-center justify-content-center gap-2">
+                                    <i class="ti ti-sparkles"></i> Encerrar Reunião e Analisar com IA
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm p-4 text-dark mb-4" style="background-color: #ffffff;">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="h3 mb-0 d-flex align-items-center gap-2 font-weight-bold text-dark">
+                                    <i class="ti ti-click text-primary"></i> Encaminhamentos da IA
+                                </h3>
+                                <span class="badge bg-green-lt px-2 py-1 font-weight-bold">3 encontrados</span>
+                            </div>
+
+                            <div class="card p-3 border shadow-none mb-3 bg-light-lt" style="border-radius: 8px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="font-weight-bold text-success fs-4 d-flex align-items-center gap-2"><i class="fa-regular fa-user"></i> Fabiana</span>
+                                    <span class="badge bg-green text-white px-2 py-0.5" style="font-size: 0.7rem;">Prazo identificado</span>
+                                </div>
+                                <p class="small text-muted mb-2 font-weight-medium"><strong>Tarefa:</strong> Levantar orçamento da reforma da Escola João XX</p>
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top text-muted" style="font-size: 0.8rem;">
+                                    <span><i class="fa-regular fa-calendar me-1 text-primary"></i> 15/06/2026</span>
+                                    <span class="badge bg-orange-lt font-weight-bold">Prioridade: Alta</span>
+                                </div>
+                            </div>
+
+                            <div class="card p-3 border shadow-none mb-3 bg-light-lt" style="border-radius: 8px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="font-weight-bold text-success fs-4 d-flex align-items-center gap-2"><i class="fa-regular fa-user"></i> João</span>
+                                    <span class="badge bg-green text-white px-2 py-0.5" style="font-size: 0.7rem;">Prazo identificado</span>
+                                </div>
+                                <p class="small text-muted mb-2 font-weight-medium"><strong>Tarefa:</strong> Verificar ventiladores das salas de aula</p>
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top text-muted" style="font-size: 0.8rem;">
+                                    <span><i class="fa-regular fa-calendar me-1 text-primary"></i> 06/06/2026</span>
+                                    <span class="badge bg-yellow-lt font-weight-bold text-warning">Prioridade: Média</span>
+                                </div>
+                            </div>
+
+                            <div class="card p-3 border shadow-none mb-4 bg-light-lt" style="border-radius: 8px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="font-weight-bold text-success fs-4 d-flex align-items-center gap-2"><i class="fa-solid fa-building-flag"></i> Infraestrutura</span>
+                                    <span class="badge bg-blue-lt text-primary px-2 py-0.5" style="font-size: 0.7rem;">Prazo a definir</span>
+                                </div>
+                                <p class="small text-muted mb-2 font-weight-medium"><strong>Tarefa:</strong> Realizar visita técnica na escola João XX</p>
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top text-muted" style="font-size: 0.8rem;">
+                                    <span><i class="fa-solid fa-rotate me-1 text-primary"></i> A definir</span>
+                                    <span class="badge bg-yellow-lt font-weight-bold text-warning">Prioridade: Média</span>
+                                </div>
+                            </div> -->
+
+                            <a href="#" class="btn btn-light w-100 py-2 d-flex justify-content-between align-items-center border" style="border-radius: 8px;">
+                                <span class="font-weight-bold text-primary small"><i class="fa-solid fa-file-invoice me-2"></i>Ver resumo gerado pela IA</span>
+                                <i class="fa-solid fa-chevron-right text-muted small"></i>
+                            </a>
+
+                            <!-- <div class="text-center text-muted mt-3">
+                                <a href="/home" class="fs-3 text-secondary" style="text-decoration: none">
+                                    <button class="btn btn-primary w-100 py-2 font-weight-bold">VOLTAR </button>
+                                </a>
+                            </div> -->
+
+                        </div>
+                    </div> </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}
