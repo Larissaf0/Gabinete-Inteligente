@@ -5,22 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gabinete Inteligente</title>
     
-  <!--  CÓDIGO REF A BARRA QUE APARECE NAS DEMAIS PÁGINAS -->
-
-    <!-- offline -->
-    <link rel="stylesheet" href="{{url_for('static', path='css/tabler-icons.min.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', path='css/tabler.min.css')}}">
-    <!-- online
+    <!-- Links Online do Tabler e FontAwesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> -->
-    <link rel="stylesheet" href="{{ url_for('static', path='css/sidebar.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Estilos específicos para tornar ESTA barra lateral retrátil e ajustar a tela automaticamente -->
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --sidebar-collapsed-width: 15px; /* Margem sensível na esquerda para ativar o mouse */
+        }
+
+        /* Força a barra lateral a obedecer o posicionamento fixo na esquerda */
+        .navbar-vertical {
+            width: var(--sidebar-width) !important;
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1030;
+            transition: transform 0.3s ease, cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(0);
+        }
+
+        /* Move o elemento para fora da tela quando recolhido */
+        .navbar-vertical.collapsed {
+            transform: translateX(calc(-1 * var(--sidebar-width) + var(--sidebar-collapsed-width)));
+        }
+
+        /* Suaviza o desaparecimento dos itens do menu */
+        .navbar-vertical.collapsed .container-fluid {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Reexibe os itens quando o mouse expande a barra */
+        .navbar-vertical:not(.collapsed) .container-fluid {
+            opacity: 1;
+            transition: opacity 0.3s ease 0.1s;
+        }
+
+        /* Ajuste dinâmico automático do bloco de conteúdo do lado direito */
+        .page-wrapper {
+            margin-left: var(--sidebar-width) !important;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* Expande o conteúdo da tela quando a barra oculta */
+        .page-wrapper.expanded {
+            margin-left: var(--sidebar-collapsed-width) !important;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="page">
-        <!-- Barra Lateral Fixa na Esquerda -->
-        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+        <!-- Barra Lateral com IDs adicionados para controle do Javascript -->
+        <aside id="dynamic-sidebar" class="navbar navbar-vertical navbar-dark">
             <div class="container-fluid">
+
+                <div class="px-3 py-4 text-center w-100 border-bottom border-dark">
+                    <div class="mb-2">
+                        <img src="{{ url_for('static', path='/imagens/lo_go.png') }}"
+                        alt="Vetor Gabinete"
+                        class="img-fluid"
+                        style="max-height: 55px; width: auto; object-fit:contain;">
+                    </div> 
                 
                 <!-- Brand / Logo -->
                 <div class="px-3 py-3" style="width: 100%;">
@@ -30,8 +81,8 @@
                     </h1>
                 </div>
                 
-                <!-- Links de Navegação -->
-                <div class="collapse navbar-collapse" id="sidebar-menu">
+                <!-- Links de Navegação Corrigidos -->
+                <div class="collapse navbar-collapse show" id="sidebar-menu">
                     <ul class="navbar-nav pt-lg-3">
                         <li class="nav-item">
                             <a class="nav-link active" href="/home">
@@ -51,12 +102,6 @@
                                 <span class="nav-link-title">Encaminhamentos</span>
                             </a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span class="nav-link-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                <span class="nav-link-title">Acompanhamento</span>
-                            </a>
-                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="#">
                                 <span class="nav-link-icon"><i class="fa-regular fa-file-lines"></i></span>
@@ -69,35 +114,44 @@
                                 <span class="nav-link-title">Notificações</span>
                             </a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span class="nav-link-icon"><i class="fa-solid fa-gear"></i></span>
-                                <span class="nav-link-title">Configurações</span>
-                            </a>
-                        </li>
-                    </ul> -->
-                    
-                    <!-- Botão de Saída
-                    <div class="mt-auto mb-3 px-3 w-100">
-                        <a href="/home" class="nav-link text-danger">
-                            <span class="nav-link-icon"><i class="fa-solid fa-door-open"></i></span>
-                            <span>Voltar</span>
-                        </a>
-                    </div> -->
+                    </ul>
                 </div>
             </div>
         </aside>
 
-        <!-- Lado Direito: Onde a mágica acontece -->
-        <div class="page-wrapper">
+        <!-- Lado Direito Dinâmico -->
+        <div id="dynamic-content" class="page-wrapper">
             {% block content %}{% endblock %}
         </div>
     </div>
 
-    <!-- ONLINE
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script> -->
+    <!-- Scripts do Tabler -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/js/tabler.min.js"></script>
 
-    <!-- OFFLINE -->
-    <script src="{{url_for('static', path='js/tabler.min.js')}}"></script>
+    <!-- Script de detecção do cursor do mouse exclusivo para esta página -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sidebar = document.getElementById("dynamic-sidebar");
+            const content = document.getElementById("dynamic-content");
+
+            if (sidebar && content) {
+                // Inicia o estado da barra como recolhida e conteúdo expandido
+                sidebar.classList.add("collapsed");
+                content.classList.add("expanded");
+
+                // Mostra a barra ao encostar o cursor do mouse
+                sidebar.addEventListener("mouseenter", function() {
+                    sidebar.classList.remove("collapsed");
+                    content.classList.remove("expanded");
+                });
+
+                // Oculta a barra ao tirar o cursor do mouse
+                sidebar.addEventListener("mouseleave", function() {
+                    sidebar.classList.add("collapsed");
+                    content.classList.add("expanded");
+                });
+            }
+        });
+    </script>
 </body>
 </html>

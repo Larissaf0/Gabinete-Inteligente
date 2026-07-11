@@ -7,8 +7,8 @@ from fastapi.templating import Jinja2Templates
 from database import Base, engine
 from datetime import datetime
 import database
-from models import Secretaria
-from schemas import Message, UserDB, UserList, UserPublic, UserSchema
+import models
+#from schemas import Message, UserDB, UserList, UserPublic, UserSchema
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -80,110 +80,112 @@ async def home_page(request: Request):
 # async def home(request: Request):
 #    return templates.TemplateResponse(request, "index.html")
 
-#Página home de cada secretaria (dashboard será específico)
-@app.get("/sec-home", response_class=HTMLResponse)
-async def sec_home(request: Request):
-    return templates.TemplateResponse(request,"sec_home.html")
-          
+# Mapeamento global para deixar o nome com acentuação e espaços corretos na tela
+NOMES_SECRETARIAS = {
+    "SEDUC": "Educação",
+    "FIN": "Finanças",
+    "Saude": "Saúde",
+    "ADM": "Administração",
+    "ServicosPublicos": "Serviços Públicos",
+    "SEDTEC": "Desenvolvimento Econômico, Ciência e Tecnologia",
+    "CulturaEsportes": "Cultura e Esportes",
+    "Obras": "Desenvolvimento Urbano e Obras",
+    "SEPLAMA": "Planejamento e Meio Ambiente",
+    "Rural": "Desenvolvimento Rural",
+    "Social": "Desenvolvimento Social",
+}
 
-#página padrão de cada reunião - 
-@app.get("/nova-reuniao",response_class=HTMLResponse)
-async def nova_reuniao(request: Request):
-
-    data_atual = datetime.now().strftime("%d/%m/%Y")
-
+# Rota para a página interna da secretaria (Dashboard específico)
+@app.get("/secretaria/{sec_id}", response_class=HTMLResponse)
+async def sec_home(request: Request, sec_id: str):
+    # Busca o nome limpo formatado, se não achar usa o próprio ID digitado
+    secretaria_nome = NOMES_SECRETARIAS.get(sec_id, sec_id)
+    
     return templates.TemplateResponse(
-        request=request,
-        name="nova_reuniao.html",
+        request=request, 
+        name="sec_home.html", 
+        context={"sec_id": sec_id, "sec_nome": secretaria_nome}
+    )
+
+# 1. Rota para renderizar o formulário da NOVA REUNIÃO já com os dados da secretaria injetados
+@app.get("/secretaria/{sec_id}/nova-reuniao", response_class=HTMLResponse)
+async def exibir_formulario_reuniao(request: Request, sec_id: str):
+    secretaria_nome = NOMES_SECRETARIAS.get(sec_id, sec_id)
+    data_atual = datetime.now().strftime("%d/%m/%Y")
+    hora_atual = datetime.now().strftime("%H:%M")
+    
+    return templates.TemplateResponse(
+        request=request, 
+        name="nova_reuniao.html", 
         context={
+            "sec_id": sec_id, 
+            "secretaria_nome": secretaria_nome,
             "data_atual": data_atual,
-            "hora_atual": datetime.now().strftime("%H:%M")
+            "hora_atual": hora_atual
         }
     )
 
-# Página para criar nova reunião, com o nome da secretaria injetado dinamicamente
-# @app.get("/nova-reuniao/{{secretaria_nome}}", response_class=HTMLResponse)
-# async def nova_reuniao(request: Request, secretaria_nome: str):
-
-#     data_atual = datetime.now().strftime("%d/%m/%Y")
+# 2. Rota POST que recebe os dados do formulário e vincula à secretaria no Banco de Dados
+@app.post("/secretaria/{sec_id}/salvar-reuniao")
+async def salvar_reuniao(
+    sec_id: str, 
+    titulo: str = Form(...), 
+    data: str = Form(None),
+    hora: str = Form(None)
+):
+    # TODO: Aqui você usa o seu 'models' importado para salvar no banco
+    # exemplo:
+    # db_reuniao = models.Reuniao(titulo=titulo, data=data, hora=hora, secretaria=sec_id)
+    # database.session.add(db_reuniao)
+    # database.session.commit()
     
-#     # Mapeamento para deixar o nome com acentuação e espaços corretos na tela
-#     nomes_formatados = {
-#         "SEDUC": "Educação",
-#         "Financas": "Finanças",
-#         "Saude": "Saúde",
-#         "ADM": "Administração",
-#         "ServicosPublicos":"Serviços Públicos",
-#         "SEDTEC": "Desenvolvimento Econômico, Ciência e Tecnologia",
-#         "CulturaEsportes": "Cultura e Esportes",
-#         "Obras": "Desenvolvimento Urbano e Obras",
-#         "SEPLAMA": "Planejamento e Meio Ambiente",
-#         "Rural":"Desenvolvimento Rural",
-#         "Social": "Desenvolvimento Social",
-
-#     }
+    print(f"Gravando Reunião no BD -> Título: {titulo} | Secretaria vinculada: {sec_id}")
     
-#     # Busca o nome limpo no dicionário. Se não achar, usa o próprio texto digitado na URL
-#     secretaria_nome = nomes_formatados.get(secretaria_nome, secretaria_nome)
-    
-#     # Injeta dinamicamente a variável 'secretaria' no contexto do template padrão
-#     return templates.TemplateResponse(
-#         request=request,
-#         name="nova_reuniao.html",
-#         context={"secretaria_nome": secretaria_nome,
-#                  "data_atual": data_atual,
-#                  "hora_atual": datetime.now().strftime("%H:%M")
-#         }
-#     )
+    # Redireciona o usuário de volta para a dashboard daquela secretaria específica
+    return RedirectResponse(url=f"/secretaria/{sec_id}", status_code=status.HTTP_303_SEE_OTHER)
 
-#página de pauta livre
-@app.get("/pauta-livre",response_class=HTMLResponse)
+# Página de pauta livre (Independente de secretaria)
+@app.get("/pauta-livre", response_class=HTMLResponse)
 async def pauta_livre(request: Request):
-
     data_atual = datetime.now().strftime("%d/%m/%Y")
-
+    hora_atual = datetime.now().strftime("%H:%M")
     return templates.TemplateResponse(
         request=request,
         name="pauta_livre.html",
-        context={
-            "data_atual": data_atual,
-            "hora_atual": datetime.now().strftime("%H:%M")
-        }
+        context={"data_atual": data_atual, "hora_atual": hora_atual}
     )
 
-#USERs - E-mail
-@app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema):
-    user_with_id = UserDB(**user.model_dump(), id=len(database) + 1)
-    database.append(user_with_id)
-    return user_with_id
 
-@app.get("/users/", response_model=UserList)
-def read_users():
-    return {'users': database}
+#USERs - E-mail -  COMENTADO PARA VER SE MUDAVA ALGUMA COISA
+# @app.post("/users/", status_code=HTTPStatus.CREATED, response_model=UserPublic)
+# def create_user(user: UserSchema):
+#     user_with_id = UserDB(**user.model_dump(), id=len(database) + 1)
+#     database.append(user_with_id)
+#     return user_with_id
 
-@app.put("/users/{user_id}", response_model=UserPublic)
-def update_user(user_id: int, user: UserSchema):
-    if user_id > len(database) or user_id < 1:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado"
-            )
-    user_with_id = UserDB(**user.model_dump(), id=user_id)
-    database[user_id - 1] = user_with_id
+# @app.get("/users/", response_model=UserList)
+# def read_users():
+#     return {'users': database}
 
-    return user_with_id
+# @app.put("/users/{user_id}", response_model=UserPublic)
+# def update_user(user_id: int, user: UserSchema):
+#     if user_id > len(database) or user_id < 1:
+#         raise HTTPException(
+#             status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado"
+#             )
+#     user_with_id = UserDB(**user.model_dump(), id=user_id)
+#     database[user_id - 1] = user_with_id
 
-@app.delete('/users/{user_id}', response_model=Message)
-def delete_user(user_id: int):
-    if user_id > len(database) or user_id < 1:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado"
-            )
-    del database[user_id - 1]
-    return {"message": "Usuário deletado com sucesso"}
+#     return user_with_id
 
-
-
+# @app.delete('/users/{user_id}', response_model=Message)
+# def delete_user(user_id: int):
+#     if user_id > len(database) or user_id < 1:
+#         raise HTTPException(
+#             status_code=HTTPStatus.NOT_FOUND, detail="Usuário não encontrado"
+#             )
+#     del database[user_id - 1]
+#     return {"message": "Usuário deletado com sucesso"}
 
 if __name__ == "__main__":
     import uvicorn

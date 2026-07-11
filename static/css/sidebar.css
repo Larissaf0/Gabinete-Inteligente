@@ -1,18 +1,24 @@
-/* Customização de Cores Fixas */
+/* ==========================================================================
+   1. ESTRUTURA DA SIDEBAR (BARRA LATERAL)
+   ========================================================================== */
 .navbar-vertical {
     background-color: #0b1a30 !important;
-    transition: all 0.3s ease-in-out;
-    width: 260px;
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
     z-index: 1030;
+    width: 260px; /* Largura quando aberta */
+    transition: width 0.25s ease-in-out !important;
+    overflow-x: hidden !important;
+    overflow-y: auto;
 }
 
-.navbar-vertical .nav-link, .navbar-vertical .navbar-brand {
-    color: #ffffff !important;
-    white-space: nowrap;
+/* Garante que os textos não partam linhas nem se deformem na animação */
+.navbar-vertical .nav-link, 
+.navbar-vertical .navbar-brand,
+.navbar-vertical h1 {
+    white-space: nowrap !important;
 }
 
 .navbar-vertical .nav-link.active {
@@ -21,38 +27,59 @@
     border-radius: 8px;
 }
 
-/* Efeito de Esconder e Revelar (Hover) em Telas Grandes */
+/* ==========================================================================
+   2. COMPORTAMENTO HOVER (ESCONDER / MOSTRAR) - APENAS EM COMPUTADORES
+   ========================================================================== */
 @media (min-width: 992px) {
+    
+    /* Estado Inicial: Encolhida apenas com ícones visíveis */
     .navbar-vertical {
-        width: 60px;
-        overflow: hidden;
+        width: 70px; 
     }
 
+    /* Esconde os textos e títulos aplicando opacidade */
     .navbar-vertical .nav-link-title, 
-    .navbar-vertical h1 {
+    .navbar-vertical h1,
+    .navbar-vertical .mt-auto span {
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.15s ease-in-out;
+        pointer-events: none;
     }
 
+    /* Estado Ativo: Expandida quando o rato passa por cima */
     .navbar-vertical:hover {
         width: 260px;
     }
 
+    /* Mostra os textos imediatamente após a expansão */
     .navbar-vertical:hover .nav-link-title,
-    .navbar-vertical:hover h1 {
+    .navbar-vertical:hover h1,
+    .navbar-vertical:hover .mt-auto span {
         opacity: 1;
+        pointer-events: auto;
     }
 
+    /* ==========================================================================
+       3. CORREÇÃO CRÍTICA DO CONTEÚDO DA DIREITA (PAGE-WRAPPER)
+       ========================================================================== */
     .page-wrapper {
-        margin-left: 60px;
-        transition: margin-left 0.3s ease-in-out;
+        margin-left: 70px !important;
+        /* Força o container a recalcular o espaço total subtraindo a barra */
+        width: calc(100% - 70px) !important; 
+        min-width: calc(100% - 70px) !important;
+        flex: 0 0 calc(100% - 70px) !important;
+        transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out, flex 0.25s ease-in-out !important;
     }
-}
 
-/* Estilos dos Cards Internos do Dashboard */
+    .page:has(.navbar-vertical:hover) .page-wrapper { margin-left: 260px !important; width: calc(100% - 260px) !important; flex: 0 0 calc(100% - 260px) !important; }
+
+/* ==========================================================================
+   4. ESTILOS DOS CARDS INTERNOS DO DASHBOARD
+   ========================================================================== */
 .card-status-dot { height: 40px; width: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; }
 .kpi-value { font-size: 24px; font-weight: bold; display: block; }
 .kpi-label { font-size: 13px; color: #666; font-weight: 500; }
 .deadline-item { border-left: 4px solid transparent; padding-left: 15px; margin-bottom: 15px; }
 .deadline-red { border-color: #d63939; background-color: #fef5f5; }
 .deadline-yellow { border-color: #f76707; background-color: #fff9f5; }
+}

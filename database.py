@@ -1,9 +1,17 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-engine = create_engine('sqlite:///gabinete_inteligente.db')
+DATABASE_URL = "sqlite:///./gabinete_inteligente.db"
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False}
+)
+
+Session = sessionmaker(
+    autocomit=False,
+    autoflush=False,
+    bind=engine
+)
+
 Base = declarative_base()
-Session = sessionmaker(bind=engine)
-def init_db():
-    Base.metadata.create_all(engine)
