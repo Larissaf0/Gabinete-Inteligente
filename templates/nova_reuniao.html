@@ -13,7 +13,7 @@
 </style>
 
 <!-- Adicionado a tag form envolvendo toda a interface de envio -->
-<form action="/secretaria/{{ sec_id }}/salvar-reuniao" method="POST" class="w-100">
+<form action="/secretaria/{{ sec_id }}/salvar-reuniao" method="POST">
     
     <!-- Cabeçalho da página de Nova Reunião -->
     <div class="page-header d-print-none mb-4 py-3 bg-white border-bottom shadow-sm px-4">
@@ -58,6 +58,10 @@
                         </div>
 
                         <div class="mb-4">
+                            <label class="form-label font-weight-bold text-dark mb-1">Título da Reunião</label>
+                            <input type="text" name="titulo" class="form-control py-2" placeholder="Ex: Alinhamento de Metas Trimestrais" style="border-radius: 8px; font-size: 1rem;" required>
+                        </div>
+                        <div class="mb-4">
                             <label class="form-label font-weight-bold text-dark mb-1">Anotações da Reunião</label>
                             <p class="text-muted small mb-2">Escreva livremente os pontos discutidos.</p>
                             <div class="position-relative">
@@ -67,7 +71,7 @@
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                       <!-- <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <label class="form-label font-weight-bold text-dark mb-0">Participantes da Reunião</label>
                                 <button type="button" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Adicionar</button>
@@ -77,10 +81,10 @@
                                 <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Diretor de Infraestrutura <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
                                 <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Coordenador Pedagógico <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="d-flex gap-3 pt-3 border-top">
-                            <button type="button" class="btn btn-outline-secondary px-4 py-2 font-weight-bold"><i class="ti ti-device-floppy me-2"></i> Salvar rascunho</button>
+                            <button type="submit" class="btn btn-outline-secondary px-4 py-2 font-weight-bold"><i class="ti ti-device-floppy me-2"></i> Salvar Reunião</button>
                             <!-- Mudado de link/div para botão do tipo submit -->
                             <button type="submit" class="btn btn-primary flex-fill py-2 font-weight-bold d-flex align-items-center justify-content-center gap-2">
                                 <i class="ti ti-sparkles"></i> Encerrar Reunião e Analisar com IA
@@ -103,7 +107,7 @@
 
                         <div class="card p-3 border shadow-none mb-3 bg-light-lt" style="border-radius: 8px;">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="font-weight-bold text-success fs-4 d-flex align-items-center gap-2"><i class="fa-regular fa-user"></i> Fabiana</span>
+                             <!--   <span class="font-weight-bold text-success fs-4 d-flex align-items-center gap-2"><i class="fa-regular fa-user"></i> Fabiana</span>-->
                                 <span class="badge bg-green text-white px-2 py-0.5" style="font-size: 0.7rem;">Prazo identificado</span>
                             </div>
                         </div>

@@ -1,3 +1,5 @@
+from sqlalchemy.orm import Session
+from fastapi import Depends
 from http import HTTPStatus
 from fastapi import FastAPI, Request, Form, HTTPException,status
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -11,7 +13,15 @@ import models
 #from schemas import Message, UserDB, UserList, UserPublic, UserSchema
 
 Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
+def get_db():
+    db = database.SessionLocal() # Certifique-se de que SessionLocal está definido no seu database.py
+    try:
+        yield db
+    finally:
+        db.close()
+
 templates = Jinja2Templates(directory="templates")
 RECAPTCHA_SECRET_KEY = "6LfImgQtAAAAALk3enMyZUDRMqRTH3LRD1bO5K-e"
 
@@ -96,16 +106,53 @@ NOMES_SECRETARIAS = {
 }
 
 # Rota para a página interna da secretaria (Dashboard específico)
+# Rota para a página interna da secretaria (Dashboard específico)
 @app.get("/secretaria/{sec_id}", response_class=HTMLResponse)
-async def sec_home(request: Request, sec_id: str):
-    # Busca o nome limpo formatado, se não achar usa o próprio ID digitado
+async def sec_home(request: Request, sec_id: str, db: Session = Depends(get_db)):
+    # 1. Busca o nome limpo formatado da secretaria
     secretaria_nome = NOMES_SECRETARIAS.get(sec_id, sec_id)
     
-    return templates.TemplateResponse(
-        request=request, 
-        name="sec_home.html", 
-        context={"sec_id": sec_id, "sec_nome": secretaria_nome}
-    )
+    # 2. BUSCA REAL NO BANCO DE DADOS:
+    # Pega todas as reuniões salvas pertencentes a esta secretaria específica
+    # (Ajuste o campo 'secretaria' se no seu model for 'secretaria_id' ou algo do tipo)
+    reunioes_do_banco = db.query(models.Reuniao).filter(models.Reuniao.secretaria_id == sec_id).all()
+    
+    # 3. TRATAMENTO DOS DADOS PARA O HTML:
+    # Transforma os objetos do banco em uma lista de dicionários que o seu Jinja espera receber
+    lista_reunioes = []
+    for r in reunioes_do_banco:
+        lista_reunioes.append({
+            "titulo": r.titulo,
+            "data_hora": f"{r.data} às {r.hora}" if r.hora else r.data,
+            "encaminhamentos_qtd": getattr(r, 'encaminhamentos_qtd', 0) # Se tiver contagem de encaminhamentos
+        })
+        
+    # 4. ENCONTRANDO OS NÚMEROS REAIS PARA OS KPIS:
+    # Exemplo de como calcular dinamicamente baseado nas suas demandas/reuniões reais
+    total_reunioes = len(reunioes_do_banco)
+    
+    # Exemplo de estrutura de contadores baseada no seu banco
+    # (Você pode aplicar filtros .filter(models.Demanda.status == 'aberta') no futuro)
+    kpis_reais = {
+        "abertas": total_reunioes,  # Substitua pelas queries de demandas reais depois
+        "em_andamento": 0,
+        "concluidas": 0,
+        "atrasadas": 0,
+        "vencem_hoje": 0,
+        "vencem_semana": 0
+    }
+    
+    # 5. MONTA O CONTEXTO COM OS DADOS REAIS
+    contexto = {
+        "sec_id": sec_id,
+        "secretaria_nome": secretaria_nome,
+        "notificacoes_qtd": 0,
+        "kpis": kpis_reais,
+        "prazos": [], # Substitua por db.query(models.Prazo)... quando criar a tabela de prazos
+        "reunioes": lista_reunioes  # <--- AGORA AS REUNIÕES SÃO AS REAIS DO BANCO!
+    }
+    
+    return templates.TemplateResponse(request, "sec_home.html", context=contexto)
 
 # 1. Rota para renderizar o formulário da NOVA REUNIÃO já com os dados da secretaria injetados
 @app.get("/secretaria/{sec_id}/nova-reuniao", response_class=HTMLResponse)
@@ -131,13 +178,20 @@ async def salvar_reuniao(
     sec_id: str, 
     titulo: str = Form(...), 
     data: str = Form(None),
-    hora: str = Form(None)
+    hora: str = Form(None),
+    db: Session = Depends(get_db)
 ):
-    # TODO: Aqui você usa o seu 'models' importado para salvar no banco
+# Aqui você usa o seu 'models' importado para salvar no banco
     # exemplo:
-    # db_reuniao = models.Reuniao(titulo=titulo, data=data, hora=hora, secretaria=sec_id)
-    # database.session.add(db_reuniao)
-    # database.session.commit()
+    db_reuniao = models.Reuniao(
+        titulo=titulo,
+        data=data,
+        hora=hora,
+        secretaria_id=sec_id
+    )
+    
+    db.add(db_reuniao)
+    db.commit()
     
     print(f"Gravando Reunião no BD -> Título: {titulo} | Secretaria vinculada: {sec_id}")
     

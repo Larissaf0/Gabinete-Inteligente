@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 DATABASE_URL = "sqlite:///./gabinete_inteligente.db"
 
@@ -8,8 +9,8 @@ engine = create_engine(
     connect_args={"check_same_thread": False}
 )
 
-Session = sessionmaker(
-    autocomit=False,
+SessionLocal = sessionmaker(
+    autocommit=False,
     autoflush=False,
     bind=engine
 )

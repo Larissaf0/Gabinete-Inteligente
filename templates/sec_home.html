@@ -6,12 +6,13 @@
     <div class="container-fluid px-4">
         <div class="row align-items-center justify-content-between w-100 g-2">
             <div class="col-auto d-flex align-items-center">
-                <!-- Botão Nova Reunião espaçado corretamente -->
+                <!-- Botão Nova Reunião dinâmico -->
                 <a href="/secretaria/{{sec_id}}/nova-reuniao" class="btn btn-primary px-3 shadow-sm ms-2">
                     <i class="fa-solid fa-plus me-2"></i> NOVA REUNIÃO
                 </a>
                 <div class="ps-3">
-                    <h2 class="page-title mb-0">Dashboard Secretaria</h2>
+                    <!-- Nome da secretaria dinâmico -->
+                    <h2 class="page-title mb-0">Dashboard {{ secretaria_nome }}</h2>
                     <div class="text-muted small">Acompanhe o andamento das demandas e prazos</div>
                 </div>
             </div>
@@ -20,7 +21,7 @@
                 <div class="nav-item dropdown d-flex me-3">
                     <a href="#" class="nav-link px-0" data-bs-toggle="dropdown">
                         <i class="fa-regular fa-bell fs-2"></i>
-                        <span class="badge bg-red badge-notification">3</span>
+                        <span class="badge bg-red badge-notification">{{ notificacoes_qtd }}</span>
                     </a>
                 </div>
             </div>
@@ -38,7 +39,7 @@
                 <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #206bc4 !important;">
                     <div class="kpi-label">Demandas abertas</div>
                     <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-blue me-2">24</span>
+                        <span class="kpi-value text-blue me-2">{{ kpis.abertas }}</span>
                         <i class="fa-regular fa-clipboard fs-3 text-blue opacity-50"></i>
                     </div>
                 </div>
@@ -47,7 +48,7 @@
                 <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #0ca678 !important;">
                     <div class="kpi-label">Em andamento</div>
                     <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-green me-2">18</span>
+                        <span class="kpi-value text-green me-2">{{ kpis.em_andamento }}</span>
                         <i class="fa-solid fa-rotate fs-3 text-green opacity-50"></i>
                     </div>
                 </div>
@@ -56,7 +57,7 @@
                 <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #745fb5 !important;">
                     <div class="kpi-label">Concluídas</div>
                     <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-purple me-2">4</span>
+                        <span class="kpi-value text-purple me-2">{{ kpis.concluidas }}</span>
                         <i class="fa-regular fa-circle-check fs-3 text-purple opacity-50"></i>
                     </div>
                 </div>
@@ -65,7 +66,7 @@
                 <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #d63939 !important;">
                     <div class="kpi-label text-danger">Atrasadas</div>
                     <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-danger me-2">2</span>
+                        <span class="kpi-value text-danger me-2">{{ kpis.atrasadas }}</span>
                         <i class="fa-solid fa-triangle-exclamation fs-3 text-danger opacity-50"></i>
                     </div>
                 </div>
@@ -74,7 +75,7 @@
                 <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #f76707 !important;">
                     <div class="kpi-label text-warning">Vencem hoje</div>
                     <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-warning me-2">3</span>
+                        <span class="kpi-value text-warning me-2">{{ kpis.vencem_hoje }}</span>
                         <i class="fa-regular fa-calendar-xmark fs-3 text-warning opacity-50"></i>
                     </div>
                 </div>
@@ -83,7 +84,7 @@
                 <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #4299e1 !important;">
                     <div class="kpi-label">Vencem esta semana</div>
                     <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-azure me-2">6</span>
+                        <span class="kpi-value text-azure me-2">{{ kpis.vencem_semana }}</span>
                         <i class="fa-regular fa-calendar-days fs-3 text-azure opacity-50"></i>
                     </div>
                 </div>
@@ -93,84 +94,60 @@
         <!-- Seções Inferiores: Prazos e Reuniões -->
         <div class="row row-cards">
             
-            <!-- Coluna Esquerda: Prazos Próximos -->
+            <!-- Coluna Esquerda: Prazos Próximos Dinâmicos -->
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title">Prazos próximos</h3>
-                        <a href="#" class="small text-decoration-none">Ver todas</a>
+                        <a href="/secretaria/{{sec_id}}/prazos" class="small text-decoration-none">Ver todos</a>
                     </div>
                     <div class="card-body">
-                        <div class="deadline-item deadline-red p-3 rounded">
+                        {% for prazo in prazos %}
+                        <div class="deadline-item {% if prazo.dias_restantes <= 2 %}deadline-red{% else %}deadline-yellow{% endif %} p-3 rounded mb-2">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <div class="fw-bold text-dark"></div>
-                                    <div class="text-muted small"></div>
+                                    <div class="fw-bold text-dark">{{ prazo.titulo }}</div>
+                                    <div class="text-muted small">Data Limite: {{ prazo.data_limite }}</div>
                                 </div>
-                                <div class="badge bg-red-lt text-uppercase">Vence em 2 dias</div>
+                                <div class="badge {% if prazo.dias_restantes <= 2 %}bg-red-lt{% else %}bg-orange-lt{% endif %} text-uppercase">
+                                    Vence em {{ prazo.dias_restantes }} dias
+                                </div>
                             </div>
                         </div>
-
-                        <div class="deadline-item deadline-yellow p-3 rounded">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <div class="fw-bold text-dark"></div>
-                                    <div class="text-muted small"></div>
-                                </div>
-                                <div class="badge bg-orange-lt text-uppercase">Vence em 1 dia</div>
-                            </div>
-                        </div>
-                        
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-ghost-secondary btn-sm">Ver todos os prazos</a>
-                        </div>
+                        {% else %}
+                        <div class="text-center text-muted py-4">Nenhum prazo próximo cadastrado.</div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- Coluna Direita: Reuniões Recentes -->
+            <!-- Coluna Direita: Reuniões Recentes Dinâmicas -->
             <div class="col-md-6">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3 class="card-title">Reuniões recentes</h3>
-                        <a href="#" class="small text-decoration-none">Ver todas</a>
+                        <a href="/secretaria/{{sec_id}}/reunioes" class="small text-decoration-none">Ver todas</a>
                     </div>
                     <div class="card-body">
                         <div class="list-group list-group-flush">
+                            {% for reuniao in reunioes %}
                             <div class="list-group-item px-0 py-3 border-0 border-bottom">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
                                         <span class="avatar bg-blue-lt"><i class="fa-solid fa-users"></i></span>
                                     </div>
                                     <div class="col">
-                                        <div class="fw-bold text-dark">Reunião com Secretaria de Educação</div>
-                                        <div class="text-muted small">31/05/2026 às 14:32</div>
+                                        <div class="fw-bold text-dark">{{ reuniao.titulo }}</div>
+                                        <div class="text-muted small">{{ reuniao.data_hora }}</div>
                                     </div>
                                     <div class="col-auto">
-                                        <span class="badge bg-green-lt">3 encaminhamentos</span>
+                                        <span class="badge bg-green-lt">{{ reuniao.encaminhamentos_qtd }} encaminhamentos</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="list-group-item px-0 py-3 border-0 border-bottom">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="avatar bg-blue-lt"><i class="fa-solid fa-users"></i></span>
-                                    </div>
-                                    <div class="col">
-                                        <div class="fw-bold text-dark">Reunião com Secretaria de Saúde</div>
-                                        <div class="text-muted small">30/05/2026 às 10:15</div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <span class="badge bg-green-lt">2 encaminhamentos</span>
-                                    </div>
-
-                                    <!-- <div class="text-center text-muted mt-3">
-                                        <a href="/home" class="fs-3 text-secondary" style="text-decoration: none">
-                                            <button class="btn btn-primary w-100 py-2 font-weight-bold">VOLTAR </button>
-                                        </a>
-                                    </div> -->
-                                </div>
-                            </div>
+                            {% else %}
+                            <div class="text-center text-muted py-4">Nenhuma reunião recente cadastrada.</div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -180,4 +157,3 @@
     </div> <!-- Fim do container-fluid -->
 </div> <!-- Fim da page-body -->
 {% endblock %}
-
