@@ -25,13 +25,6 @@ def get_db():
 templates = Jinja2Templates(directory="templates")
 RECAPTCHA_SECRET_KEY = "6LfImgQtAAAAALk3enMyZUDRMqRTH3LRD1bO5K-e"
 
-#@app.post("/login", response_class=HTMLResponse)
-#async def tela_login(request: Request):
-    #return templates.TemplateResponse(
-      #  request=request,
-     #   name="home.html"
-    #)
-
 #landing page, é a tela principal do site, onde faz o login
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -78,6 +71,10 @@ async def tela_solicitar_acessp(request: Request):
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return RedirectResponse(url="/static/imagens/favicon.ico")
 
 #tela HOME, é a página inicial após o login. Com painel lateral e escolha de secretaria.
 @app.get("/home", response_class=HTMLResponse)

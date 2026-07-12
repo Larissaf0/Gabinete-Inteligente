@@ -7,6 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Fredoka:wght@700&display=swap" rel="stylesheet">
     
     <!-- Links Online do Tabler e FontAwesome -->
@@ -89,32 +90,34 @@
                 <div class="collapse navbar-collapse show" id="sidebar-menu">
                     <ul class="navbar-nav pt-lg-3">
                         <li class="nav-item">
+                            {%block botao_navegacao %}
                             <a class="nav-link active" href="/home">
-                                <span class="nav-link-icon"><i class="fa-solid fa-house"></i></span>
-                                <span class="nav-link-title">Início</span>
+                                <span class="nav-link-icon"><i class="ti ti-home ti-stroke-2"></i></span>
+                                <span class="nav-link-title">Home</span>
+                            {%endblock%}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span class="nav-link-icon"><i class="fa-regular fa-calendar"></i></span>
+                                <span class="nav-link-icon"><i class="ti ti-calendar ti-stroke-2"></i></span>
                                 <span class="nav-link-title">Reuniões</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span class="nav-link-icon"><i class="fa-solid fa-share-nodes"></i></span>
+                                <span class="nav-link-icon"><i class="ti ti-share ti-stroke-2"></i></span>
                                 <span class="nav-link-title">Encaminhamentos</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span class="nav-link-icon"><i class="fa-regular fa-file-lines"></i></span>
+                                <span class="nav-link-icon"><i class="ti ti-file-text ti-stroke-2"></i></span>
                                 <span class="nav-link-title">Relatórios</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span class="nav-link-icon"><i class="fa-regular fa-bell"></i></span>
+                                <span class="nav-link-icon"><i class="ti ti-bell ti-stroke-2"></i></span>
                                 <span class="nav-link-title">Notificações</span>
                             </a>
                         </li>

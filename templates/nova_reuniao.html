@@ -1,5 +1,12 @@
 {% extends 'sidebar.html' %}
 
+{% block botao_navegacao %}
+    <a class="nav-link active" href="/secretaria/{{ sec_id }}/">
+        <span class="nav-link-icon"><i class="ti ti-arrow-back-up ti-stroke-2"></i></span>
+        <span class="nav-link-title">Voltar</span>
+    </a>
+{% endblock %}
+
 {% block content %}
 <!-- Os estilos específicos desta página foram colocados aqui sem quebrar o head do pai -->
 <style>
@@ -87,7 +94,7 @@
                             <button type="submit" class="btn btn-outline-secondary px-4 py-2 font-weight-bold"><i class="ti ti-device-floppy me-2"></i> Salvar Reunião</button>
                             <!-- Mudado de link/div para botão do tipo submit -->
                             <button type="submit" class="btn btn-primary flex-fill py-2 font-weight-bold d-flex align-items-center justify-content-center gap-2">
-                                <i class="ti ti-sparkles"></i> Encerrar Reunião e Analisar com IA
+                                <i class="ti ti-file-text-ai" style="font-size: 1rem;"></i> Encerrar Reunião e Analisar com IA
                             </button>
                         </div>
 
