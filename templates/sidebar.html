@@ -94,13 +94,15 @@
                             <a class="nav-link active" href="/home">
                                 <span class="nav-link-icon"><i class="ti ti-home ti-stroke-2"></i></span>
                                 <span class="nav-link-title">Home</span>
-                            {%endblock%}
+                            {%endblock%}                          
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            {%block reunioes_sec %}
+                            <a class="nav-link" href="/secretaria/{{ sec_id }}/reunioes">
                                 <span class="nav-link-icon"><i class="ti ti-calendar ti-stroke-2"></i></span>
                                 <span class="nav-link-title">Reuniões</span>
+                            {%endblock%}
                             </a>
                         </li>
                         <li class="nav-item">
