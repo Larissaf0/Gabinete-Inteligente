@@ -1,159 +1,169 @@
 {% extends 'sidebar.html' %}
 
 {% block content %}
-<!-- Cabeçalho Interno da Página -->
-<header class="navbar navbar-expand-md navbar-light d-print-none py-3">
-    <div class="container-fluid px-4">
-        <div class="row align-items-center justify-content-between w-100 g-2">
-            <div class="col-auto d-flex align-items-center">
-                <!-- Botão Nova Reunião dinâmico -->
-                <a href="/secretaria/{{sec_id}}/nova-reuniao" class="btn btn-primary px-3 shadow-sm ms-2">
-                    <i class="fa-solid fa-plus me-2"></i> NOVA REUNIÃO
-                </a>
-                <div class="ps-3">
-                    <!-- Nome da secretaria dinâmico -->
-                    <h2 class="page-title mb-0">Dashboard {{ secretaria_nome }}</h2>
-                    <div class="text-muted small">Acompanhe o andamento das demandas e prazos</div>
-                </div>
-            </div>
+<!-- Container principal com imagem de fundo da secretaria dinâmica e máscara de contraste -->
+<div class="d-flex flex-column flex-fill" 
+     style="background-image: linear-gradient(rgba(244, 246, 250, 0.93), rgba(244, 246, 250, 0.40)), url('{{ logo_secretaria }}'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed;
+            min-height: 100vh;">
 
-            <div class="col-auto">
-                <div class="nav-item dropdown d-flex me-3">
-                    <a href="#" class="nav-link px-0" data-bs-toggle="dropdown">
-                        <i class="fa-regular fa-bell fs-2"></i>
-                        <span class="badge bg-red badge-notification">{{ notificacoes_qtd }}</span>
+    <!-- Cabeçalho Interno da Página -->
+    <header class="navbar navbar-expand-md navbar-light d-print-none py-3 bg-transparent">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center justify-content-between w-100 g-2">
+                <div class="col-auto d-flex align-items-center">
+                    <!-- Botão Nova Reunião dinâmico -->
+                    <a href="/secretaria/{{sec_id}}/nova-reuniao" class="btn btn-primary px-3 shadow-sm ms-2">
+                        <i class="fa-solid fa-plus me-2"></i> NOVA REUNIÃO
                     </a>
+                    <div class="ps-3">
+                        <!-- Nome da secretaria dinâmico -->
+                        <h2 class="page-title mb-0">Dashboard {{ secretaria_nome }}</h2>
+                        <div class="text-muted small">Acompanhe o andamento das demandas e prazos</div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</header>
 
-<!-- Corpo do Dashboard -->
-<div class="page-body">
-    <div class="container-fluid px-4">
-        
-        <!-- Fileira de Cards KPIs Dinâmicos -->
-        <div class="row row-cards mb-4">
-            <div class="col-6 col-sm-4 col-xl-2">
-                <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #206bc4 !important;">
-                    <div class="kpi-label">Demandas abertas</div>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-blue me-2">{{ kpis.abertas }}</span>
-                        <i class="fa-regular fa-clipboard fs-3 text-blue opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-4 col-xl-2">
-                <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #0ca678 !important;">
-                    <div class="kpi-label">Em andamento</div>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-green me-2">{{ kpis.em_andamento }}</span>
-                        <i class="fa-solid fa-rotate fs-3 text-green opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-4 col-xl-2">
-                <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #745fb5 !important;">
-                    <div class="kpi-label">Concluídas</div>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-purple me-2">{{ kpis.concluidas }}</span>
-                        <i class="fa-regular fa-circle-check fs-3 text-purple opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-4 col-xl-2">
-                <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #d63939 !important;">
-                    <div class="kpi-label text-danger">Atrasadas</div>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-danger me-2">{{ kpis.atrasadas }}</span>
-                        <i class="fa-solid fa-triangle-exclamation fs-3 text-danger opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-4 col-xl-2">
-                <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #f76707 !important;">
-                    <div class="kpi-label text-warning">Vencem hoje</div>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-warning me-2">{{ kpis.vencem_hoje }}</span>
-                        <i class="fa-regular fa-calendar-xmark fs-3 text-warning opacity-50"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-sm-4 col-xl-2">
-                <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #4299e1 !important;">
-                    <div class="kpi-label">Vencem esta semana</div>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <span class="kpi-value text-azure me-2">{{ kpis.vencem_semana }}</span>
-                        <i class="fa-regular fa-calendar-days fs-3 text-azure opacity-50"></i>
+                <div class="col-auto">
+                    <div class="nav-item dropdown d-flex me-3">
+                        <a href="#" class="nav-link px-0" data-bs-toggle="dropdown">
+                            <i class="fa-regular fa-bell fs-2"></i>
+                            <span class="badge bg-red badge-notification">{{ notificacoes_qtd }}</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- Seções Inferiores: Prazos e Reuniões -->
-        <div class="row row-cards">
+    <!-- Corpo do Dashboard -->
+    <div class="page-body flex-fill">
+        <div class="container-fluid px-4">
             
-            <!-- Coluna Esquerda: Prazos Próximos Dinâmicos -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">Prazos próximos</h3>
-                        <a href="/secretaria/{{sec_id}}/prazos" class="small text-decoration-none">Ver todos</a>
-                    </div>
-                    <div class="card-body">
-                        {% for prazo in prazos %}
-                        <div class="deadline-item {% if prazo.dias_restantes <= 2 %}deadline-red{% else %}deadline-yellow{% endif %} p-3 rounded mb-2">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <div class="fw-bold text-dark">{{ prazo.titulo }}</div>
-                                    <div class="text-muted small">Data Limite: {{ prazo.data_limite }}</div>
-                                </div>
-                                <div class="badge {% if prazo.dias_restantes <= 2 %}bg-red-lt{% else %}bg-orange-lt{% endif %} text-uppercase">
-                                    Vence em {{ prazo.dias_restantes }} dias
-                                </div>
-                            </div>
+            <!-- Fileira de Cards KPIs Dinâmicos -->
+            <div class="row row-cards mb-4">
+                <div class="col-6 col-sm-4 col-xl-2">
+                    <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #206bc4 !important;">
+                        <div class="kpi-label">Demandas abertas</div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <span class="kpi-value text-blue me-2">{{ kpis.abertas }}</span>
+                            <i class="fa-regular fa-clipboard fs-3 text-blue opacity-50"></i>
                         </div>
-                        {% else %}
-                        <div class="text-center text-muted py-4">Nenhum prazo próximo cadastrado.</div>
-                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-xl-2">
+                    <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #0ca678 !important;">
+                        <div class="kpi-label">Em andamento</div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <span class="kpi-value text-green me-2">{{ kpis.em_andamento }}</span>
+                            <i class="fa-solid fa-rotate fs-3 text-green opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-xl-2">
+                    <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #745fb5 !important;">
+                        <div class="kpi-label">Concluídas</div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <span class="kpi-value text-purple me-2">{{ kpis.concluidas }}</span>
+                            <i class="fa-regular fa-circle-check fs-3 text-purple opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-xl-2">
+                    <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #d63939 !important;">
+                        <div class="kpi-label text-danger">Atrasadas</div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <span class="kpi-value text-danger me-2">{{ kpis.atrasadas }}</span>
+                            <i class="fa-solid fa-triangle-exclamation fs-3 text-danger opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-xl-2">
+                    <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #f76707 !important;">
+                        <div class="kpi-label text-warning">Vencem hoje</div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <span class="kpi-value text-warning me-2">{{ kpis.vencem_hoje }}</span>
+                            <i class="fa-regular fa-calendar-xmark fs-3 text-warning opacity-50"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-4 col-xl-2">
+                    <div class="card card-sm p-3 text-center border-0 shadow-sm" style="border-top: 3px solid #4299e1 !important;">
+                        <div class="kpi-label">Vencem esta semana</div>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <span class="kpi-value text-azure me-2">{{ kpis.vencem_semana }}</span>
+                            <i class="fa-regular fa-calendar-days fs-3 text-azure opacity-50"></i>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Coluna Direita: Reuniões Recentes Dinâmicas -->
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h3 class="card-title">Reuniões recentes</h3>
-                        <a href="/secretaria/{{sec_id}}/reunioes" class="small text-decoration-none">Ver todas</a>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group list-group-flush">
-                            {% for reuniao in reunioes %}
-                            <div class="list-group-item px-0 py-3 border-0 border-bottom">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="avatar bg-blue-lt"><i class="fa-solid fa-users"></i></span>
+            <!-- Seções Inferiores: Prazos e Reuniões -->
+            <div class="row row-cards">
+                
+                <!-- Coluna Esquerda: Prazos Próximos Dinâmicos -->
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">Prazos próximos</h3>
+                            <a href="/#" class="small text-decoration-none">Ver todos</a>
+                        </div>
+                        <div class="card-body">
+                            {% for prazo in prazos %}
+                            <div class="deadline-item {% if prazo.dias_restantes <= 2 %}deadline-red{% else %}deadline-yellow{% endif %} p-3 rounded mb-2">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="fw-bold text-dark">{{ prazo.titulo }}</div>
+                                        <div class="text-muted small">Data Limite: {{ prazo.data_limite }}</div>
                                     </div>
-                                    <div class="col">
-                                        <div class="fw-bold text-dark">{{ reuniao.titulo }}</div>
-                                        <div class="text-muted small">{{ reuniao.data_hora }}</div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <span class="badge bg-green-lt">{{ reuniao.encaminhamentos_qtd }} encaminhamentos</span>
+                                    <div class="badge {% if prazo.dias_restantes <= 2 %}bg-red-lt{% else %}bg-orange-lt{% endif %} text-uppercase">
+                                        Vence em {{ prazo.dias_restantes }} dias
                                     </div>
                                 </div>
                             </div>
                             {% else %}
-                            <div class="text-center text-muted py-4">Nenhuma reunião recente cadastrada.</div>
+                            <div class="text-center text-muted py-4">Nenhum prazo próximo cadastrado.</div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
-            </div>
 
-        </div> <!-- Fim da row row-cards -->
-    </div> <!-- Fim do container-fluid -->
-</div> <!-- Fim da page-body -->
+                <!-- Coluna Direita: Reuniões Recentes Dinâmicas -->
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h3 class="card-title">Reuniões recentes</h3>
+                            <a href="/secretaria/{{sec_id}}/reunioes" class="small text-decoration-none">Ver todas</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group list-group-flush">
+                                {% for reuniao in reunioes %}
+                                <div class="list-group-item px-0 py-3 border-0 border-bottom bg-transparent">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar bg-blue-lt"><i class="fa-solid fa-users"></i></span>
+                                        </div>
+                                        <div class="col">
+                                            <div class="fw-bold text-dark">{{ reuniao.titulo }}</div>
+                                            <div class="text-muted small">{{ reuniao.data_hora }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-green-lt">{{ reuniao.encaminhamentos_qtd }} encaminhamentos</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="text-center text-muted py-4">Nenhuma reunião recente cadastrada.</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- Fim da row row-cards -->
+        </div> <!-- Fim do container-fluid -->
+    </div> <!-- Fim da page-body -->
+</div> <!-- Fim do Wrapper de plano de fundo -->
 {% endblock %}

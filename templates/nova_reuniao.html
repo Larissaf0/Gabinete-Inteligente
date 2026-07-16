@@ -8,6 +8,14 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="d-flex flex-column flex-fill" 
+     style="background-image: linear-gradient(rgba(244, 246, 250, 0.93), rgba(244, 246, 250, 0.40)), url('{{ logo_secretaria }}'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed;
+            min-height: 100vh;">
 <!-- Os estilos específicos desta página foram colocados aqui sem quebrar o head do pai -->
 <style>
     * {
@@ -124,5 +132,6 @@
             </div>
         </div>
     </div>
+</div>
 </form>
 {% endblock %}
