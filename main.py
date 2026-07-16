@@ -25,7 +25,61 @@ def get_db():
 templates = Jinja2Templates(directory="templates")
 RECAPTCHA_SECRET_KEY = "6LfImgQtAAAAALk3enMyZUDRMqRTH3LRD1bO5K-e"
 
-#landing page, é a tela principal do site, onde faz o login
+# Mapeamento global para deixar o nome com acentuação e espaços corretos na tela
+NOMES_SECRETARIAS = {
+    "SEDUC": "Educação",
+    "FIN": "Finanças",
+    "Saude": "Saúde",
+    "ADM": "Administração",
+    "ServicosPublicos": "Serviços Públicos",
+    "SEDTEC": "Desenvolvimento Econômico, Ciência e Tecnologia",
+    "CulturaEsportes": "Cultura e Esportes",
+    "Obras": "Desenvolvimento Urbano e Obras",
+    "SEPLAMA": "Planejamento e Meio Ambiente",
+    "Rural": "Desenvolvimento Rural",
+    "Social": "Desenvolvimento Social",
+}
+
+# Caminhos padrão das imagens associadas aos IDs exatos usados nas rotas
+LOGOS_SECRETARIAS = {
+    "ADM": "/static/imagens/adm_bg.png",
+    "Saude": "/static/imagens/saude_bg.png",
+    "SEDUC": "/static/imagens/seduc_bg.png",
+    "Obras":"/static/imagens/obras_bg.png",
+    "FIN": "/static/imagens/fin_bg.png",
+    "ServicosPublicos": "/static/imagens/servpub_publicos_bg.png",}
+
+# Função para buscar no database o BG da página
+def obter_logo_secretaria(sec_id: str, db: Session) -> str:
+    # 1. Tenta buscar da tabela do banco de dados primeiro
+    secretaria = db.query(models.Secretaria).filter(models.Secretaria.id == sec_id).first()
+    if secretaria and getattr(secretaria, 'logo_url', None):
+        return secretaria.logo_url
+    
+    return LOGOS_SECRETARIAS.get(sec_id, "/static/imagens")
+
+admin = Admin(app, engine, title="Painel de Controle - Gabinete")
+
+class ReuniaoAdmin(ModelView, model=models.Reuniao):
+    name = "Reunião"
+    name_plural = "Reuniões"
+    icon = "fa-solid fa-calendar"
+    column_list = [models.Reuniao.id, models.Reuniao.titulo, models.Reuniao.data, models.Reuniao.hora, models.Reuniao.secretaria_id]
+    column_searchable_list = [models.Reuniao.titulo, models.Reuniao.data]
+    column_filters = [models.Reuniao.secretaria_id, models.Reuniao.data]
+
+class SecretariaAdmin(ModelView, model=models.Secretaria):
+    name = "Secretaria"
+    name_plural = "Secretarias"
+    icon = "fa-solid fa-building"
+    column_list = [models.Secretaria.id, models.Secretaria.nome]
+    column_searchable_list = [models.Secretaria.nome]
+
+admin.add_view(ReuniaoAdmin)
+admin.add_view(SecretariaAdmin)
+
+
+# Landing page (Login)
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse(request, "index.html")
