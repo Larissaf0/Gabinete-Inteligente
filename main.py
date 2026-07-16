@@ -47,7 +47,7 @@ LOGOS_SECRETARIAS = {
     "SEDUC": "/static/imagens/seduc_bg.png",
     "Obras":"/static/imagens/obras_bg.png",
     "FIN": "/static/imagens/fin_bg.png",
-    "ServicosPublicos": "/static/imagens/servpub_publicos_bg.png",}
+    "ServicosPublicos": "/static/imagens/servpub_bg.png",}
 
 # Função para buscar no database o BG da página
 def obter_logo_secretaria(sec_id: str, db: Session) -> str:
