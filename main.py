@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from sqladmin import Admin, ModelView
+from fastapi import Depends
 from http import HTTPStatus
-from fastapi import FastAPI,Depends, Request, Form, HTTPException,status
+from fastapi import FastAPI, Request, Form, HTTPException,status
 from fastapi.responses import HTMLResponse, RedirectResponse
 import httpx
 from fastapi.staticfiles import StaticFiles
@@ -24,38 +24,6 @@ def get_db():
 
 templates = Jinja2Templates(directory="templates")
 RECAPTCHA_SECRET_KEY = "6LfImgQtAAAAALk3enMyZUDRMqRTH3LRD1bO5K-e"
-
-admin = Admin(app,engine, title="Painel de Controle - Gabinete")
-
-class ReuniaoAdmin(ModelView, model=models.Reuniao):
-    name = "Reunião"
-    name_plural = "Reuniões"
-    icon = "fa-solid fa-calendar" # Ícone que vai aparecer no menu do Admin
-    
-    # Quais colunas devem aparecer na tabela de listagem
-    column_list = [models.Reuniao.id, models.Reuniao.titulo, models.Reuniao.data, models.Reuniao.hora, models.Reuniao.secretaria_id]
-    
-    # Quais colunas o usuário pode usar na barra de busca rápida
-    column_searchable_list = [models.Reuniao.titulo, models.Reuniao.data]
-    
-    # Quais colunas permitem filtragem lateral (ex: filtrar por secretaria)
-    column_filters = [models.Reuniao.secretaria_id, models.Reuniao.data]
-
-
-# 4. CRIAR A VIEW AUTOMÁTICA PARA AS SECRETARIAS
-class SecretariaAdmin(ModelView, model=models.Secretaria):
-    name = "Secretaria"
-    name_plural = "Secretarias"
-    icon = "fa-solid fa-building"
-    
-    column_list = [models.Secretaria.id, models.Secretaria.nome]
-    column_searchable_list = [models.Secretaria.nome]
-
-
-# 5. ADICIONAR AS VIEWS AO PAINEL ADMINISTRATIVO
-admin.add_view(ReuniaoAdmin)
-admin.add_view(SecretariaAdmin)
-
 
 #landing page, é a tela principal do site, onde faz o login
 @app.get("/", response_class=HTMLResponse)
@@ -114,63 +82,10 @@ async def home_page(request: Request):
     usuario = {"nome": "admin"} # Exemplo de usuário
     return templates.TemplateResponse(request,"home.html", context={"usuario": usuario})
 
-# --- Rota para listar todas as Reunioes da Secretaria---
-
-@app.get("/secretaria/{sec_id}/reunioes", response_class=HTMLResponse)
-async def listar_todas_reunioes(request: Request, sec_id: str, pagina: int = 1, db: Session = Depends(get_db)):
-    usuario = {"nome": "admin"} # Mantém o padrão de usuário que você usa na home
-    
-    # Configuração da paginação
-    itens_por_pagina = 8
-    offset = (pagina - 1) * itens_por_pagina
-
-    # Consulta total de registros para calcular as páginas
-    total_registros = db.query(models.Reuniao).filter(models.Reuniao.secretaria_id == sec_id).count()
-    total_paginas = max(1, (total_registros + itens_por_pagina - 1) // itens_por_pagina)
-
-    # Busca as reuniões do banco limitando pelo offset da página atual
-    reunioes_do_banco = db.query(models.Reuniao)\
-            .filter(models.Reuniao.secretaria_id == sec_id)\
-            .order_by(models.Reuniao.id.desc())\
-            .offset(offset)\
-            .limit(itens_por_pagina)\
-            .all()
-
-    # Tratamento dos dados para o Jinja2 bater com o layout do Tabler
-    lista_reunioes = []
-    for r in reunioes_do_banco:
-        # Mapeamento do nome da secretaria baseado no dicionário que você já possui
-        nome_sec = NOMES_SECRETARIAS.get(r.secretaria_id, "Gabinete")
-
-        # Como você não tem tabela de participantes/status ainda, geramos estruturas
-        # prontas e seguras para o HTML receber do seu banco futuramente:
-        lista_reunioes.append({
-            "id": r.id,
-            "titulo": r.titulo,
-            "assunto": f"Demanda vinculada à Secretaria de {nome_sec}",
-            "data": r.data if r.data else "--/--/----",
-            "hora": r.hora if r.hora else "--:--",
-            "local": f"Sala da Secretaria de {nome_sec}" if r.secretaria_id else "Sala do Gabinete",
-            "status": "Agendada", # Valor padrão seguro baseado no banco
-            "participantes": [{"iniciais": "ADM"}] # Iniciais padrão
-        })
-
-    # Cálculos matemáticos exibidos no rodapé do Tabler
-    de_registro = offset + 1 if total_registros > 0 else 0
-    ate_registro = min(offset + itens_por_pagina, total_registros)
-
-    contexto = {
-        "usuario": usuario,
-        "sec_id": sec_id,
-        "reunioes": lista_reunioes,
-        "pagina_atual": pagina,
-        "total_paginas": total_paginas,
-        "de_registro": de_registro,
-        "ate_registro": ate_registro,
-        "total_registros": total_registros
-    }
-
-    return templates.TemplateResponse(request, "reunioes.html", context=contexto)
+# landing page, é a tela principal do site, onde faz o login
+# @app.get("/", response_class=HTMLResponse)
+# async def home(request: Request):
+#    return templates.TemplateResponse(request, "index.html")
 
 # Mapeamento global para deixar o nome com acentuação e espaços corretos na tela
 NOMES_SECRETARIAS = {
