@@ -3,12 +3,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Fredoka", sans-serif;
+    font-family: "Playfair Display", sans-serif;
 }
 
 body {
     background-color: #0b1a30;
-    font-family: 'Montserrat', sans-serif; /*fonte da tela login */
+    font-family: 'Playfair Display', sans-serif; /*fonte da tela login */
     min-height: 100vh;
 }
 
@@ -60,7 +60,7 @@ body {
 }
 
 .titulo-plataforma {
-    font-family: 'Fredoka', sans-serif; /*fonte do título da logo*/
+    font-family: 'Playfair Display', sans-serif; /*fonte do título da logo*/
     font-size: 2.4rem;
     font-weight: 700;
     color: #ffffff;
@@ -137,7 +137,7 @@ body {
     padding: 16px 16px 16px 48px;
     border: 1px solid #e2e8f0;
     border-radius: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Playfair Display', sans-serif;
     font-size: 1rem;
     color: #2d3748;
     background-color: #ffffff;
@@ -284,7 +284,7 @@ body {
     color: #ffffff;
     border: none;
     border-radius: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Playfair Display', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
