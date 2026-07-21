@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from database import Base, engine
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import database
 import models
 
@@ -24,6 +25,8 @@ def get_db():
 
 templates = Jinja2Templates(directory="templates")
 RECAPTCHA_SECRET_KEY = "6LfImgQtAAAAALk3enMyZUDRMqRTH3LRD1bO5K-e"
+
+fuso_br = ZoneInfo("America/Recife")
 
 # Mapeamento global para deixar o nome com acentuação e espaços corretos na tela
 NOMES_SECRETARIAS = {
@@ -226,8 +229,8 @@ async def sec_home(request: Request, sec_id: str, db: Session = Depends(get_db))
 @app.get("/secretaria/{sec_id}/nova-reuniao", response_class=HTMLResponse)
 async def exibir_formulario_reuniao(request: Request, sec_id: str, db: Session = Depends(get_db)):
     secretaria_nome = NOMES_SECRETARIAS.get(sec_id, sec_id)
-    data_atual = datetime.now().strftime("%d/%m/%Y")
-    hora_atual = datetime.now().strftime("%H:%M")
+    data_atual = datetime.now(fuso_br).strftime("%d/%m/%Y")
+    hora_atual = datetime.now(fuso_br).strftime("%H:%M")
     
     # Coleta a imagem correspondente
     logo_da_vez = obter_logo_secretaria(sec_id, db)
@@ -268,8 +271,8 @@ async def salvar_reuniao(
 # Página de pauta livre
 @app.get("/pauta-livre", response_class=HTMLResponse)
 async def pauta_livre(request: Request):
-    data_atual = datetime.now().strftime("%d/%m/%Y")
-    hora_atual = datetime.now().strftime("%H:%M")
+    data_atual = datetime.now(fuso_br).strftime("%d/%m/%Y")
+    hora_atual = datetime.now(fuso_br).strftime("%H:%M")
     return templates.TemplateResponse(
         request=request,
         name="pauta_livre.html",
