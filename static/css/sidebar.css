@@ -1,3 +1,6 @@
+/* Importação das fontes padronizadas do sistema */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
+
 /* ==========================================================================
    1. ESTRUTURA DA SIDEBAR (BARRA LATERAL)
    ========================================================================== */
@@ -9,22 +12,73 @@
     bottom: 0;
     z-index: 1030;
     width: 260px; /* Largura quando aberta */
-    transition: width 0.25s ease-in-out !important;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     overflow-x: hidden !important;
     overflow-y: auto;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Estilização da barra de rolagem da sidebar */
+.navbar-vertical::-webkit-scrollbar {
+    width: 5px;
+}
+.navbar-vertical::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+.navbar-vertical::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* Garante que os textos não partam linhas nem se deformem na animação */
 .navbar-vertical .nav-link, 
 .navbar-vertical .navbar-brand,
-.navbar-vertical h1 {
+.navbar-vertical h1,
+.navbar-vertical h2 {
     white-space: nowrap !important;
 }
 
+/* Título de Destaque da Marca/Sidebar */
+.navbar-vertical h1, 
+.navbar-vertical .navbar-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Links da navegação */
+.navbar-vertical .nav-link {
+    color: #94a3b8 !important;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 2px 8px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.navbar-vertical .nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Item Ativo (Selecionado) */
 .navbar-vertical .nav-link.active {
     background-color: #008cff !important;
     color: #ffffff !important;
+    font-weight: 600;
     border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 140, 255, 0.3);
+}
+
+.navbar-vertical .nav-link .nav-link-icon,
+.navbar-vertical .nav-link i {
+    font-size: 1.15rem;
+    min-width: 24px;
+    margin-right: 12px;
+    text-align: center;
 }
 
 /* ==========================================================================
@@ -37,25 +91,37 @@
         width: 70px; 
     }
 
+    .navbar-vertical .nav-link {
+        padding: 0.75rem 0.85rem;
+    }
+
     /* Esconde os textos e títulos aplicando opacidade */
     .navbar-vertical .nav-link-title, 
     .navbar-vertical h1,
+    .navbar-vertical h2,
     .navbar-vertical .mt-auto span {
         opacity: 0;
-        transition: opacity 0.15s ease-in-out;
+        visibility: hidden;
+        transition: opacity 0.15s ease, visibility 0.15s ease;
         pointer-events: none;
     }
 
-    /* Estado Ativo: Expandida quando o rato passa por cima */
+    /* Estado Ativo: Expandida quando o mouse passa por cima */
     .navbar-vertical:hover {
         width: 260px;
+    }
+
+    .navbar-vertical:hover .nav-link {
+        padding: 0.75rem 1rem;
     }
 
     /* Mostra os textos imediatamente após a expansão */
     .navbar-vertical:hover .nav-link-title,
     .navbar-vertical:hover h1,
+    .navbar-vertical:hover h2,
     .navbar-vertical:hover .mt-auto span {
         opacity: 1;
+        visibility: visible;
         pointer-events: auto;
     }
 
@@ -68,18 +134,59 @@
         width: calc(100% - 70px) !important; 
         min-width: calc(100% - 70px) !important;
         flex: 0 0 calc(100% - 70px) !important;
-        transition: margin-left 0.25s ease-in-out, width 0.25s ease-in-out, flex 0.25s ease-in-out !important;
+        transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                    width 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                    flex 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    .page:has(.navbar-vertical:hover) .page-wrapper { margin-left: 260px !important; width: calc(100% - 260px) !important; flex: 0 0 calc(100% - 260px) !important; }
+    .page:has(.navbar-vertical:hover) .page-wrapper { 
+        margin-left: 260px !important; 
+        width: calc(100% - 260px) !important; 
+        flex: 0 0 calc(100% - 260px) !important; 
+    }
+}
 
 /* ==========================================================================
    4. ESTILOS DOS CARDS INTERNOS DO DASHBOARD
    ========================================================================== */
-.card-status-dot { height: 40px; width: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; }
-.kpi-value { font-size: 24px; font-weight: bold; display: block; }
-.kpi-label { font-size: 13px; color: #666; font-weight: 500; }
-.deadline-item { border-left: 4px solid transparent; padding-left: 15px; margin-bottom: 15px; }
-.deadline-red { border-color: #d63939; background-color: #fef5f5; }
-.deadline-yellow { border-color: #f76707; background-color: #fff9f5; }
+.card-status-dot { 
+    height: 40px; 
+    width: 40px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: 8px; 
+    font-size: 20px; 
+}
+
+.kpi-value { 
+    font-size: 1.5rem; 
+    font-weight: 700; 
+    color: #1e293b; 
+    display: block; 
+    letter-spacing: -0.02em;
+}
+
+.kpi-label { 
+    font-size: 0.825rem; 
+    color: #64748b; 
+    font-weight: 500; 
+}
+
+.deadline-item { 
+    border-left: 4px solid transparent; 
+    padding: 12px 15px; 
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 12px; 
+    transition: background-color 0.2s;
+}
+
+.deadline-red { 
+    border-color: #ef4444; 
+    background-color: #fef2f2; 
+}
+
+.deadline-yellow { 
+    border-color: #f59e0b; 
+    background-color: #fffbeb; 
 }
