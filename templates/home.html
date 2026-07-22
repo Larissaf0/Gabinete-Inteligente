@@ -2,10 +2,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row col-12 mb-4">
-    <h2 class="page-title fs-1">O que deseja iniciar?</h2>
-    <p class="text-muted">Selecione uma opção para continuar</p>
-</div>
+<!-- Container principal com imagem de fundo padrão -->
+<div class="d-flex flex-column flex-fill" 
+     style="background-image: linear-gradient(rgba(244, 246, 250, 0.93), rgba(244, 246, 250, 0.40)), url('{{ logo_secretaria }}'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed;
+            min-height: 100vh;">
+
+    <div class="row col-12 mb-4">
+        <h2 class="page-title fs-1">O que deseja iniciar?</h2>
+        <p class="text-muted">Selecione uma opção para continuar</p>
+    </div>
 
 <div class="row g-4 align-items-start">
 

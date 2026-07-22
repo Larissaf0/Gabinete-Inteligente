@@ -41,6 +41,8 @@ NOMES_SECRETARIAS = {
     "SEPLAMA": "Planejamento e Meio Ambiente",
     "Rural": "Desenvolvimento Rural",
     "Social": "Desenvolvimento Social",
+    "home": "Gabinete",
+    "pauta-livre": "Pauta Livre"
 }
 
 # Caminhos padrão das imagens associadas aos IDs exatos usados nas rotas
@@ -50,7 +52,15 @@ LOGOS_SECRETARIAS = {
     "SEDUC": "/static/imagens/seduc_bg.png",
     "Obras":"/static/imagens/obras_bg.png",
     "FIN": "/static/imagens/fin_bg.png",
-    "ServicosPublicos": "/static/imagens/servpub_bg.png",}
+    "ServicosPublicos": "/static/imagens/servpub_bg.png",
+    "SEDTEC": "/static/imagens/sedtec_bg.png",
+    "CulturaEsportes": "/static/imagens/secult_bg.png",
+    "SEPLAMA": "/static/imagens/seplama_bg.png",
+    "Rural": "/static/imagens/rural_bg.png",
+    "Social": "/static/imagens/social_bg.png",
+    "home":"/static/imagens/padrao_bg.png",
+    "pauta-livre": "/static/imagens/padrao_bg.png"
+}
 
 # Função para buscar no database o BG da página
 def obter_logo_secretaria(sec_id: str, db: Session) -> str:
@@ -127,10 +137,19 @@ async def favicon():
 
 # Tela HOME principal pós-login
 @app.get("/home", response_class=HTMLResponse)
-async def home_page(request: Request):
+async def home_page(request: Request, sec_id: str = "home", db: Session = Depends(get_db)):
     usuario = {"nome": "admin"}
-    return templates.TemplateResponse(request, "home.html", context={"usuario": usuario})
 
+    logo_da_vez = obter_logo_secretaria(sec_id, db)
+
+    return templates.TemplateResponse(
+            request=request,
+            name="home.html",
+            context={
+                "usuario": usuario,
+                "logo_secretaria": logo_da_vez
+            }
+    )
 
 # --- Rota para listar todas as Reunioes da Secretaria ---
 @app.get("/secretaria/{sec_id}/reunioes", response_class=HTMLResponse)
@@ -270,14 +289,20 @@ async def salvar_reuniao(
 
 # Página de pauta livre
 @app.get("/pauta-livre", response_class=HTMLResponse)
-async def pauta_livre(request: Request):
+async def pauta_livre(request: Request, sec_id: str = "pauta-livre", db: Session = Depends(get_db)):
     data_atual = datetime.now(fuso_br).strftime("%d/%m/%Y")
     hora_atual = datetime.now(fuso_br).strftime("%H:%M")
+    logo_da_vez = obter_logo_secretaria(sec_id, db)
+    
     return templates.TemplateResponse(
-        request=request,
-        name="pauta_livre.html",
-        context={"data_atual": data_atual, "hora_atual": hora_atual}
-    )
+            request=request,
+            name="pauta_livre.html",
+            context={
+                "data_atual": data_atual,
+                "hora_atual": hora_atual,
+                "logo_secretaria": logo_da_vez
+            }
+        )
 
 if __name__ == "__main__":
     import uvicorn
