@@ -1,0 +1,199 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+<!-- Container principal com imagem de fundo da secretaria mantida com overlay suave -->
+<div class="page-bg-container" style="background-image: url('{{ logo_secretaria }}');">
+    <div class="page-bg-overlay pb-5">
+
+        <!-- Cabeçalho Interno da Página -->
+        <header class="navbar navbar-expand-md navbar-dark d-print-none py-3 border-bottom shadow-sm px-4" style="background-color: rgba(39, 15, 80, 0.92); border-color: rgba(255, 255, 255, 0.1) !important;">
+            <div class="container-fluid px-0">
+                <div class="row align-items-center justify-content-between w-100 g-2">
+                    <div class="col-auto d-flex align-items-center gap-3">
+                        <div>
+                            <h2 class="page-title mb-0 fw-bold text-white fs-2">Dashboard {{ secretaria_nome }}</h2>
+                            <div class="text-white-50 small">Acompanhe o andamento das demandas, reuniões e prazos</div>
+                        </div>
+                    </div>
+
+                    <div class="col-auto d-flex align-items-center gap-3">
+                        <div class="dropdown">
+                            <a href="#" class="nav-link px-0 position-relative" data-bs-toggle="dropdown">
+                                <i class="fa-regular fa-bell fs-2 text-white-50"></i>
+                                {% if notificacoes_qtd and notificacoes_qtd > 0 %}
+                                <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle p-1" style="font-size: 0.65rem;">{{ notificacoes_qtd }}</span>
+                                {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Corpo do Dashboard -->
+        <div class="page-body flex-fill pt-4">
+            <div class="container-fluid px-4">
+                
+                <!-- Fileira de Cards KPIs Dinâmicos e Interativos -> Abrem a Tela do Kanban -->
+                <div class="row row-cards g-3 mb-4">
+                    
+                    <!-- Card 1: Demandas Abertas -->
+                    <div class="col-6 col-sm-4 col-xl-2">
+                        <a href="/secretaria/{{ sec_id }}/kanban?status=aberta" class="text-decoration-none">
+                            <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #FF6B00 !important;" title="Clique para abrir o Kanban com as Demandas Abertas">
+                                <div class="kpi-label">Demandas abertas</div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <span class="kpi-value text-primary me-2">{{ kpis.abertas if kpis else 0 }}</span>
+                                    <i class="fa-regular fa-clipboard fs-3 text-primary opacity-50"></i>
+                                </div>
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 2: Em Andamento -->
+                    <div class="col-6 col-sm-4 col-xl-2">
+                        <a href="/secretaria/{{ sec_id }}/kanban?status=em_andamento" class="text-decoration-none">
+                            <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #10b981 !important;" title="Clique para abrir o Kanban com as Demandas em Andamento">
+                                <div class="kpi-label">Em andamento</div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <span class="kpi-value text-success me-2">{{ kpis.em_andamento if kpis else 0 }}</span>
+                                    <i class="fa-solid fa-rotate fs-3 text-success opacity-50"></i>
+                                </div>
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 3: Concluídas -->
+                    <div class="col-6 col-sm-4 col-xl-2">
+                        <a href="/secretaria/{{ sec_id }}/kanban?status=concluida" class="text-decoration-none">
+                            <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #8b5cf6 !important;" title="Clique para abrir o Kanban de Concluídas">
+                                <div class="kpi-label">Concluídas</div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <span class="kpi-value text-purple me-2">{{ kpis.concluidas if kpis else 0 }}</span>
+                                    <i class="fa-regular fa-circle-check fs-3 text-purple opacity-50"></i>
+                                </div>
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 4: Atrasadas -->
+                    <div class="col-6 col-sm-4 col-xl-2">
+                        <a href="/secretaria/{{ sec_id }}/kanban?status=atrasada" class="text-decoration-none">
+                            <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #ef4444 !important;" title="Clique para abrir o Kanban de Demandas Atrasadas">
+                                <div class="kpi-label text-danger">Atrasadas</div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <span class="kpi-value text-danger me-2">{{ kpis.atrasadas if kpis else 0 }}</span>
+                                    <i class="fa-solid fa-triangle-exclamation fs-3 text-danger opacity-50"></i>
+                                </div>
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 5: Vencem Hoje -->
+                    <div class="col-6 col-sm-4 col-xl-2">
+                        <a href="/secretaria/{{ sec_id }}/kanban?status=vencem_hoje" class="text-decoration-none">
+                            <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #f59e0b !important;" title="Clique para abrir demandas que vencem hoje">
+                                <div class="kpi-label text-warning">Vencem hoje</div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <span class="kpi-value text-warning me-2">{{ kpis.vencem_hoje if kpis else 0 }}</span>
+                                    <i class="fa-regular fa-calendar-xmark fs-3 text-warning opacity-50"></i>
+                                </div>
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Card 6: Vencem na Semana -->
+                    <div class="col-6 col-sm-4 col-xl-2">
+                        <a href="/secretaria/{{ sec_id }}/kanban?status=vencem_semana" class="text-decoration-none">
+                            <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #3b82f6 !important;" title="Clique para abrir demandas que vencem na semana">
+                                <div class="kpi-label">Vencem a semana</div>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <span class="kpi-value text-info me-2">{{ kpis.vencem_semana if kpis else 0 }}</span>
+                                    <i class="fa-regular fa-calendar-days fs-3 text-info opacity-50"></i>
+                                </div>
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Seções Inferiores: Prazos e Reuniões -->
+                <div class="row row-cards g-4">
+                    
+                    <!-- Coluna Esquerda: Prazos Próximos Dinâmicos -->
+                    <div class="col-md-6">
+                        <div class="card card-modern h-100">
+                            <div class="card-header border-bottom d-flex justify-content-between align-items-center py-3" style="background: rgba(26, 8, 59, 0.9); border-color: rgba(255, 255, 255, 0.1) !important;">
+                                <h3 class="card-title fw-bold text-white m-0 fs-3">Prazos próximos</h3>
+                                <a href="/secretaria/{{ sec_id }}/kanban?status=vencem_semana" class="small text-decoration-none fw-semibold" style="color: #FF8800;">Ver todos no Kanban</a>
+                            </div>
+                            <div class="card-body p-3">
+                                {% for prazo in prazos %}
+                                <div class="deadline-item {% if prazo.dias_restantes <= 2 %}deadline-red{% else %}deadline-yellow{% endif %} p-3 rounded mb-2" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <div class="fw-bold text-white">{{ prazo.titulo }}</div>
+                                            <div class="text-white-50 small">Data Limite: {{ prazo.data_limite }}</div>
+                                        </div>
+                                        <div class="badge {% if prazo.dias_restantes <= 2 %}bg-danger-lt{% else %}bg-warning-lt{% endif %} text-uppercase">
+                                            Vence em {{ prazo.dias_restantes }} dias
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="text-center text-white-50 py-5">
+                                    <i class="ti ti-clock-check fs-1 d-block mb-2 opacity-75" style="color: #FF8800;"></i>
+                                    Nenhum prazo próximo cadastrado.
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna Direita: Reuniões Recentes Dinâmicas -->
+                    <div class="col-md-6">
+                        <div class="card card-modern h-100">
+                            <div class="card-header border-bottom d-flex justify-content-between align-items-center py-3" style="background: rgba(26, 8, 59, 0.9); border-color: rgba(255, 255, 255, 0.1) !important;">
+                                <h3 class="card-title fw-bold text-white m-0 fs-3">Reuniões recentes</h3>
+                                <a href="/secretaria/{{sec_id}}/reunioes" class="small text-decoration-none fw-semibold" style="color: #FF8800;">Ver todas</a>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="list-group list-group-flush">
+                                    {% for reuniao in reunioes %}
+                                    <a href="/reuniao/{{ reuniao.id }}" class="list-group-item list-group-item-action px-0 py-3 border-0 border-bottom bg-transparent text-decoration-none" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="avatar rounded-circle text-white shadow-sm" style="background-color: #FF6B00;"><i class="fa-solid fa-users"></i></span>
+                                            </div>
+                                            <div class="col">
+                                                <div class="fw-bold text-white mb-0 fs-4">{{ reuniao.titulo }}</div>
+                                                <div class="text-white-50 small">{{ reuniao.data_hora }}</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="badge bg-success-lt fw-semibold">{{ reuniao.encaminhamentos_qtd }} encaminhamentos</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    {% else %}
+                                    <div class="text-center text-white-50 py-5">
+                                        <i class="ti ti-calendar-off fs-1 d-block mb-2 text-info opacity-75"></i>
+                                        Nenhuma reunião recente cadastrada.
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

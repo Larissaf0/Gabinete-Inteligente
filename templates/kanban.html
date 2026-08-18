@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}Quadro Kanban | {{ secretaria_nome }}{% endblock %}
+
+{% block kanban_sec %}
+<a class="nav-link active" href="/secretaria/{{ sec_id }}/kanban">
+    <span class="nav-link-icon"><i class="ti ti-layout-kanban"></i></span>
+    <span class="nav-link-title">Quadro Kanban</span>
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="page-header d-print-none text-white py-3 border-bottom border-dark">
+    <div class="container-fluid px-4">
+        <div class="row align-items-center justify-content-between">
+            
+            <div class="col-12 col-md-auto mb-2 mb-md-0">
+                <div class="d-flex align-items-center gap-3">
+                    <a href="/secretaria/{{ sec_id }}" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Voltar ao Dashboard
+                    </a>
+                    <div>
+                        <div class="page-pretitle text-info fw-bold text-uppercase">
+                            <i class="fa-solid fa-kanban me-1"></i> {{ secretaria_nome }}
+                        </div>
+                        <h2 class="page-title text-white brand-font fs-2 m-0">
+                            Quadro Kanban de Demandas
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-auto">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="input-icon position-relative">
+                        <input type="text" id="kanban-search-input" class="form-control form-control-sm pe-4 bg-dark text-white border-secondary" placeholder="Buscar demanda..." style="min-width: 220px;" onkeyup="filtrarKanbanPorTexto()">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="page-body flex-fill pt-4">
+    <div class="container-fluid px-4">
+
+        <!-- Quadro Kanban Principal -->
+        <div class="kanban-board-container">
+            
+            <!-- Abas de Filtros Rápidos -->
+            <div class="d-flex align-items-center gap-2 mb-4 overflow-x-auto pb-2 border-bottom border-secondary" style="border-color: rgba(255, 255, 255, 0.15) !important;" id="kanban-filter-tabs">
+                <button type="button" class="btn btn-sm btn-dark text-white border-secondary filter-tab-btn" onclick="filtrarKanbanPorStatus('todos')" id="tab-kanban-todos">
+                    <i class="fa-solid fa-layer-group me-1 text-info"></i> Todos ({{ demandas|length }})
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-info filter-tab-btn" onclick="filtrarKanbanPorStatus('aberta')" id="tab-kanban-aberta">
+                    <i class="fa-regular fa-clipboard me-1 text-primary"></i> Abertas ({{ kpis.abertas }})
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-success filter-tab-btn" onclick="filtrarKanbanPorStatus('em_andamento')" id="tab-kanban-em_andamento">
+                    <i class="fa-solid fa-rotate me-1 text-success"></i> Em Andamento ({{ kpis.em_andamento }})
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-purple filter-tab-btn" style="border-color: #8b5cf6; color: #a78bfa;" onclick="filtrarKanbanPorStatus('concluida')" id="tab-kanban-concluida">
+                    <i class="fa-regular fa-circle-check me-1" style="color: #a78bfa;"></i> Concluídas ({{ kpis.concluidas }})
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger filter-tab-btn" onclick="filtrarKanbanPorStatus('atrasada')" id="tab-kanban-atrasada">
+                    <i class="fa-solid fa-triangle-exclamation me-1 text-danger"></i> Atrasadas ({{ kpis.atrasadas }})
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-warning filter-tab-btn" onclick="filtrarKanbanPorStatus('vencem_hoje')" id="tab-kanban-vencem_hoje">
+                    <i class="fa-regular fa-calendar-xmark me-1 text-warning"></i> Vencem Hoje ({{ kpis.vencem_hoje }})
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary filter-tab-btn" onclick="filtrarKanbanPorStatus('vencem_semana')" id="tab-kanban-vencem_semana">
+                    <i class="fa-regular fa-calendar-days me-1 text-info"></i> Vencem a Semana ({{ kpis.vencem_semana }})
+                </button>
+            </div>
+
+            <!-- Grade de Colunas Kanban -->
+            <div class="row g-3 align-items-stretch" id="grid-kanban">
+                
+                <!-- COLUNA 1: Abertas / A Fazer -->
+                <div class="col-12 col-md-6 col-xl-3 kanban-col-container" id="container-col-aberta">
+                    <div class="kanban-column" id="col-kanban-aberta" style="border-top: 4px solid #FF6B00 !important;">
+                        <div class="kanban-column-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-regular fa-clipboard fs-3" style="color: #FF8800;"></i>
+                                <span class="fw-bold text-white fs-4">Abertas / A Fazer</span>
+                            </div>
+                            <span class="badge text-white fw-bold fs-5 px-2 py-1" id="badge-count-aberta" style="background-color: #FF6B00;">
+                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'aberta' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                            </span>
+                        </div>
+                        <div class="kanban-cards-wrapper" id="wrapper-cards-aberta">
+                            {% for d in demandas %}
+                            {% if d.status == 'aberta' %}
+                                {% include "kanban_card.html" %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUNA 2: Em Andamento -->
+                <div class="col-12 col-md-6 col-xl-3 kanban-col-container" id="container-col-em_andamento">
+                    <div class="kanban-column" id="col-kanban-em_andamento" style="border-top: 4px solid #10b981 !important;">
+                        <div class="kanban-column-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-rotate text-success fs-3"></i>
+                                <span class="fw-bold text-white fs-4">Em Andamento</span>
+                            </div>
+                            <span class="badge bg-success-lt fw-bold fs-5 px-2 py-1" id="badge-count-em_andamento">
+                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'em_andamento' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                            </span>
+                        </div>
+                        <div class="kanban-cards-wrapper" id="wrapper-cards-em_andamento">
+                            {% for d in demandas %}
+                            {% if d.status == 'em_andamento' %}
+                                {% include "kanban_card.html" %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUNA 3: Concluídas -->
+                <div class="col-12 col-md-6 col-xl-3 kanban-col-container" id="container-col-concluida">
+                    <div class="kanban-column" id="col-kanban-concluida" style="border-top: 4px solid #8b5cf6 !important;">
+                        <div class="kanban-column-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-regular fa-circle-check text-purple fs-3"></i>
+                                <span class="fw-bold text-white fs-4">Concluídas</span>
+                            </div>
+                            <span class="badge bg-purple-lt fw-bold fs-5 px-2 py-1" id="badge-count-concluida">
+                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'concluida' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                            </span>
+                        </div>
+                        <div class="kanban-cards-wrapper" id="wrapper-cards-concluida">
+                            {% for d in demandas %}
+                            {% if d.status == 'concluida' %}
+                                {% include "kanban_card.html" %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUNA 4: Atrasadas -->
+                <div class="col-12 col-md-6 col-xl-3 kanban-col-container" id="container-col-atrasada">
+                    <div class="kanban-column" id="col-kanban-atrasada" style="border-top: 4px solid #ef4444 !important;">
+                        <div class="kanban-column-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-danger fs-3"></i>
+                                <span class="fw-bold text-white fs-4">Atrasadas</span>
+                            </div>
+                            <span class="badge bg-danger-lt fw-bold fs-5 px-2 py-1" id="badge-count-atrasada">
+                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'atrasada' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                            </span>
+                        </div>
+                        <div class="kanban-cards-wrapper" id="wrapper-cards-atrasada">
+                            {% for d in demandas %}
+                            {% if d.status == 'atrasada' %}
+                                {% include "kanban_card.html" %}
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+// Declaração global do filtro e status atual
+window.currentKanbanFilter = "{{ status_filtro or 'todos' }}";
+
+function filtrarKanbanPorStatus(categoria) {
+    window.currentKanbanFilter = categoria;
+
+    // Atualizar visual dos botões de filtro
+    document.querySelectorAll('.filter-tab-btn').forEach(btn => {
+        btn.classList.remove('active-filter-tab', 'btn-dark', 'shadow-sm', 'text-white');
+    });
+    
+    const activeTab = document.getElementById('tab-kanban-' + categoria);
+    if (activeTab) {
+        activeTab.classList.add('active-filter-tab', 'btn-dark', 'text-white', 'shadow-sm');
+    }
+
+    const colContainers = {
+        'aberta': document.getElementById('container-col-aberta'),
+        'em_andamento': document.getElementById('container-col-em_andamento'),
+        'concluida': document.getElementById('container-col-concluida'),
+        'atrasada': document.getElementById('container-col-atrasada')
+    };
+
+    const allCards = document.querySelectorAll('.card-demanda-item');
+    allCards.forEach(card => {
+        card.style.display = 'block';
+        card.style.boxShadow = '';
+    });
+
+    if (categoria === 'todos' || categoria === 'vencem_hoje' || categoria === 'vencem_semana') {
+        // Exibir todas as colunas
+        Object.values(colContainers).forEach(col => {
+            if (col) {
+                col.style.display = 'block';
+                col.className = 'col-12 col-md-6 col-xl-3 kanban-col-container';
+            }
+        });
+
+        if (categoria === 'vencem_hoje') {
+            allCards.forEach(card => {
+                if (card.getAttribute('data-vence-hoje') === 'true') {
+                    card.style.display = 'block';
+                    card.style.boxShadow = '0 0 15px rgba(245, 158, 11, 0.7)';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        } else if (categoria === 'vencem_semana') {
+            allCards.forEach(card => {
+                if (card.getAttribute('data-vence-semana') === 'true' || card.getAttribute('data-vence-hoje') === 'true') {
+                    card.style.display = 'block';
+                    card.style.boxShadow = '0 0 15px rgba(59, 130, 246, 0.7)';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    } else if (colContainers[categoria]) {
+        // Exibir APENAS a coluna selecionada
+        Object.keys(colContainers).forEach(key => {
+            if (key === categoria) {
+                colContainers[key].style.display = 'block';
+                colContainers[key].className = 'col-12 col-lg-8 col-xl-6 mx-auto kanban-col-container';
+            } else {
+                colContainers[key].style.display = 'none';
+            }
+        });
+    }
+}
+
+// Busca em tempo real no Kanban
+function filtrarKanbanPorTexto() {
+    const termo = document.getElementById('kanban-search-input').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.card-demanda-item');
+    cards.forEach(card => {
+        const searchData = card.getAttribute('data-search-term') || '';
+        if (termo === '' || searchData.includes(termo)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Mover status de uma demanda via API
+function mudarStatusDemanda(reuniaoId, encaminhamentoIndex, novoStatus, cardId) {
+    fetch('/api/demanda/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            reuniao_id: reuniaoId,
+            encaminhamento_index: encaminhamentoIndex,
+            novo_status: novoStatus
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            let cardEl = document.getElementById('card-demanda-' + cardId);
+            if (!cardEl) {
+                cardEl = document.querySelector(`.card-demanda-item[data-id="${cardId}"]`);
+            }
+            const targetWrapper = document.getElementById('wrapper-cards-' + novoStatus);
+            if (cardEl && targetWrapper) {
+                cardEl.setAttribute('data-status', novoStatus);
+                
+                // Atualizar item ativo no menu dropdown do card
+                const dropdownItems = cardEl.querySelectorAll('.dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + novoStatus + "'")) {
+                        item.classList.add('active');
+                    }
+                });
+
+                // Atualizar visual da barra de progresso
+                const progressBar = cardEl.querySelector('.progress-bar');
+                const progressBadge = cardEl.querySelector('.badge.bg-dark-lt');
+                let newProg = 10;
+                let barClass = 'bg-primary';
+                if (novoStatus === 'concluida') {
+                    newProg = 100;
+                    barClass = 'bg-purple';
+                } else if (novoStatus === 'em_andamento') {
+                    newProg = 50;
+                    barClass = 'bg-success';
+                } else if (novoStatus === 'atrasada') {
+                    newProg = 30;
+                    barClass = 'bg-danger';
+                }
+                if (progressBar) {
+                    progressBar.style.width = newProg + '%';
+                    progressBar.className = 'progress-bar ' + barClass;
+                }
+                if (progressBadge) {
+                    progressBadge.innerText = newProg + '%';
+                }
+
+                // Transferência suave no DOM
+                cardEl.style.opacity = '0';
+                setTimeout(() => {
+                    targetWrapper.appendChild(cardEl);
+                    cardEl.style.opacity = '1';
+                    recalcularBadgesEContadores();
+                    if (window.currentKanbanFilter) {
+                        filtrarKanbanPorStatus(window.currentKanbanFilter);
+                    }
+                }, 200);
+            }
+        }
+    })
+    .catch(err => console.error('Erro na atualização:', err));
+}
+
+// Handler para acionar a mudança de status e fechar o menu dropdown
+function executarMoverStatus(elem, reuniaoId, encaminhamentoIndex, novoStatus, cardId) {
+    document.querySelectorAll('.menu-mover-status.show').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.kanban-card.card-dropdown-active').forEach(c => c.classList.remove('card-dropdown-active'));
+    mudarStatusDemanda(reuniaoId, encaminhamentoIndex, novoStatus, cardId);
+}
+
+// Delegated Click Listener para os botões Mover do Kanban
+document.addEventListener('click', function(e) {
+    const toggleBtn = e.target.closest('.btn-mover-dropdown');
+    
+    if (toggleBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const dropdownParent = toggleBtn.closest('.dropdown');
+        const menu = dropdownParent ? dropdownParent.querySelector('.menu-mover-status') : null;
+        const card = toggleBtn.closest('.kanban-card');
+        
+        const wasOpen = menu && menu.classList.contains('show');
+
+        // Fechar todos os outros dropdowns
+        document.querySelectorAll('.menu-mover-status.show').forEach(m => m.classList.remove('show'));
+        document.querySelectorAll('.kanban-card.card-dropdown-active').forEach(c => c.classList.remove('card-dropdown-active'));
+
+        // Alternar este menu
+        if (menu && !wasOpen) {
+            menu.classList.add('show');
+            if (card) card.classList.add('card-dropdown-active');
+        }
+        return;
+    }
+
+    // Se clicar fora do dropdown, fechar todos
+    if (!e.target.closest('.menu-mover-status')) {
+        document.querySelectorAll('.menu-mover-status.show').forEach(m => m.classList.remove('show'));
+        document.querySelectorAll('.kanban-card.card-dropdown-active').forEach(c => c.classList.remove('card-dropdown-active'));
+    }
+});
+
+function recalcularBadgesEContadores() {
+    ['aberta', 'em_andamento', 'concluida', 'atrasada'].forEach(st => {
+        const wrapper = document.getElementById('wrapper-cards-' + st);
+        if (wrapper) {
+            const count = wrapper.querySelectorAll('.card-demanda-item').length;
+            const badge = document.getElementById('badge-count-' + st);
+            if (badge) badge.innerText = count;
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Aplicar o filtro inicial ao carregar a página
+    filtrarKanbanPorStatus(window.currentKanbanFilter || 'todos');
+});
+</script>
+{% endblock %}

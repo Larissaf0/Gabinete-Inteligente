@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabinete Inteligente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Links do Tabler e FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSSs Customizados do Sistema -->
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/sidebar.css') }}?v=3.1">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}?v=3.1">
+</head>
+<body class="bg-dark-app">
+    <div class="page">
+        <!-- Topo para Dispositivos Móveis -->
+        <div class="mobile-header d-lg-none d-print-none">
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-dark btn-icon border-0" id="btn-toggle-mobile-menu">
+                    <i class="ti ti-menu-2 fs-2"></i>
+                </button>
+                <div class="fw-bold fs-3 text-white brand-font">GABINETE INTELIGENTE</div>
+            </div>
+            <a href="/home" class="btn btn-sm btn-outline-light"><i class="ti ti-home me-1"></i>Início</a>
+        </div>
+
+        <!-- Barra Lateral -->
+        <aside id="dynamic-sidebar" class="navbar navbar-vertical navbar-dark">
+            <div class="container-fluid">
+
+                <div class="px-3 py-4 text-center w-100 border-bottom border-dark">
+                    <div class="mb-2">
+                        <img src="{{ url_for('static', path='/imagens/lo_go.png') }}"
+                             alt="Logo Gabinete"
+                             class="img-fluid"
+                             style="max-height: 52px; width: auto; object-fit: contain;">
+                    </div> 
+                    
+                    <h1 class="brand-font" style="color: #ffffff; text-align: center; font-size: 1.15rem; line-height: 1.3; margin: 0;">
+                        <strong>GABINETE</strong> <br>
+                        <span style="color: #FF8800; font-weight: 800; display: block;">INTELIGENTE</span>
+                    </h1>
+                </div>
+                
+                <!-- Links de Navegação -->
+                <div class="collapse navbar-collapse show" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="nav-item">
+                            {% block botao_navegacao %}
+                            <a class="nav-link active" href="/home">
+                                <span class="nav-link-icon"><i class="ti ti-home"></i></span>
+                                <span class="nav-link-title">Início</span>
+                            </a>
+                            {% endblock %}
+                        </li>
+                        <li class="nav-item">
+                            {% block reunioes_sec %}
+                            <a class="nav-link" href="/reunioes">
+                                <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
+                                <span class="nav-link-title">Reuniões</span>
+                            </a>
+                            {% endblock %}
+                        </li>
+                        <li class="nav-item">
+                            {% block kanban_sec %}
+                            <a class="nav-link" href="/kanban">
+                                <span class="nav-link-icon"><i class="ti ti-layout-kanban"></i></span>
+                                <span class="nav-link-title">Quadro Kanban</span>
+                            </a>
+                            {% endblock %}
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/pauta-livre">
+                                <span class="nav-link-icon"><i class="ti ti-notes"></i></span>
+                                <span class="nav-link-title">Pauta Livre</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="mt-auto mb-3 px-3">
+                        <a href="/" class="nav-link text-danger">
+                            <span class="nav-link-icon"><i class="ti ti-logout"></i></span>
+                            <span class="nav-link-title">Sair do Sistema</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Lado Direito Dinâmico -->
+        <div id="dynamic-content" class="page-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Scripts do Tabler -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+
+    <!-- Script de interatividade da barra lateral -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sidebar = document.getElementById("dynamic-sidebar");
+            const content = document.getElementById("dynamic-content");
+            const btnMobile = document.getElementById("btn-toggle-mobile-menu");
+
+            if (sidebar && content) {
+                sidebar.classList.add("collapsed");
+                content.classList.add("expanded");
+
+                sidebar.addEventListener("mouseenter", function() {
+                    sidebar.classList.remove("collapsed");
+                    content.classList.remove("expanded");
+                });
+
+                sidebar.addEventListener("mouseleave", function() {
+                    sidebar.classList.add("collapsed");
+                    content.classList.add("expanded");
+                });
+            }
+
+            if (btnMobile && sidebar) {
+                btnMobile.addEventListener("click", function() {
+                    sidebar.classList.toggle("show-mobile");
+                });
+            }
+        });
+    </script>
+</body>
+</html>

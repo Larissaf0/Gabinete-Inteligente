@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sqlalchemy
+sqladmin
+httpx
+jinja2
+python-multipart
+psycopg2-binary

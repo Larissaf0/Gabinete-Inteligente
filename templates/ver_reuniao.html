@@ -1,0 +1,519 @@
+{% extends 'sidebar.html' %}
+
+{% block botao_navegacao %}
+    <a class="nav-link active" href="/secretaria/{{ sec_id }}/reunioes">
+        <span class="nav-link-icon"><i class="ti ti-arrow-back-up ti-stroke-2"></i></span>
+        <span class="nav-link-title">Voltar</span>
+    </a>
+{% endblock %}
+
+{% block content %}
+<div class="page-bg-container" style="background-image: url('{{ logo_secretaria }}');">
+    <div class="page-bg-overlay pb-5">
+
+    <!-- Estilos específicos mantidos dentro da estrutura -->
+    <style>
+        * {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif !important;
+        }
+        @media print {
+            .d-print-none, .sidebar, .navbar, .btn, .modal { display: none !important; }
+            .page-body { padding: 0 !important; }
+            .card { border: none !important; box-shadow: none !important; }
+        }
+    </style>
+
+    <!-- Cabeçalho da página de Visualização -->
+    <div class="page-header d-print-none mb-4 py-3 border-bottom shadow-sm px-4" style="background-color: rgba(39, 15, 80, 0.92); border-color: rgba(255, 255, 255, 0.1) !important;">
+        <div class="container-xl">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge text-white px-2 py-1 font-weight-bold" style="background-color: #FF6B00;">#REU-{{ reuniao.id }}</span>
+                        <span class="badge bg-secondary-lt px-2 py-1 text-white">{{ secretaria_nome }}</span>
+                    </div>
+                    <h2 class="page-title h1 text-white mb-0">{{ reuniao.titulo }}</h2>
+                    <p class="text-white-50 small mb-0 mt-1">
+                        <i class="ti ti-building me-1"></i> Secretaria vinculada: <strong class="text-white">{{ secretaria_nome }}</strong>
+                    </p>
+                </div>
+
+                <!-- Ações do Topo -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <a href="/secretaria/{{ sec_id }}/reuniao/{{ reuniao.id }}/editar" class="btn btn-warning px-3 py-2 font-weight-bold text-dark">
+                        <i class="ti ti-edit me-1"></i> Editar Reunião
+                    </a>
+
+                    <button type="button" class="btn btn-success px-3 py-2 font-weight-bold" data-bs-toggle="modal" data-bs-target="#modalCompartilhar">
+                        <i class="ti ti-share me-1"></i> Compartilhar
+                    </button>
+                    
+                    <button type="button" onclick="window.print()" class="btn btn-outline-light px-3 py-2">
+                        <i class="ti ti-printer me-1"></i> Imprimir / PDF
+                    </button>
+                    
+                    <button type="button" 
+                            class="btn btn-outline-danger btn-icon btn-excluir-reuniao" 
+                            title="Excluir Reunião" 
+                            style="width: 38px; height: 38px;"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalConfirmarExcluir"
+                            data-id="{{ reuniao.id }}"
+                            data-titulo="{{ reuniao.titulo }}"
+                            data-sec-id="{{ sec_id }}">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                    
+                    <a href="/secretaria/{{ sec_id }}/reunioes" class="btn btn-primary px-3 py-2">
+                        <i class="ti ti-arrow-left me-1"></i> Voltar para Lista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Corpo do Detalhamento -->
+    <div class="page-body px-4 pb-5">
+        <div class="container-xl">
+            <div class="row row-cards">
+                
+                <!-- Coluna Principal (Esquerda): Informações e Anotações -->
+                <div class="col-lg-8">
+                    
+                    <!-- Card de Metadados Principais -->
+                    <div class="card card-modern p-4 mb-4">
+                        <div class="row g-3">
+                            <div class="col-sm-6 col-md-4">
+                                <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.25);">
+                                    <div class="avatar text-white shadow-sm" style="background-color: #FF6B00;">
+                                        <i class="ti ti-calendar fs-2"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white-50 small">Data da Reunião</div>
+                                        <div class="fw-bold text-white fs-4">{{ reuniao.data }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4">
+                                <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.25);">
+                                    <div class="avatar text-white shadow-sm" style="background-color: #FF6B00;">
+                                        <i class="ti ti-clock fs-2"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white-50 small">Horário</div>
+                                        <div class="fw-bold text-white fs-4">{{ reuniao.hora }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4">
+                                <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.25);">
+                                    <div class="avatar text-white shadow-sm" style="background-color: #FF6B00;">
+                                        <i class="ti ti-map-pin fs-2"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-white-50 small">Local</div>
+                                        <div class="fw-bold text-white fs-5 text-truncate" title="{{ reuniao.local or 'Não especificado' }}">
+                                            {{ reuniao.local or 'Não especificado' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card de Anotações e Resumo -->
+                    <div class="card card-modern p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: rgba(255, 255, 255, 0.15) !important;">
+                            <h3 class="card-title h3 font-weight-bold text-white mb-0 d-flex align-items-center gap-2">
+                                <i class="ti ti-file-text" style="color: #FF8800;"></i> Anotações da Reunião
+                            </h3>
+                            <span class="badge bg-secondary-lt text-white px-2 py-1">Ata Oficial</span>
+                        </div>
+                        
+                        <div class="p-3.5 rounded text-white shadow-inner" style="background: rgba(26, 8, 59, 0.95); border: 1px solid rgba(255, 107, 0, 0.25); white-space: pre-line; line-height: 1.7; font-size: 1.05rem;">
+                            {% if reuniao.anotacoes %}
+                                {{ reuniao.anotacoes }}
+                            {% else %}
+                                <em class="text-white-50">Nenhuma anotação registrada para esta reunião.</em>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Card de Participantes Cadastrados -->
+                    <div class="card card-modern p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: rgba(255, 255, 255, 0.15) !important;">
+                            <h3 class="card-title h3 font-weight-bold text-white mb-0 d-flex align-items-center gap-2">
+                                <i class="ti ti-users" style="color: #FF8800;"></i> Participantes
+                            </h3>
+                            {% if reuniao.participantes and reuniao.participantes|length > 0 %}
+                                <span class="badge bg-secondary-lt text-white px-2 py-1">{{ reuniao.participantes|length }} cadastrado(s)</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row g-3">
+                            {% if reuniao.participantes and reuniao.participantes|length > 0 %}
+                                {% for part in reuniao.participantes %}
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center gap-3 p-2 rounded" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 255, 255, 0.15);">
+                                        <span class="avatar rounded-circle font-weight-bold text-white" style="background-color: #FF6B00;">
+                                            {{ part.iniciais if part.iniciais else 'PT' }}
+                                        </span>
+                                        <div>
+                                            <div class="fw-bold text-white">
+                                                {{ part.nome if part.nome else part }}
+                                            </div>
+                                            <div class="text-white-50 small">
+                                                {{ part.cargo if part.cargo else 'Participante' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="col-12">
+                                    <div class="p-3 text-white-50 rounded text-center" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 255, 255, 0.15);">
+                                        <i class="ti ti-user-x fs-2 mb-1 d-block text-warning opacity-75"></i>
+                                        Nenhum participante foi especificado para esta reunião.
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Coluna Lateral (Direita): Encaminhamentos e Ações Rápidas -->
+                <div class="col-lg-4">
+                    
+                    <!-- Botão de Ação Rápida de Compartilhamento -->
+                    <div class="card card-modern p-4 mb-4">
+                        <h3 class="h4 font-weight-bold text-white mb-3">Compartilhamento Rápido</h3>
+                        <p class="text-white-50 small mb-3">Envie a ata e as informações desta reunião diretamente para a equipe via WhatsApp ou E-mail.</p>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-success font-weight-bold py-2" data-bs-toggle="modal" data-bs-target="#modalCompartilhar">
+                                <i class="ti ti-brand-whatsapp me-2 fs-3"></i> Enviar pelo WhatsApp
+                            </button>
+                            <button type="button" class="btn btn-outline-warning text-white font-weight-bold py-2" data-bs-toggle="modal" data-bs-target="#modalCompartilhar" style="border-color: #FF8800;">
+                                <i class="ti ti-mail me-2 fs-3" style="color: #FF8800;"></i> Enviar por E-mail
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Encaminhamentos da Reunião -->
+                    <div class="card card-modern p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom" style="border-color: rgba(255, 255, 255, 0.15) !important;">
+                            <h3 class="h4 mb-0 d-flex align-items-center gap-2 font-weight-bold text-white">
+                                <i class="ti ti-click" style="color: #FF8800;"></i> Encaminhamentos
+                            </h3>
+                            <span class="badge bg-green-lt px-2 py-1 font-weight-bold">{{ (reuniao.encaminhamentos | length) or 0 }} registrados</span>
+                        </div>
+
+                        {% if reuniao.encaminhamentos and reuniao.encaminhamentos|length > 0 %}
+                            {% for enc in reuniao.encaminhamentos %}
+                            <div class="p-3 mb-3 rounded shadow-sm" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.25);">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="font-weight-bold fs-5 d-flex align-items-center gap-2" style="color: #FF8800;">
+                                        <i class="ti ti-user" style="color: #FF8800;"></i> {{ enc.responsavel or 'Gabinete' }}
+                                    </span>
+                                    <span class="badge {% if enc.concluido %}bg-success{% else %}text-white{% endif %} px-2 py-0.5" style="font-size: 0.7rem; {% if not enc.concluido %}background-color: #FF6B00;{% endif %}">
+                                        {% if enc.concluido %}Concluído{% else %}Em aberto{% endif %}
+                                    </span>
+                                </div>
+                                <p class="small text-white-50 mb-2 font-weight-medium"><strong class="text-white">Tarefa:</strong> {{ enc.tarefa }}</p>
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top text-white-50" style="border-color: rgba(255, 255, 255, 0.1) !important; font-size: 0.8rem;">
+                                    <span><i class="ti ti-calendar me-1" style="color: #FF8800;"></i> Prazo: {{ enc.prazo or 'A definir' }}</span>
+                                    <span class="badge {% if enc.prioridade == 'Alta' %}bg-red-lt text-danger{% else %}bg-orange-lt text-warning{% endif %} font-weight-bold">
+                                        {{ enc.prioridade or 'Normal' }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-3 text-white-50 rounded text-center" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.2);">
+                                <span class="small"><i class="ti ti-info-circle me-1" style="color: #FF8800;"></i> Nenhum encaminhamento cadastrado.</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="p-3 text-white-50 rounded text-center mt-3" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.2);">
+                            <span class="small"><i class="ti ti-database me-1" style="color: #FF8800;"></i> Dados registrados no Gabinete Inteligente.</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!-- Modal de Compartilhamento -->
+<div class="modal fade" id="modalCompartilhar" tabindex="-1" aria-labelledby="modalCompartilharLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow" style="background: #270f50; border: 1px solid rgba(255, 107, 0, 0.3) !important; color: #ffffff;">
+            <div class="modal-header border-bottom py-3" style="background: rgba(26, 8, 59, 0.95); border-color: rgba(255, 255, 255, 0.15) !important;">
+                <h5 class="modal-title font-weight-bold text-white d-flex align-items-center gap-2" id="modalCompartilharLabel">
+                    <i class="ti ti-share" style="color: #FF8800;"></i> Compartilhar Reunião #REU-{{ reuniao.id }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-4">
+                
+                <!-- Abas WhatsApp / E-mail / Copiar -->
+                <ul class="nav nav-tabs nav-fill mb-4" id="tabCompartilhar" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active font-weight-bold" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp-pane" type="button" role="tab">
+                            <i class="ti ti-brand-whatsapp me-1"></i> WhatsApp / PDF
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link font-weight-bold" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-pane" type="button" role="tab">
+                            <i class="ti ti-mail me-1"></i> E-mail
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link font-weight-bold" id="copiar-tab" data-bs-toggle="tab" data-bs-target="#copiar-pane" type="button" role="tab">
+                            <i class="ti ti-copy me-1"></i> Copiar Texto
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="tabCompartilharContent">
+                    
+                    <!-- Aba WhatsApp -->
+                    <div class="tab-pane fade show active" id="whatsapp-pane" role="tabpanel">
+                        <div class="p-3 rounded mb-3" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
+                            <h4 class="font-weight-bold mb-1" style="color: #34d399;">
+                                <i class="ti ti-brand-whatsapp me-1"></i> Envio Direto pelo WhatsApp
+                            </h4>
+                            <p class="small mb-0" style="color: #cbd5e1;">Você pode enviar o resumo completo com texto formatado ou gerar um PDF oficial para anexar no WhatsApp.</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold text-white">Número de WhatsApp (Opcional)</label>
+                            <input type="text" id="wsp_telefone" class="form-control" placeholder="Ex: 5581999999999 (DDD + número)">
+                            <small class="text-white-50">Deixe em branco para escolher o contato diretamente no WhatsApp.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold text-white">Pré-visualização da Mensagem</label>
+                            <textarea id="wsp_mensagem" class="form-control" rows="6" readonly style="font-size: 0.9rem; background-color: rgba(26, 8, 59, 0.95) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25) !important;">*REUNIÃO: {{ reuniao.titulo }}*
+📅 Data: {{ reuniao.data }} às {{ reuniao.hora }}
+📍 Local: {{ reuniao.local or 'Não especificado' }}
+🏛 Secretaria: {{ secretaria_nome }}
+
+*Anotações da Reunião:*
+{{ reuniao.anotacoes or 'Sem anotações.' }}
+
+_Enviado através da Plataforma Gabinete Inteligente_</textarea>
+                        </div>
+
+                        <div class="d-flex gap-2 flex-wrap pt-2">
+                            <button type="button" onclick="enviarWhatsApp()" class="btn btn-success flex-fill py-2 font-weight-bold">
+                                <i class="ti ti-brand-whatsapp me-1"></i> Enviar Mensagem via WhatsApp
+                            </button>
+                            <button type="button" onclick="gerarPDFWhatsApp()" class="btn btn-outline-light py-2 font-weight-bold">
+                                <i class="ti ti-file-text me-1"></i> Gerar PDF para Anexar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Aba E-mail -->
+                    <div class="tab-pane fade" id="email-pane" role="tabpanel">
+                        <div class="p-3 rounded mb-3" style="background: rgba(255, 107, 0, 0.15); border: 1px solid rgba(255, 107, 0, 0.3);">
+                            <h4 class="font-weight-bold mb-1" style="color: #FF8800;">
+                                <i class="ti ti-mail me-1"></i> Envio da Ata por E-mail
+                            </h4>
+                            <p class="small mb-0" style="color: #cbd5e1;">Preencha o e-mail do destinatário para abrir diretamente em seu aplicativo de correio eletrônico.</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold text-white">E-mail do Destinatário</label>
+                            <input type="email" id="email_destinatario" class="form-control" placeholder="exemplo@prefeitura.gov.br">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold text-white">Assunto do E-mail</label>
+                            <input type="text" id="email_assunto" class="form-control" value="[Gabinete Inteligente] Ata da Reunião: {{ reuniao.titulo }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold text-white">Corpo do E-mail</label>
+                            <textarea id="email_corpo" class="form-control" rows="5" readonly style="font-size: 0.9rem; background-color: rgba(26, 8, 59, 0.95) !important; color: #ffffff !important; border: 1px solid rgba(255, 255, 255, 0.25) !important;">Prezados,
+
+Segue o resumo oficial da reunião realizada em {{ reuniao.data }} às {{ reuniao.hora }}.
+
+Título: {{ reuniao.titulo }}
+Secretaria: {{ secretaria_nome }}
+Local: {{ reuniao.local or 'Não especificado' }}
+
+Anotações:
+{{ reuniao.anotacoes or 'Sem anotações.' }}
+
+Atenciosamente,
+Gabinete Inteligente</textarea>
+                        </div>
+
+                        <button type="button" onclick="enviarEmail()" class="btn text-white w-100 py-2 font-weight-bold shadow-sm" style="background-color: #FF6B00; border-color: #FF6B00;">
+                            <i class="ti ti-mail-forward me-1"></i> Abrir no Cliente de E-mail
+                        </button>
+                    </div>
+
+                    <!-- Aba Copiar Texto -->
+                    <div class="tab-pane fade" id="copiar-pane" role="tabpanel">
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold text-white">Texto Completo da Ata</label>
+                            <textarea id="texto_copiar" class="form-control" rows="8" readonly style="font-size: 0.9rem; background-color: rgba(26, 8, 59, 0.95); color: #ffffff;">REUNIÃO: {{ reuniao.titulo }}
+Data: {{ reuniao.data }} às {{ reuniao.hora }}
+Local: {{ reuniao.local or 'Não especificado' }}
+Secretaria: {{ secretaria_nome }}
+
+Anotações:
+{{ reuniao.anotacoes or 'Sem anotações.' }}</textarea>
+                        </div>
+
+                        <button type="button" onclick="copiarTextoAta()" class="btn btn-secondary w-100 py-2 font-weight-bold" id="btnCopiar">
+                            <i class="ti ti-copy me-1"></i> Copiar para a Área de Transferência
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+            
+            <div class="modal-footer py-2" style="background: rgba(26, 8, 59, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.15);">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmar Exclusão de Reunião -->
+<div class="modal fade" id="modalConfirmarExcluir" tabindex="-1" aria-labelledby="modalConfirmarExcluirLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="background: #270f50; border: 1px solid rgba(255, 107, 0, 0.3) !important; color: #ffffff;">
+            <div class="modal-header border-bottom py-3" style="background: rgba(26, 8, 59, 0.95); border-color: rgba(255, 255, 255, 0.15) !important;">
+                <h5 class="modal-title font-weight-bold text-white d-flex align-items-center gap-2" id="modalConfirmarExcluirLabel">
+                    <i class="ti ti-alert-triangle text-danger fs-2"></i> Confirmar Exclusão
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="ti ti-trash-x text-danger fs-1 d-block mb-3 opacity-90"></i>
+                <h3 class="text-white fw-bold mb-2">Deseja realmente excluir esta reunião?</h3>
+                <p class="text-white-50 small mb-0">
+                    A reunião <strong class="text-white" id="tituloReuniaoExcluir"></strong> será permanentemente removida do sistema.
+                </p>
+            </div>
+            <div class="modal-footer py-3 d-flex justify-content-center gap-3" style="background: rgba(26, 8, 59, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.15);">
+                <button type="button" class="btn btn-outline-light px-4 py-2 fw-bold" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <form id="formExcluirReuniao" method="POST" action="">
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-bold shadow-sm">
+                        <i class="ti ti-trash me-1"></i> Sim, Excluir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEl = document.getElementById('modalConfirmarExcluir');
+    if (modalEl) {
+        modalEl.addEventListener('show.bs.modal', function(event) {
+            const btn = event.relatedTarget;
+            if (btn) {
+                const id = btn.getAttribute('data-id');
+                const titulo = btn.getAttribute('data-titulo') || ('#' + id);
+                const secId = btn.getAttribute('data-sec-id') || 'home';
+                
+                const tituloEl = document.getElementById('tituloReuniaoExcluir');
+                if (tituloEl) tituloEl.textContent = titulo;
+                
+                const form = document.getElementById('formExcluirReuniao');
+                if (form) {
+                    form.action = '/secretaria/' + secId + '/reuniao/' + id + '/excluir';
+                }
+            }
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-excluir-reuniao');
+        if (btn) {
+            const id = btn.getAttribute('data-id');
+            const titulo = btn.getAttribute('data-titulo') || ('#' + id);
+            const secId = btn.getAttribute('data-sec-id') || 'home';
+            
+            const tituloEl = document.getElementById('tituloReuniaoExcluir');
+            if (tituloEl) tituloEl.textContent = titulo;
+            
+            const form = document.getElementById('formExcluirReuniao');
+            if (form) {
+                form.action = '/secretaria/' + secId + '/reuniao/' + id + '/excluir';
+            }
+        }
+    });
+});
+
+function enviarWhatsApp() {
+    const telefone = document.getElementById('wsp_telefone').value.trim().replace(/\D/g, '');
+    const mensagem = encodeURIComponent(document.getElementById('wsp_mensagem').value);
+    
+    let url = 'https://api.whatsapp.com/send?text=' + mensagem;
+    if (telefone) {
+        url = 'https://api.whatsapp.com/send?phone=' + telefone + '&text=' + mensagem;
+    }
+    window.open(url, '_blank');
+}
+
+function gerarPDFWhatsApp() {
+    // Fecha o modal e abre a janela de impressão / PDF do navegador
+    const modalEl = document.getElementById('modalCompartilhar');
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        const modal = bootstrap.Modal.getInstance(modalEl) || (bootstrap.Modal.getOrCreateInstance ? bootstrap.Modal.getOrCreateInstance(modalEl) : null);
+        if (modal) {
+            modal.hide();
+        }
+    } else {
+        const closeBtn = modalEl ? modalEl.querySelector('[data-bs-dismiss="modal"]') : null;
+        if (closeBtn) closeBtn.click();
+    }
+    setTimeout(() => {
+        window.print();
+    }, 400);
+}
+
+function enviarEmail() {
+    const dest = document.getElementById('email_destinatario').value.trim();
+    const assunto = encodeURIComponent(document.getElementById('email_assunto').value);
+    const corpo = encodeURIComponent(document.getElementById('email_corpo').value);
+    
+    const mailtoUrl = `mailto:${dest}?subject=${assunto}&body=${corpo}`;
+    window.location.href = mailtoUrl;
+}
+
+function copiarTextoAta() {
+    const texto = document.getElementById('texto_copiar');
+    texto.select();
+    navigator.clipboard.writeText(texto.value).then(() => {
+        const btn = document.getElementById('btnCopiar');
+        btn.innerHTML = '<i class="ti ti-check me-1"></i> Copiado com Sucesso!';
+        btn.classList.remove('btn-secondary');
+        btn.classList.add('btn-success');
+        setTimeout(() => {
+            btn.innerHTML = '<i class="ti ti-copy me-1"></i> Copiar para a Área de Transferência';
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-secondary');
+        }, 2500);
+    });
+}
+</script>
+{% endblock %}

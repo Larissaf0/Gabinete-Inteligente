@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header py-3 px-4 mb-4" style="background-color: #270f50; border-bottom: 1px solid rgba(255, 107, 0, 0.25);">
+    <div class="container-xl d-flex align-items-center justify-content-between flex-wrap gap-3">
+        <div>
+            <div class="text-white-50 small mb-1">
+                <a href="/home" class="text-white-50 text-decoration-none"><i class="ti ti-home me-1"></i> Início</a> / Configurações
+            </div>
+            <h1 class="page-title text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                <i class="ti ti-settings fs-1" style="color: #FF8800;"></i> Configurações do Usuário
+            </h1>
+        </div>
+        <a href="/home" class="btn btn-outline-light px-3 py-2">
+            <i class="ti ti-arrow-left me-1"></i> Voltar ao Painel
+        </a>
+    </div>
+</div>
+
+<div class="page-body px-4 pb-5">
+    <div class="container-xl">
+
+        <!-- Mensagens de Sucesso ou Erro -->
+        {% if msg == 'perfil_atualizado' %}
+        <div class="alert alert-success d-flex align-items-center gap-2 border-0 shadow mb-4" style="background-color: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981 !important;">
+            <i class="ti ti-circle-check fs-2"></i>
+            <div><strong>Perfil Atualizado!</strong> Suas informações pessoais foram salvas com sucesso.</div>
+        </div>
+        {% elif msg == 'senha_atualizada' %}
+        <div class="alert alert-success d-flex align-items-center gap-2 border-0 shadow mb-4" style="background-color: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981 !important;">
+            <i class="ti ti-shield-check fs-2"></i>
+            <div><strong>Senha Alterada!</strong> Sua senha de acesso foi atualizada com sucesso.</div>
+        </div>
+        {% elif msg == 'preferencias_atualizadas' %}
+        <div class="alert alert-success d-flex align-items-center gap-2 border-0 shadow mb-4" style="background-color: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981 !important;">
+            <i class="ti ti-bell-check fs-2"></i>
+            <div><strong>Preferências Salvas!</strong> Suas opções de notificação foram salvas.</div>
+        </div>
+        {% elif erro == 'senha_divergente' %}
+        <div class="alert alert-danger d-flex align-items-center gap-2 border-0 shadow mb-4" style="background-color: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #f87171 !important;">
+            <i class="ti ti-alert-triangle fs-2"></i>
+            <div><strong>Erro na Senha:</strong> A nova senha e a confirmação não coincidem. Tente novamente.</div>
+        </div>
+        {% elif erro == 'senha_curta' %}
+        <div class="alert alert-warning d-flex align-items-center gap-2 border-0 shadow mb-4" style="background-color: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #fbbf24 !important;">
+            <i class="ti ti-alert-circle fs-2"></i>
+            <div><strong>Atenção:</strong> A nova senha deve ter no mínimo 4 caracteres.</div>
+        </div>
+        {% endif %}
+
+        <div class="row g-4">
+            <!-- Sidebar / Navegação interna de Configurações -->
+            <div class="col-lg-3">
+                <div class="card card-modern p-3 mb-3" style="background-color: #270f50; border: 1px solid rgba(255, 255, 255, 0.18);">
+                    <div class="text-center py-3 border-bottom border-secondary mb-3">
+                        <div class="avatar avatar-xl rounded-circle mb-2 fw-bold text-white shadow" style="background-color: #FF6B00; width: 72px; height: 72px; font-size: 1.8rem; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                            {% if usuario and usuario.inicial %}{{ usuario.inicial }}{% elif usuario and usuario.nome %}{{ usuario.nome }}{% else %}AD{% endif %}
+                        </div>
+                        <h4 class="text-white fw-bold mb-0 mt-2">{% if usuario and usuario.nome %}{{ usuario.nome }}{% else %}Administrador{% endif %}</h4>
+                        <span class="badge text-white mt-1" style="background-color: #FF6B00;">{% if usuario and usuario.cargo %}{{ usuario.cargo }}{% else %}Gabinete{% endif %}</span>
+                        <div class="small text-white-50 mt-1">{% if usuario and usuario.email %}{{ usuario.email }}{% else %}admin@prefeitura.gov.br{% endif %}</div>
+                    </div>
+
+                    <div class="nav flex-column nav-pills gap-2" id="v-pills-tab" role="tablist">
+                        <button class="nav-link active text-start d-flex align-items-center gap-2 py-2 px-3 border-0 rounded" id="tab-perfil-btn" data-bs-toggle="pill" data-bs-target="#tab-perfil" type="button" role="tab">
+                            <i class="ti ti-user fs-2" style="color: #FF8800;"></i> Dados Pessoais
+                        </button>
+                        <button class="nav-link text-start d-flex align-items-center gap-2 py-2 px-3 border-0 rounded text-white" id="tab-senha-btn" data-bs-toggle="pill" data-bs-target="#tab-senha" type="button" role="tab">
+                            <i class="ti ti-lock fs-2 text-warning"></i> Segurança e Senha
+                        </button>
+                        <button class="nav-link text-start d-flex align-items-center gap-2 py-2 px-3 border-0 rounded text-white" id="tab-notif-btn" data-bs-toggle="pill" data-bs-target="#tab-notif" type="button" role="tab">
+                            <i class="ti ti-bell fs-2 text-success"></i> Notificações
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card card-modern p-3 text-center" style="background-color: #1a083b; border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <div class="small text-white-50 mb-1"><i class="ti ti-info-circle me-1" style="color: #FF8800;"></i> Sistema Gabinete Inteligente</div>
+                    <div class="fw-bold text-white">Versão 3.2.0</div>
+                    <div class="small text-success mt-1"><i class="ti ti-circle-filled fs-5 me-1"></i> Conexão Segura Ativa</div>
+                </div>
+            </div>
+
+            <!-- Conteúdo das Abas -->
+            <div class="col-lg-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    
+                    <!-- Aba 1: Perfil do Usuário -->
+                    <div class="tab-pane fade show active" id="tab-perfil" role="tabpanel">
+                        <div class="card card-modern border-0 shadow-lg" style="background-color: #270f50; border: 1px solid rgba(255, 255, 255, 0.18) !important;">
+                            <div class="card-header border-bottom py-3 px-4 d-flex align-items-center justify-content-between" style="background-color: rgba(26, 8, 59, 0.9); border-color: rgba(255, 255, 255, 0.15) !important;">
+                                <h3 class="card-title text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <i class="ti ti-id fs-2" style="color: #FF8800;"></i> Perfil do Usuário
+                                </h3>
+                                <span class="badge bg-success-lt"><i class="ti ti-check me-1"></i> Conta Verificada</span>
+                            </div>
+                            <div class="card-body p-4">
+                                <form action="/configuracoes/perfil" method="POST">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label text-white fw-bold">Nome Completo <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="text" name="nome" class="form-control" value="{{ usuario.nome if usuario else '' }}" placeholder="Seu nome completo" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-white fw-bold">E-mail Institucional <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <input type="email" name="email" class="form-control" value="{{ usuario.email if usuario else '' }}" placeholder="seuemail@prefeitura.gov.br" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-white fw-bold">Cargo / Função</label>
+                                            <div class="input-group">
+                                                <input type="text" name="cargo" class="form-control" value="{{ usuario.cargo if usuario else '' }}" placeholder="Ex: Secretário(a) / Assessor(a)">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-white fw-bold">Telefone / WhatsApp</label>
+                                            <div class="input-group">
+                                                <input type="text" name="telefone" class="form-control" value="{{ usuario.telefone if usuario else '' }}" placeholder="Ex: (81) 99999-8888">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <label class="form-label text-white fw-bold">Secretaria Principal Vinculada</label>
+                                            <select name="secretaria" class="form-select" style="background-color: rgba(26, 8, 59, 0.95); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.25);">
+                                                {% for key, nome_sec in secretarias.items() %}
+                                                <option value="{{ key }}" {% if usuario and usuario.secretaria == key %}selected{% endif %}>
+                                                    {{ nome_sec }} {% if key != 'home' and key != 'pauta-livre' %}({{ key }}){% endif %}
+                                                </option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="form-text text-white-50 mt-1">
+                                                <i class="ti ti-info-circle me-1"></i> Define qual secretaria será carregada por padrão ao acessar o sistema.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="border-secondary my-4">
+
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary px-4 py-2 fw-bold shadow-sm" style="background-color: #FF6B00; border-color: #FF6B00;">
+                                            <i class="ti ti-device-floppy me-1"></i> Salvar Alterações de Perfil
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba 2: Alterar Senha -->
+                    <div class="tab-pane fade" id="tab-senha" role="tabpanel">
+                        <div class="card card-modern border-0 shadow-lg" style="background-color: #270f50; border: 1px solid rgba(255, 255, 255, 0.18) !important;">
+                            <div class="card-header border-bottom py-3 px-4" style="background-color: rgba(26, 8, 59, 0.9); border-color: rgba(255, 255, 255, 0.15) !important;">
+                                <h3 class="card-title text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <i class="ti ti-lock text-warning fs-2"></i> Alterar Senha de Acesso
+                                </h3>
+                            </div>
+                            <div class="card-body p-4">
+                                <form action="/configuracoes/senha" method="POST">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label text-white fw-bold">Senha Atual <span class="text-danger">*</span></label>
+                                            <input type="password" name="senha_atual" class="form-control" placeholder="Digite sua senha atual" required>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-white fw-bold">Nova Senha <span class="text-danger">*</span></label>
+                                            <input type="password" name="nova_senha" class="form-control" placeholder="Mínimo 4 caracteres" required>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label text-white fw-bold">Confirmar Nova Senha <span class="text-danger">*</span></label>
+                                            <input type="password" name="confirmar_senha" class="form-control" placeholder="Repita a nova senha" required>
+                                        </div>
+                                    </div>
+
+                                    <hr class="border-secondary my-4">
+
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-warning px-4 py-2 fw-bold text-dark shadow-sm">
+                                            <i class="ti ti-key me-1"></i> Atualizar Senha
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba 3: Notificações e Alertas -->
+                    <div class="tab-pane fade" id="tab-notif" role="tabpanel">
+                        <div class="card card-modern border-0 shadow-lg" style="background-color: #270f50; border: 1px solid rgba(255, 255, 255, 0.18) !important;">
+                            <div class="card-header border-bottom py-3 px-4" style="background-color: rgba(26, 8, 59, 0.9); border-color: rgba(255, 255, 255, 0.15) !important;">
+                                <h3 class="card-title text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <i class="ti ti-bell text-success fs-2"></i> Preferências de Notificação
+                                </h3>
+                            </div>
+                            <div class="card-body p-4">
+                                <form action="/configuracoes/preferencias" method="POST">
+                                    
+                                    <div class="d-flex align-items-center justify-content-between py-3 border-bottom border-secondary">
+                                        <div>
+                                            <div class="fw-bold text-white fs-4">Notificações por E-mail</div>
+                                            <div class="small text-white-50">Receber resumo de atas de reuniões e avisos de novos encaminhamentos no e-mail cadastrado.</div>
+                                        </div>
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input class="form-check-input" type="checkbox" name="notif_email" value="true" id="switchNotifEmail" {% if usuario and usuario.notif_email %}checked{% endif %} style="width: 48px; height: 24px; cursor: pointer;">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-between py-3 border-bottom border-secondary">
+                                        <div>
+                                            <div class="fw-bold text-white fs-4">Alertas por WhatsApp</div>
+                                            <div class="small text-white-50">Permitir o envio rápido e atalhos diretos de atas de reuniões via WhatsApp.</div>
+                                        </div>
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input class="form-check-input" type="checkbox" name="notif_whatsapp" value="true" id="switchNotifWsp" {% if usuario and usuario.notif_whatsapp %}checked{% endif %} style="width: 48px; height: 24px; cursor: pointer;">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-between py-3">
+                                        <div>
+                                            <div class="fw-bold text-white fs-4">Lembrete Automático de Prazos</div>
+                                            <div class="small text-white-50">Exibir destaques e contadores de alerta para encaminhamentos pendentes na tela inicial.</div>
+                                        </div>
+                                        <div class="form-check form-switch form-switch-lg">
+                                            <input class="form-check-input" type="checkbox" name="lembretes_prazos" value="true" id="switchLembretes" checked style="width: 48px; height: 24px; cursor: pointer;">
+                                        </div>
+                                    </div>
+
+                                    <hr class="border-secondary my-4">
+
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-success px-4 py-2 fw-bold shadow-sm">
+                                            <i class="ti ti-check me-1"></i> Salvar Preferências
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

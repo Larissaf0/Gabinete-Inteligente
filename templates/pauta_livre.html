@@ -1,0 +1,126 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+<!-- Container principal com imagem de fundo preservada -->
+<div class="page-bg-container" style="background-image: url('{{ logo_secretaria }}');">
+    <div class="page-bg-overlay p-4 p-md-5">
+
+        <div class="page-header d-print-none mb-4">
+            <div class="container-xl p-0 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h2 class="page-title fs-1 text-white fw-bold mb-1">Nova Reunião (Pauta Livre)</h2>
+                    <p class="text-white-50 small mb-0">Registre os principais pontos da reunião. Os dados serão gravados diretamente no banco de dados.</p>
+                </div>
+                <div class="d-flex gap-3 text-white-50">
+                    <div class="px-3 py-2 rounded-3 border shadow-sm text-center" style="background: rgba(39, 15, 80, 0.85); border-color: rgba(255, 255, 255, 0.15) !important;">
+                        <i class="ti ti-calendar me-2" style="color: #FF8800;"></i>
+                        <span class="fw-bold text-white">{{ data_atual if data_atual else '' }}</span>
+                    </div>
+                    <div class="px-3 py-2 rounded-3 border shadow-sm text-center" style="background: rgba(39, 15, 80, 0.85); border-color: rgba(255, 255, 255, 0.15) !important;">
+                        <i class="ti ti-clock me-2" style="color: #FF8800;"></i>
+                        <span class="fw-bold text-white">{{ hora_atual if hora_atual else '' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-xl p-0">
+            <div class="row row-cards justify-content-center">
+                <div class="col-lg-10">
+                    <form action="/salvar-reuniao" method="POST" class="card card-modern p-4 p-md-5 mb-4">
+                        
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-white">Título da Reunião</label>
+                                <input type="text" name="titulo" class="form-control" placeholder="Ex: Alinhamento de Projetos" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-white">Assunto / Pauta Principal</label>
+                                <input type="text" name="assunto" class="form-control" placeholder="Ex: Planejamento Orçamentário e Metas" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-white">Local da Reunião</label>
+                                <input type="text" name="local" class="form-control" placeholder="Ex: Sala de Reuniões 02 / Presencial" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-white d-flex align-items-center gap-1">
+                                    <i class="ti ti-users" style="color: #FF8800;"></i> Participantes
+                                </label>
+                                <input type="text" 
+                                       id="inputParticipantes" 
+                                       name="participantes" 
+                                       class="form-control" 
+                                       list="listaParticipantes" 
+                                       placeholder="Ex: Maria Silva, João Santos, Carlos Oliveira" 
+                                       autocomplete="off"
+                                       required>
+                                <datalist id="listaParticipantes">
+                                    {% if participantes_db %}
+                                        {% for part in participantes_db %}
+                                            <option value="{{ part.nome }}">{{ part.nome }} ({{ part.cargo }})</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </datalist>
+                                <span class="text-white-50 small mt-1 d-block">
+                                    Ao digitar, aparecerão sugestões de participantes cadastrados.
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-white d-flex align-items-center gap-1">
+                                    <i class="ti ti-calendar" style="color: #FF8800;"></i> Data da Reunião
+                                </label>
+                                <input type="date" name="data" class="form-control text-white" style="background-color: rgba(26, 8, 59, 0.95);">
+                                <span class="text-white-50 small mt-1 d-block" style="font-size: 0.75rem;">Deixe em branco para salvar com a data atual ({{ data_atual }}).</span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-white d-flex align-items-center gap-1">
+                                    <i class="ti ti-clock" style="color: #FF8800;"></i> Hora da Reunião
+                                </label>
+                                <input type="time" name="hora" class="form-control text-white" style="background-color: rgba(26, 8, 59, 0.95);">
+                                <span class="text-white-50 small mt-1 d-block" style="font-size: 0.75rem;">Deixe em branco para salvar com a hora atual ({{ hora_atual }}).</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-white mb-1">Anotações da Reunião</label>
+                            <p class="text-white-50 small mb-2">Escreva os pontos discutidos e decisões tomadas.</p>
+                            <textarea name="anotacoes" class="form-control" rows="10" 
+                                      placeholder="Digite aqui as anotações..." 
+                                      spellcheck="true" lang="pt-BR"
+                                      style="resize: vertical; font-size: 1rem; line-height: 1.6; padding: 16px; border-radius: var(--radius-sm);" required></textarea>
+                        </div>
+
+                        <div class="d-flex gap-3 pt-3 justify-content-end" style="border-top: 1px solid rgba(255, 255, 255, 0.15);">
+                            <a href="/home" class="btn btn-outline-light px-4 py-2 fw-bold">Cancelar</a>
+                            <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm">
+                                <i class="ti ti-device-floppy me-2"></i> Salvar Reunião
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function adicionarParticipanteChip(nome) {
+    const input = document.getElementById('inputParticipantes');
+    if (!input) return;
+    let atual = input.value.trim();
+    
+    let names = atual ? atual.split(',').map(s => s.trim()).filter(Boolean) : [];
+    const index = names.findIndex(n => n.toLowerCase() === nome.toLowerCase());
+    
+    if (index === -1) {
+        names.push(nome);
+    } else {
+        names.splice(index, 1);
+    }
+    input.value = names.join(', ');
+}
+</script>
+{% endblock %}
+
