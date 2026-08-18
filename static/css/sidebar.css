@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* Importação de Fontes Padronizadas */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Playfair+Display:wght@700;800&display=swap');
 
@@ -17,22 +16,10 @@
 .navbar-vertical {
     background-color: var(--sidebar-bg) !important;
     position: fixed !important;
-=======
-/* Importação das fontes padronizadas do sistema */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap');
-
-/* ==========================================================================
-   1. ESTRUTURA DA SIDEBAR (BARRA LATERAL)
-   ========================================================================== */
-.navbar-vertical {
-    background-color: #0b1a30 !important;
-    position: fixed;
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
     top: 0;
     left: 0;
     bottom: 0;
     z-index: 1030;
-<<<<<<< HEAD
     width: var(--sidebar-width) !important;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-x: hidden !important;
@@ -57,61 +44,19 @@
     white-space: nowrap !important;
 }
 
-=======
-    width: 260px; /* Largura quando aberta */
-    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    overflow-x: hidden !important;
-    overflow-y: auto;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-/* Estilização da barra de rolagem da sidebar */
-.navbar-vertical::-webkit-scrollbar {
-    width: 5px;
-}
-.navbar-vertical::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-.navbar-vertical::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Garante que os textos não partam linhas nem se deformem na animação */
-.navbar-vertical .nav-link, 
-.navbar-vertical .navbar-brand,
-.navbar-vertical h1,
-.navbar-vertical h2 {
-    white-space: nowrap !important;
-}
-
-/* Título de Destaque da Marca/Sidebar */
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
 .navbar-vertical h1, 
 .navbar-vertical .navbar-brand {
     font-family: 'Playfair Display', Georgia, serif;
 }
 
-<<<<<<< HEAD
 /* Links de Navegação */
 .navbar-vertical .nav-link {
     color: #e2d9f3 !important;
-=======
-/* Links da navegação */
-.navbar-vertical .nav-link {
-    color: #94a3b8 !important;
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
     padding: 0.75rem 1rem;
     font-size: 0.9rem;
     font-weight: 500;
     border-radius: 8px;
-<<<<<<< HEAD
     margin: 3px 10px;
-=======
-    margin: 2px 8px;
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
     display: flex;
     align-items: center;
     transition: all 0.2s ease;
@@ -119,7 +64,6 @@
 
 .navbar-vertical .nav-link:hover {
     color: #ffffff !important;
-<<<<<<< HEAD
     background-color: var(--sidebar-hover-bg) !important;
 }
 
@@ -128,34 +72,17 @@
     color: #ffffff !important;
     font-weight: 700;
     box-shadow: 0 4px 16px rgba(255, 107, 0, 0.4);
-=======
-    background-color: rgba(255, 255, 255, 0.06) !important;
-}
-
-/* Item Ativo (Selecionado) */
-.navbar-vertical .nav-link.active {
-    background-color: #008cff !important;
-    color: #ffffff !important;
-    font-weight: 600;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 140, 255, 0.3);
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
 }
 
 .navbar-vertical .nav-link .nav-link-icon,
 .navbar-vertical .nav-link i {
-<<<<<<< HEAD
     font-size: 1.2rem;
-=======
-    font-size: 1.15rem;
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
     min-width: 24px;
     margin-right: 12px;
     text-align: center;
 }
 
 /* ==========================================================================
-<<<<<<< HEAD
    2. RECOLHIMENTO DA BARRA LATERAL E EXPANSÃO DO CONTEÚDO
    ========================================================================== */
 .navbar-vertical.collapsed {
@@ -199,113 +126,3 @@
         width: 100% !important;
     }
 }
-=======
-   2. COMPORTAMENTO HOVER (ESCONDER / MOSTRAR) - APENAS EM COMPUTADORES
-   ========================================================================== */
-@media (min-width: 992px) {
-    
-    /* Estado Inicial: Encolhida apenas com ícones visíveis */
-    .navbar-vertical {
-        width: 70px; 
-    }
-
-    .navbar-vertical .nav-link {
-        padding: 0.75rem 0.85rem;
-    }
-
-    /* Esconde os textos e títulos aplicando opacidade */
-    .navbar-vertical .nav-link-title, 
-    .navbar-vertical h1,
-    .navbar-vertical h2,
-    .navbar-vertical .mt-auto span {
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.15s ease, visibility 0.15s ease;
-        pointer-events: none;
-    }
-
-    /* Estado Ativo: Expandida quando o mouse passa por cima */
-    .navbar-vertical:hover {
-        width: 260px;
-    }
-
-    .navbar-vertical:hover .nav-link {
-        padding: 0.75rem 1rem;
-    }
-
-    /* Mostra os textos imediatamente após a expansão */
-    .navbar-vertical:hover .nav-link-title,
-    .navbar-vertical:hover h1,
-    .navbar-vertical:hover h2,
-    .navbar-vertical:hover .mt-auto span {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
-
-    /* ==========================================================================
-       3. CORREÇÃO CRÍTICA DO CONTEÚDO DA DIREITA (PAGE-WRAPPER)
-       ========================================================================== */
-    .page-wrapper {
-        margin-left: 70px !important;
-        /* Força o container a recalcular o espaço total subtraindo a barra */
-        width: calc(100% - 70px) !important; 
-        min-width: calc(100% - 70px) !important;
-        flex: 0 0 calc(100% - 70px) !important;
-        transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-                    width 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-                    flex 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-
-    .page:has(.navbar-vertical:hover) .page-wrapper { 
-        margin-left: 260px !important; 
-        width: calc(100% - 260px) !important; 
-        flex: 0 0 calc(100% - 260px) !important; 
-    }
-}
-
-/* ==========================================================================
-   4. ESTILOS DOS CARDS INTERNOS DO DASHBOARD
-   ========================================================================== */
-.card-status-dot { 
-    height: 40px; 
-    width: 40px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    border-radius: 8px; 
-    font-size: 20px; 
-}
-
-.kpi-value { 
-    font-size: 1.5rem; 
-    font-weight: 700; 
-    color: #1e293b; 
-    display: block; 
-    letter-spacing: -0.02em;
-}
-
-.kpi-label { 
-    font-size: 0.825rem; 
-    color: #64748b; 
-    font-weight: 500; 
-}
-
-.deadline-item { 
-    border-left: 4px solid transparent; 
-    padding: 12px 15px; 
-    border-radius: 0 8px 8px 0;
-    margin-bottom: 12px; 
-    transition: background-color 0.2s;
-}
-
-.deadline-red { 
-    border-color: #ef4444; 
-    background-color: #fef2f2; 
-}
-
-.deadline-yellow { 
-    border-color: #f59e0b; 
-    background-color: #fffbeb; 
-}
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
