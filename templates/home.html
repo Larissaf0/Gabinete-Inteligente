@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "base.html" %}
 
 {% block content %}
@@ -138,3 +139,157 @@
     </div>
 </div>
 {% endblock %}
+=======
+<!--importa o painel lateral na  página-->
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Container principal com imagem de fundo padrão -->
+<div class="d-flex flex-column flex-fill" 
+     style="background-image: linear-gradient(rgba(244, 246, 250, 0.93), rgba(244, 246, 250, 0.40)), url('{{ logo_secretaria }}'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed;
+            min-height: 100vh;">
+
+    <div class="row col-12 mb-4">
+        <h2 class="page-title fs-1">O que deseja iniciar?</h2>
+        <p class="text-muted">Selecione uma opção para continuar</p>
+    </div>
+
+<div class="row g-4 align-items-start">
+
+    <div class="col-lg-8">
+        <h3 class="mb-3 h4 text-muted font-weight-normal">Escolha uma secretaria</h3>
+
+        <!-- Cards de seleção das secretarias-->
+        <div class="row g-3">
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/ADM" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-dark mb-2 fs-2">
+                        <i class="fa-solid fa-clipboard"></i>
+                    </div>
+                    <div class="font-weight-bold">Administração</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/FIN" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-success mb-2 fs-2">    
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div class="font-weight-bold">Finanças</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/SEDUC" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-primary mb-2 fs-2">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div class="font-weight-bold">Educação</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/Saude" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-danger mb-2 fs-2">
+                        <i class="fa-regular fa-heart"></i>
+                    </div>
+                    <div class="font-weight-bold">Saúde</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/Obras" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-warning mb-2 fs-2">
+                        <i class="fa-solid fa-helmet-safety"></i>
+                    </div>
+                    <div class="font-weight-bold">Desenvolvimento Urbano e Obras</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/Social" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-secondary mb-2 fs-2">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="font-weight-bold">Desenvolvimento Social</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/SEPLAMA" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-success mb-2 fs-2">
+                        <i class="fa-solid fa-tree-city"></i>
+                    </div>
+                    <div class="font-weight-bold">Planejamento e Meio Ambiente</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/Rural" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-orange mb-2 fs-2">
+                        <i class="fa-solid fa-tractor"></i>
+                    </div>
+                    <div class="font-weight-bold">Desenvolvimento Rural</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/CulturaEsportes" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-purple mb-2 fs-2">
+                        <i class="fa-solid fa-masks-theater">
+                        </i><i class="fa-solid fa-futbol"></i>
+                    </div>
+                    <div class="font-weight-bold">Cultura e Esportes</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/SEDTEC" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-info mb-2 fs-2">
+                        <i class="fa-solid fa-briefcase"></i> <i class="fa-solid fa-microscope"></i> <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <div class="font-weight-bold">Desenvolvimento Econômico, Ciência e Tecnologia</div>
+                </a>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+                <a href="/secretaria/ServicosPublicos" class="card card-link card-btn text-center p-3 h-100 btn-light cursor-pointer shadow-sm d-flex flex-column justify-content-center align-items-center">
+                    <div class="text-gray mb-2 fs-2">
+                        <i class="fa-solid fa-trash"></i> <i class="fa-solid fa-traffic-light"></i>
+                    </div>                
+                    <div class="font-weight-bold">Serviços Públicos</div>
+                </a>
+            </div>
+
+    <!-- Opção de pauta livre -->
+
+        </div> </div> <div class="col-lg-4">
+        <div class="d-flex align-items-center justify-content-between h-100 position-relative">
+            
+            <div class="d-none d-lg-flex align-items-center justify-content-center position-relative px-3" style="border-left: 1px solid #e6e8eb; min-height: 380px;">
+                <span class="badge bg-light text-muted p-2 fs-4 position-absolute top-50 start-0 translate-middle" style="z-index: 2; background-color: #f6f8fb !important;">
+                    OU
+                </span>
+            </div>
+
+            <div class="flex-fill">
+                <div class="card text-center p-4 shadow-sm d-flex flex-column justify-content-center" style="min-height: 380px;">
+                    <div class="mb-3 text-primary">
+                        <span class="avatar avatar-xl rounded-circle bg-blue-lt"><i class="fa-regular fa-comment-dots fs-1"></i></span>
+                    </div>
+                    <h3 class="card-title h2 mb-2">Pauta de Reunião Livre</h3>
+                    <p class="text-muted small mb-4">Inicie uma reunião sem vincular a uma secretaria específica.</p>
+                    <a href="/pauta-livre" class="card card-link">
+                    <button class="btn btn-primary w-100 py-2 font-weight-bold">Criar Pauta Livre</button> </a>
+                </div>
+            </div>
+
+        </div>
+    </div> </div> 
+    {% endblock %}
+>>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
