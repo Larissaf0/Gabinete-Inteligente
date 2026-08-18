@@ -2,17 +2,12 @@
 
 {% block botao_navegacao %}
     <a class="nav-link active" href="/secretaria/{{ sec_id }}/">
-<<<<<<< HEAD
         <span class="nav-link-icon"><i class="ti ti-arrow-back-up"></i></span>
-=======
-        <span class="nav-link-icon"><i class="ti ti-arrow-back-up ti-stroke-2"></i></span>
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
         <span class="nav-link-title">Voltar</span>
     </a>
 {% endblock %}
 
 {% block content %}
-<<<<<<< HEAD
 <!-- Container principal com imagem de fundo da secretaria mantida -->
 <div class="page-bg-container" style="background-image: url('{{ logo_secretaria }}');">
     <div class="page-bg-overlay p-4 p-md-5">
@@ -149,132 +144,3 @@ function adicionarParticipanteChip(nome) {
 }
 </script>
 {% endblock %}
-=======
-
-<div class="d-flex flex-column flex-fill" 
-     style="background-image: linear-gradient(rgba(244, 246, 250, 0.93), rgba(244, 246, 250, 0.40)), url('{{ logo_secretaria }}'); 
-            background-size: cover; 
-            background-position: center; 
-            background-repeat: no-repeat; 
-            background-attachment: fixed;
-            min-height: 100vh;">
-<!-- Os estilos específicos desta página foram colocados aqui sem quebrar o head do pai -->
-<style>
-    * {
-        font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif !important;
-    }
-    /* Removemos o background-color do body para respeitar a estrutura interna do Tabler */
-    .page-wrapper {
-        background-color: #f6f8fb;
-    }
-</style>
-
-<!-- Adicionado a tag form envolvendo toda a interface de envio -->
-<form action="/secretaria/{{ sec_id }}/salvar-reuniao" method="POST">
-    
-    <!-- Cabeçalho da página de Nova Reunião -->
-    <div class="page-header d-print-none mb-4 py-3 bg-white border-bottom shadow-sm px-4">
-        <div class="container-xl d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="page-title h1 text-dark mb-1">Nova Reunião</h2>
-                <div style="display: flex; justify-content: space-between; align-items: left; width: 100%; margin-top: 15px; margin-bottom: 20px;">
-                    <p class="text-muted small mb-0">Registre os principais pontos da reunião. A IA irá organizar e gerar os encaminhamentos.</p>
-                </div>
-            </div>
-            <div class="d-flex gap-3 text-muted">
-                <div class="bg-light px-3 py-2 rounded border text-center">
-                    <i class="ti ti-calendar text-primary me-2"></i>
-                    <span class="font-weight-bold text-dark">{{ data_atual }}</span>
-                    <!-- Inputs ocultos para enviar a data e hora criadas no servidor se necessário -->
-                    <input type="hidden" name="data" value="{{ data_atual }}">
-                </div>
-                <div class="bg-light px-3 py-2 rounded border text-center">
-                    <i class="ti ti-clock text-primary me-2"></i>
-                    <span class="font-weight-bold text-dark">{{ hora_atual }}</span>
-                    <input type="hidden" name="hora" value="{{ hora_atual }}">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Corpo do formulário do Painel -->
-    <div class="page-body px-4">
-        <div class="container-xl">
-            <div class="row row-cards">
-                
-                <!-- Coluna Esquerda: Dados e Anotações -->
-                <div class="col-lg-8">
-                    <div class="card p-4 border-0 shadow-sm mb-4">
-                        
-                        <div class="row mb-4">
-                            <div class="col-md-7">
-                                <label class="form-label font-weight-bold text-dark mb-2">Secretaria vinculada</label>
-                                <!-- Mantido readonly, o valor vai via URL (/secretaria/{sec_id}/salvar-reuniao) -->
-                                <input type="text" class="form-control bg-light py-2 font-weight-bold text-dark" value="{{ secretaria_nome }}" readonly style="border: 1px solid #cbd5e1;">
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label font-weight-bold text-dark mb-1">Título da Reunião</label>
-                            <input type="text" name="titulo" class="form-control py-2" placeholder="Ex: Alinhamento de Metas Trimestrais" style="border-radius: 8px; font-size: 1rem;" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label font-weight-bold text-dark mb-1">Anotações da Reunião</label>
-                            <p class="text-muted small mb-2">Escreva livremente os pontos discutidos.</p>
-                            <div class="position-relative">
-                                <!-- Adicionado o atributo name="anotacoes" para enviar ao FastAPI -->
-                                <textarea name="anotacoes" class="form-control" rows="12" placeholder="Digite aqui o resumo dos acontecimentos..." style="resize: none; font-size: 1.05rem; line-height: 1.6; padding: 15px; border-radius: 8px;" required></textarea>
-                                <span class="position-absolute bottom-0 end-0 m-2 text-muted small" style="font-size: 0.75rem;">Caracteres</span>
-                            </div>
-                        </div>
-
-                       <!-- <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label font-weight-bold text-dark mb-0">Participantes da Reunião</label>
-                                <button type="button" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-plus me-1"></i> Adicionar</button>
-                            </div>
-                            <div class="d-flex flex-wrap gap-2">
-                                <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Secretaria de Educação <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
-                                <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Diretor de Infraestrutura <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
-                                <span class="badge bg-blue-lt p-2 fs-5 border d-flex align-items-center gap-2">Coordenador Pedagógico <i class="ti ti-xmark text-muted cursor-pointer"></i></span>
-                            </div>
-                        </div>-->
-
-                        <div class="d-flex gap-3 pt-3 border-top">
-                            <button type="submit" class="btn btn-outline-secondary px-4 py-2 font-weight-bold"><i class="ti ti-device-floppy me-2"></i> Salvar Reunião</button>
-                            <!-- Mudado de link/div para botão do tipo submit -->
-                            <button type="submit" class="btn btn-primary flex-fill py-2 font-weight-bold d-flex align-items-center justify-content-center gap-2">
-                                <i class="ti ti-file-text-ai" style="font-size: 1rem;"></i> Encerrar Reunião e Analisar com IA
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Coluna Direita: Encaminhamentos -->
-                <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm p-4 text-dark mb-4" style="background-color: #ffffff;">
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="h3 mb-0 d-flex align-items-center gap-2 font-weight-bold text-dark">
-                                <i class="ti ti-click text-primary"></i> Encaminhamentos da IA
-                            </h3>
-                            <span class="badge bg-green-lt px-2 py-1 font-weight-bold">3 encontrados</span>
-                        </div>
-
-                        <div class="card p-3 border shadow-none mb-3 bg-light-lt" style="border-radius: 8px;">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                             <!--   <span class="font-weight-bold text-success fs-4 d-flex align-items-center gap-2"><i class="fa-regular fa-user"></i> Fabiana</span>-->
-                                <span class="badge bg-green text-white px-2 py-0.5" style="font-size: 0.7rem;">Prazo identificado</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-</form>
-{% endblock %}
->>>>>>> 1cb0a5ea2902b8711c0a26cad0b76095b77bb917
