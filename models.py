@@ -33,6 +33,7 @@ class StatusUpdateSchema(BaseModel):
     encaminhamento_index: int
     novo_status: str
     novo_progresso: Optional[int] = None
+    encaminhamento_id: int
 
 class UsuarioPerfilSchema(BaseModel):
     nome: str

@@ -6,6 +6,7 @@ import uvicorn
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import pytz
+from supabase_client import supabase
 
 from database import (
     usuario_db,
@@ -568,48 +569,169 @@ async def kanban_board(request: Request, sec_id: str, status_filtro: str = "todo
         "status_filtro": status_filtro
     })
 
+# Rota para o Kanban geral (todas as secretarias) usando Supabase
+async def extract_all_demandas_supabase():
+    resposta = (
+        supabase
+        .table("encaminhamentos")
+        .select("*")
+        .execute()
+    )
+
+    demandas = []
+
+    for index, item in enumerate(resposta.data):
+        print(
+            "DEMANDA SUPABASE:",
+            item["id"],
+            "STATUS:",
+            item.get("status")
+        )
+
+        reuniao_resposta = (
+            supabase
+            .table("reunioes")
+            .select("id, titulo, secretaria_id")
+            .eq("id", item["reuniao_id"])
+            .single()
+            .execute()
+        )
+
+        reuniao = reuniao_resposta.data or {}
+
+        demandas.append({
+            "id": item["id"],
+            "encaminhamento_index": index,
+            "tarefa": item["tarefa"],
+            "responsavel": item.get("responsavel"),
+            "prazo": item.get("prazo"),
+            "prioridade": item.get("prioridade"),
+            "status": item.get("status", "aberta"),
+            "progresso": item.get("progresso", 0),
+            "concluido": item.get("concluido", False),
+            "reuniao_id": reuniao.get("id"),
+            "reuniao_titulo": reuniao.get("titulo"),
+            "secretaria_id": reuniao.get("secretaria_id"),
+            "vence_hoje": False,
+            "vence_semana": False
+        })
+
+    return demandas
+    
+@app.get("/teste-encaminhamentos")
+async def teste_encaminhamentos():
+    resposta = (
+        supabase
+        .table("encaminhamentos")
+        .select("*")
+        .execute()
+    )
+
+    return {
+        "quantidade": len(resposta.data),
+        "encaminhamentos": resposta.data
+    }
+
+#Rota para o Kanban geral (todas as secretarias)
+@app.get("/kanban", response_class=HTMLResponse)
+async def kanban_geral(request: Request, status_filtro: str = "todos"):
+    sec_id = "home"
+    secretaria_nome = "Todas as Secretarias"
+    logo = obter_logo_secretaria(sec_id)
+
+    demandas = await extract_all_demandas_supabase()
+
+    colunas = {
+        "aberta": [d for d in demandas if d["status"] == "aberta"],
+        "em_andamento": [d for d in demandas if d["status"] == "em_andamento"],
+        "concluida": [d for d in demandas if d["status"] == "concluida"],
+        "atrasada": [d for d in demandas if d["status"] == "atrasada"]
+    }
+
+    kpis = {
+        "total": len(demandas),
+        "abertas": len(colunas["aberta"]),
+        "em_andamento": len(colunas["em_andamento"]),
+        "concluidas": len(colunas["concluida"]),
+        "atrasadas": len(colunas["atrasada"]),
+        "vencem_hoje": len([d for d in demandas if d["vence_hoje"]]),
+        "vencem_semana": len([d for d in demandas if d["vence_semana"]])
+    }
+
+    print("DEMANDAS:", len(demandas))
+    print("COLUNAS:", {chave: len(valor) for chave, valor in colunas.items()})
+    print("KPIS:", kpis)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="kanban.html",
+        context={
+            "sec_id": sec_id,
+            "secretaria_nome": secretaria_nome,
+            "usuario": usuario_db,
+            "logo_secretaria": logo,
+            "demandas": demandas,
+            "colunas": colunas,
+            "kpis": kpis,
+            "status_filtro": status_filtro
+        }
+    )
+
 # API para atualização de status de encaminhamento/demanda
 @app.post("/api/demanda/status")
 async def atualizar_status_demanda(body: StatusUpdateSchema):
-    meeting_id = body.reuniao_id
-    idx = body.encaminhamento_index
+    encaminhamento_id = body.encaminhamento_id
+    print("ID DO ENCAMINHAMENTO RECEBIDO:", encaminhamento_id)
     novo_status = body.novo_status
     novo_progresso = body.novo_progresso
 
-    reuniao = next((r for r in reunioes_db if r["id"] == meeting_id), None)
-    if reuniao:
-        if "encaminhamentos" not in reuniao or not reuniao["encaminhamentos"]:
-            reuniao["encaminhamentos"] = [{
-                "id": 1,
-                "tarefa": reuniao.get("titulo", "Demanda da Reunião"),
-                "responsavel": "Gabinete",
-                "prazo": reuniao.get("data", "A definir"),
-                "prioridade": "Média",
-                "status": novo_status,
-                "progresso": 10,
-                "concluido": False
-            }]
-
-        valid_idx = idx if 0 <= idx < len(reuniao["encaminhamentos"]) else 0
-        item = reuniao["encaminhamentos"][valid_idx]
-
-        item["status"] = novo_status
-        if novo_progresso is not None:
-            item["progresso"] = int(novo_progresso)
+    if novo_progresso is None:
+        if novo_status == "concluida":
+            novo_progresso = 100
+        elif novo_status == "em_andamento":
+            novo_progresso = 50
+        elif novo_status == "atrasada":
+            novo_progresso = 30
         else:
-            if novo_status == "concluida":
-                item["progresso"] = 100
-            elif novo_status == "em_andamento":
-                item["progresso"] = 50
-            elif novo_status == "aberta":
-                item["progresso"] = 10
-            elif novo_status == "atrasada":
-                item["progresso"] = 30
+            novo_progresso = 10
 
-        item["concluido"] = (novo_status == "concluida")
-        return JSONResponse({"success": True, "item": item})
+    dados_atualizacao = {
+        "status": novo_status,
+        "progresso": novo_progresso,
+        "concluido": novo_status == "concluida"
+    }
 
-    return JSONResponse({"success": False, "message": "Demanda não encontrada"}, status_code=400)
+    resposta = (
+        supabase
+        .table("encaminhamentos")
+        .update(dados_atualizacao)
+        .eq("id", encaminhamento_id)
+        .execute()
+    )
+
+    if not resposta.data:
+        return JSONResponse(
+            {
+                "success": False,
+                "message": "Demanda não encontrada no Supabase"
+            },
+            status_code=404
+        )
+
+    return JSONResponse({
+        "success": True,
+        "item": resposta.data[0]
+    })
+
+@app.get("/teste-supabase")
+async def teste_supabase():
+    resposta = supabase.table("reunioes").select("*").execute()
+
+    return {
+        "quantidade": len(resposta.data),
+        "reunioes": resposta.data
+    }
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

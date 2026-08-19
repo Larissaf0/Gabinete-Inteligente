@@ -13,3 +13,5 @@ gabinete_inteligente.db
 # Ignorar arquivos do sistema do computador
 .DS_Store
 Thumbs.db
+# Ignorar arquivos de configuração do editor de código
+.env

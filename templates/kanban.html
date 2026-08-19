@@ -85,7 +85,7 @@
                                 <span class="fw-bold text-white fs-4">Abertas / A Fazer</span>
                             </div>
                             <span class="badge text-white fw-bold fs-5 px-2 py-1" id="badge-count-aberta" style="background-color: #FF6B00;">
-                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'aberta' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                                {{ kpis.abertas }}
                             </span>
                         </div>
                         <div class="kanban-cards-wrapper" id="wrapper-cards-aberta">
@@ -107,7 +107,7 @@
                                 <span class="fw-bold text-white fs-4">Em Andamento</span>
                             </div>
                             <span class="badge bg-success-lt fw-bold fs-5 px-2 py-1" id="badge-count-em_andamento">
-                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'em_andamento' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                                {{ kpis.em_andamento }}
                             </span>
                         </div>
                         <div class="kanban-cards-wrapper" id="wrapper-cards-em_andamento">
@@ -129,7 +129,7 @@
                                 <span class="fw-bold text-white fs-4">Concluídas</span>
                             </div>
                             <span class="badge bg-purple-lt fw-bold fs-5 px-2 py-1" id="badge-count-concluida">
-                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'concluida' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                                {{ kpis.concluidas }}
                             </span>
                         </div>
                         <div class="kanban-cards-wrapper" id="wrapper-cards-concluida">
@@ -151,7 +151,7 @@
                                 <span class="fw-bold text-white fs-4">Atrasadas</span>
                             </div>
                             <span class="badge bg-danger-lt fw-bold fs-5 px-2 py-1" id="badge-count-atrasada">
-                                {% set cnt = 0 %}{% for d in demandas %}{% if d.status == 'atrasada' %}{% set cnt = cnt + 1 %}{% endif %}{% endfor %}{{ cnt }}
+                                {{ kpis.atrasadas }}
                             </span>
                         </div>
                         <div class="kanban-cards-wrapper" id="wrapper-cards-atrasada">
@@ -264,10 +264,20 @@ function mudarStatusDemanda(reuniaoId, encaminhamentoIndex, novoStatus, cardId) 
         body: JSON.stringify({
             reuniao_id: reuniaoId,
             encaminhamento_index: encaminhamentoIndex,
-            novo_status: novoStatus
+            novo_status: novoStatus,
+            encaminhamento_id: cardId
         })
     })
-    .then(res => res.json())
+    .then(async res => {
+    const data = await res.json();
+
+    if (!res.ok) {
+        console.error("Erro da API:", res.status, data);
+        throw new Error(JSON.stringify(data));
+    }
+
+    return data;
+    })
     .then(data => {
         if (data.success) {
             let cardEl = document.getElementById('card-demanda-' + cardId);
@@ -369,10 +379,16 @@ document.addEventListener('click', function(e) {
 function recalcularBadgesEContadores() {
     ['aberta', 'em_andamento', 'concluida', 'atrasada'].forEach(st => {
         const wrapper = document.getElementById('wrapper-cards-' + st);
-        if (wrapper) {
-            const count = wrapper.querySelectorAll('.card-demanda-item').length;
-            const badge = document.getElementById('badge-count-' + st);
-            if (badge) badge.innerText = count;
+        const badge = document.getElementById('badge-count-' + st);
+
+        if (!wrapper || !badge) return;
+
+        const cards = wrapper.querySelectorAll('.card-demanda-item');
+
+        // Só recalcula se realmente houver cards renderizados.
+        // Evita substituir os valores vindos do backend por zero.
+        if (cards.length > 0) {
+            badge.innerText = cards.length;
         }
     });
 }

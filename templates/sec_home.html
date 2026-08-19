@@ -11,11 +11,21 @@
                 <div class="row align-items-center justify-content-between w-100 g-2">
                     <div class="col-auto d-flex align-items-center gap-3">
                         <div>
-                            <h2 class="page-title mb-0 fw-bold text-white fs-2">Dashboard {{ secretaria_nome }}</h2>
-                            <div class="text-white-50 small">Acompanhe o andamento das demandas, reuniões e prazos</div>
+                        <div class="d-flex align-items-center gap-3">
+                            <h2 class="page-title mb-0 fw-bold text-white fs-2">
+                                Dashboard {{ secretaria_nome }}
+                            </h2>
+
+                            <a href="/secretaria/{{ sec_id }}/nova-reuniao" class="btn btn-primary">
+                                <i class="ti ti-plus me-2"></i>
+                                Nova Reunião
+                            </a>
+                        </div>
+
+                        <div class="text-white-50 small mt-1">
+                            Acompanhe o andamento das demandas, reuniões e prazos
                         </div>
                     </div>
-
                     <div class="col-auto d-flex align-items-center gap-3">
                         <div class="dropdown">
                             <a href="#" class="nav-link px-0 position-relative" data-bs-toggle="dropdown">
