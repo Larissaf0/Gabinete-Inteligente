@@ -64,19 +64,6 @@ LOGOS_SECRETARIAS.update({
 def obter_logo_secretaria(sec_id: str) -> str:
     return LOGOS_SECRETARIAS.get(sec_id, "/static/imagens/padrao_bg.png")
 
-# Banco de dados de Usuário
-usuario_db = {
-    "nome": "Administrador",
-    "inicial": "AD",
-    "email": "admin@prefeitura.gov.br",
-    "cargo": "Chefe de Gabinete",
-    "secretaria": "home",
-    "telefone": "(81) 99888-7777",
-    "notif_email": True,
-    "notif_whatsapp": True,
-    "senha": "1234"
-}
-
 # Compatibilidade legada: dados dinâmicos agora vêm do Supabase.
 participantes_db = []
 

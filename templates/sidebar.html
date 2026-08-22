@@ -187,7 +187,7 @@
                             <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="ps-2 text-end me-2">
                                     <div class="fs-6 text-white-50">Gabinete</div>
-                                    <div class="small fw-bold text-white">{% if usuario and usuario.nome %}{{ usuario.nome }}{% else %}Administrador{% endif %}</div>
+                                    <div class="small fw-bold text-white">{% if usuario and usuario.nome %}{{ usuario.nome }}{% else %}{% endif %}</div>
                                 </div>
                                 <span class="avatar avatar-sm rounded-circle fw-bold text-white shadow-sm" style="background-color: #FF6B00 !important;">
                                     {% if usuario and usuario.inicial %}{{ usuario.inicial }}{% elif usuario and usuario.nome %}{{ usuario.nome }}{% else %}AD{% endif %}

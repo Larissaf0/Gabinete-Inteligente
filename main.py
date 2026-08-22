@@ -7,9 +7,10 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import pytz
 from supabase_client import supabase
+from starlette.middleware.sessions import SessionMiddleware
+import os
 
 from database import (
-    usuario_db,
     participantes_db,
     reunioes_db,
     NOMES_SECRETARIAS,
@@ -19,6 +20,10 @@ from database import (
 from models import StatusUpdateSchema
 
 app = FastAPI(title="Gabinete Inteligente")
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET", "dev-secret-change-me")
+)
 TZ_RECIFE = ZoneInfo("America/Recife")
 
 # Monta arquivos estáticos
@@ -205,11 +210,77 @@ async def login_page(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
 
 @app.post("/login")
-async def login(username: str = Form(...), password: str = Form(...)):
-    if (username == "admin" and password == usuario_db["senha"]) or (username and password):
-        return RedirectResponse(url="/home", status_code=303)
-    return HTMLResponse(content="Usuário ou senha incorretos", status_code=401)
+async def login(request: Request, username: str = Form(...), password: str = Form(...)):
+    try:
+        response = supabase.auth.sign_in_with_password({
+            "email": username.strip(),
+            "password": password
+        })
 
+        if response.user:
+            request.session["user_id"] = str(response.user.id)
+            request.session["user_email"] = response.user.email
+
+            return RedirectResponse(
+                url="/home",
+                status_code=303
+            )
+
+        return HTMLResponse(
+            content="Usuário ou senha incorretos",
+            status_code=401
+        )
+
+    except Exception as e:
+        print("ERRO NO LOGIN:", e)
+
+        return HTMLResponse(
+            content="Usuário ou senha incorretos",
+            status_code=401
+        )
+
+#Busca o perfil do usuário logado
+def obter_perfil_usuario(user_id: str, email: str = ""):
+    if not user_id:
+        return None
+
+    try:
+        response = (
+            supabase
+            .table("perfis")
+            .select("*")
+            .eq("user_id", user_id)
+            .maybe_single()
+            .execute()
+        )
+
+        perfil = response.data
+
+        if not perfil:
+            return {
+                "user_id": user_id,
+                "nome": "",
+                "inicial": "",
+                "email": email or "",
+                "cargo": "",
+                "secretaria": "home",
+                "telefone": "",
+                "notif_email": False,
+                "notif_whatsapp": False,
+                "lembretes_prazos": False,
+            }
+
+        perfil["email"] = email or ""
+
+        nome = (perfil.get("nome") or "").strip()
+        perfil["inicial"] = nome[:2].upper() if nome else ""
+
+        return perfil
+
+    except Exception as e:
+        print("ERRO AO BUSCAR PERFIL:", e)
+        return None
+    
 @app.get("/solicitar-acesso", response_class=HTMLResponse)
 async def solicitar_acesso_page(request: Request, enviado: bool = False):
     return templates.TemplateResponse(request=request, name="solicitar_acesso.html", context={"enviado": enviado})
@@ -228,62 +299,195 @@ async def enviar_recuperacao(request: Request, email: str = Form(...)):
 
 @app.get("/home", response_class=HTMLResponse)
 async def home_page(request: Request, sec_id: str = "home"):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     logo = obter_logo_secretaria(sec_id)
-    return templates.TemplateResponse(request=request, name="home.html", context={
-        "usuario": usuario_db,
-        "logo_secretaria": logo
-    })
+
+    return templates.TemplateResponse(
+        request=request,
+        name="home.html",
+        context={
+            "usuario": usuario,
+            "logo_secretaria": logo
+        }
+    )
 
 @app.get("/configuracoes", response_class=HTMLResponse)
-async def configuracoes_page(request: Request, msg: str = None, erro: str = None):
+async def configuracoes_page(
+    request: Request,
+    msg: str = None,
+    erro: str = None
+):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     logo = obter_logo_secretaria("home")
-    return templates.TemplateResponse(request=request, name="configuracoes.html", context={
-        "usuario": usuario_db,
-        "secretarias": NOMES_SECRETARIAS,
-        "logo_secretaria": logo,
-        "msg": msg,
-        "erro": erro
-    })
+
+    return templates.TemplateResponse(
+        request=request,
+        name="configuracoes.html",
+        context={
+            "usuario": usuario,
+            "secretarias": NOMES_SECRETARIAS,
+            "logo_secretaria": logo,
+            "msg": msg,
+            "erro": erro
+        }
+    )
 
 @app.post("/configuracoes/perfil")
 async def atualizar_perfil(
+    request: Request,
     nome: str = Form(...),
     email: str = Form(...),
     cargo: str = Form(""),
     secretaria: str = Form("home"),
     telefone: str = Form("")
 ):
-    nome_limpo = nome.strip()
-    usuario_db["nome"] = nome_limpo
-    usuario_db["inicial"] = nome_limpo[:2].upper() if len(nome_limpo) >= 2 else (nome_limpo.upper() if nome_limpo else "AD")
-    usuario_db["email"] = email.strip()
-    usuario_db["cargo"] = cargo.strip()
-    usuario_db["secretaria"] = secretaria.strip()
-    usuario_db["telefone"] = telefone.strip()
-    return RedirectResponse(url="/configuracoes?msg=perfil_atualizado", status_code=303)
+    user_id = request.session.get("user_id")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    try:
+        perfil = {
+            "user_id": user_id,
+            "nome": nome.strip(),
+            "cargo": cargo.strip(),
+            "secretaria": secretaria.strip(),
+            "telefone": telefone.strip(),
+        }
+
+        (
+            supabase
+            .table("perfis")
+            .upsert(perfil, on_conflict="user_id")
+            .execute()
+        )
+
+        return RedirectResponse(
+            url="/configuracoes?msg=perfil_atualizado",
+            status_code=303
+        )
+
+    except Exception as e:
+        print("ERRO AO ATUALIZAR PERFIL:", e)
+
+        return RedirectResponse(
+            url="/configuracoes?erro=perfil",
+            status_code=303
+        )
 
 @app.post("/configuracoes/senha")
 async def atualizar_senha(
+    request: Request,
     senha_atual: str = Form(...),
     nova_senha: str = Form(...),
     confirmar_senha: str = Form(...)
 ):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email")
+
+    if not user_id or not user_email:
+        return RedirectResponse(url="/", status_code=303)
+
     if len(nova_senha) < 4:
-        return RedirectResponse(url="/configuracoes?erro=senha_curta", status_code=303)
+        return RedirectResponse(
+            url="/configuracoes?erro=senha_curta",
+            status_code=303
+        )
+
     if nova_senha != confirmar_senha:
-        return RedirectResponse(url="/configuracoes?erro=senha_divergente", status_code=303)
-    
-    usuario_db["senha"] = nova_senha
-    return RedirectResponse(url="/configuracoes?msg=senha_atualizada", status_code=303)
+        return RedirectResponse(
+            url="/configuracoes?erro=senha_divergente",
+            status_code=303
+        )
+
+    try:
+        # Confirma se a senha atual realmente pertence ao usuário logado
+        auth_response = supabase.auth.sign_in_with_password({
+            "email": user_email,
+            "password": senha_atual
+        })
+
+        if not auth_response.user:
+            return RedirectResponse(
+                url="/configuracoes?erro=senha_atual_incorreta",
+                status_code=303
+            )
+
+        # Atualiza a senha no Supabase Auth
+        supabase.auth.update_user({
+            "password": nova_senha
+        })
+
+        return RedirectResponse(
+            url="/configuracoes?msg=senha_atualizada",
+            status_code=303
+        )
+
+    except Exception as e:
+        print("ERRO AO ALTERAR SENHA:", e)
+
+        return RedirectResponse(
+            url="/configuracoes?erro=senha_atual_incorreta",
+            status_code=303
+        )
 
 @app.post("/configuracoes/preferencias")
 async def atualizar_preferencias(
+    request: Request,
     notif_email: bool = Form(False),
-    notif_whatsapp: bool = Form(False)
+    notif_whatsapp: bool = Form(False),
+    lembretes_prazos: bool = Form(False)
 ):
-    usuario_db["notif_email"] = notif_email
-    usuario_db["notif_whatsapp"] = notif_whatsapp
-    return RedirectResponse(url="/configuracoes?msg=preferencias_atualizadas", status_code=303)
+    user_id = request.session.get("user_id")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    try:
+        (
+            supabase
+            .table("perfis")
+            .update({
+                "notif_email": notif_email,
+                "notif_whatsapp": notif_whatsapp,
+                "lembretes_prazos": lembretes_prazos
+            })
+            .eq("user_id", user_id)
+            .execute()
+        )
+
+        return RedirectResponse(
+            url="/configuracoes?msg=preferencias_atualizadas",
+            status_code=303
+        )
+
+    except Exception as e:
+        print("ERRO AO ATUALIZAR PREFERÊNCIAS:", e)
+
+        return RedirectResponse(
+            url="/configuracoes?erro=preferencias",
+            status_code=303
+        )
 
 @app.get("/reunioes", response_class=HTMLResponse)
 async def reunioes_geral(request: Request):
@@ -291,12 +495,30 @@ async def reunioes_geral(request: Request):
 
 @app.get("/pauta-livre", response_class=HTMLResponse)
 async def pauta_livre_page(request: Request):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     data_atual, hora_atual = get_formatted_date_and_hour()
-    return templates.TemplateResponse(request=request, name="pauta_livre.html", context={
-        "data_atual": data_atual, "hora_atual": hora_atual,
-        "participantes_db": obter_participantes_supabase(), "usuario": usuario_db,
-        "logo_secretaria": obter_logo_secretaria("pauta-livre")
-    })
+
+    return templates.TemplateResponse(
+        request=request,
+        name="pauta_livre.html",
+        context={
+            "data_atual": data_atual,
+            "hora_atual": hora_atual,
+            "participantes_db": obter_participantes_supabase(),
+            "usuario": usuario,
+            "logo_secretaria": obter_logo_secretaria("pauta-livre")
+        }
+    )
 
 
 def _salvar_participantes_reuniao(reuniao_id: int, nomes: str):
@@ -368,13 +590,32 @@ async def salvar_pauta_livre(titulo: str = Form(...), assunto: str = Form("Pauta
 
 @app.get("/secretaria/{sec_id}/nova-reuniao", response_class=HTMLResponse)
 async def nova_reuniao_page(request: Request, sec_id: str):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     data_atual, hora_atual = get_formatted_date_and_hour()
-    return templates.TemplateResponse(request=request, name="nova_reuniao.html", context={
-        "sec_id": sec_id, "secretaria_nome": NOMES_SECRETARIAS.get(sec_id, sec_id),
-        "data_atual": data_atual, "hora_atual": hora_atual,
-        "participantes_db": obter_participantes_supabase(), "usuario": usuario_db,
-        "logo_secretaria": obter_logo_secretaria(sec_id)
-    })
+
+    return templates.TemplateResponse(
+        request=request,
+        name="nova_reuniao.html",
+        context={
+            "sec_id": sec_id,
+            "secretaria_nome": NOMES_SECRETARIAS.get(sec_id, sec_id),
+            "data_atual": data_atual,
+            "hora_atual": hora_atual,
+            "participantes_db": obter_participantes_supabase(),
+            "usuario": usuario,
+            "logo_secretaria": obter_logo_secretaria(sec_id)
+        }
+    )
 
 
 @app.post("/secretaria/{sec_id}/salvar-reuniao")
@@ -390,18 +631,56 @@ async def salvar_reuniao_secretaria(sec_id: str, titulo: str = Form(...), local:
     return RedirectResponse(url=f"/secretaria/{sec_id}/reuniao/{rid}", status_code=303)
 
 
-@app.get("/secretaria/{sec_id}/reuniao/{meeting_id}/editar", response_class=HTMLResponse)
-async def editar_reuniao_page(request: Request, sec_id: str, meeting_id: int):
+@app.get(
+    "/secretaria/{sec_id}/reuniao/{meeting_id}/editar",
+    response_class=HTMLResponse
+)
+async def editar_reuniao_page(
+    request: Request,
+    sec_id: str,
+    meeting_id: int
+):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     reuniao = _get_reuniao_supabase(meeting_id)
-    if not reuniao: return RedirectResponse(url=f"/secretaria/{sec_id}/reunioes", status_code=303)
+
+    if not reuniao:
+        return RedirectResponse(
+            url=f"/secretaria/{sec_id}/reunioes",
+            status_code=303
+        )
+
     sec_real = reuniao.get("secretaria_id", sec_id)
-    participantes_str = ", ".join(p.get("nome", "") for p in reuniao.get("participantes", []))
-    return templates.TemplateResponse(request=request, name="editar_reuniao.html", context={
-        "sec_id": sec_real, "secretaria_nome": NOMES_SECRETARIAS.get(sec_real, sec_real), "reuniao": reuniao,
-        "data_input": _format_date_iso(reuniao.get("data")) or "", "hora_input": reuniao.get("hora", "")[:5],
-        "participantes_str": participantes_str, "participantes_db": obter_participantes_supabase(),
-        "usuario": usuario_db, "logo_secretaria": obter_logo_secretaria(sec_real)
-    })
+
+    participantes_str = ", ".join(
+        p.get("nome", "")
+        for p in reuniao.get("participantes", [])
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="editar_reuniao.html",
+        context={
+            "sec_id": sec_real,
+            "secretaria_nome": NOMES_SECRETARIAS.get(sec_real, sec_real),
+            "reuniao": reuniao,
+            "data_input": _format_date_iso(reuniao.get("data")) or "",
+            "hora_input": reuniao.get("hora", "")[:5],
+            "participantes_str": participantes_str,
+            "participantes_db": obter_participantes_supabase(),
+            "usuario": usuario,
+            "logo_secretaria": obter_logo_secretaria(sec_real)
+        }
+    )
 
 
 @app.get("/reuniao/{meeting_id}/editar")
@@ -444,25 +723,86 @@ async def excluir_reuniao_secretaria(sec_id: str, meeting_id: int):
 
 
 @app.get("/secretaria/{sec_id}/reunioes", response_class=HTMLResponse)
-async def listar_reunioes(request: Request, sec_id: str, pagina: int = 1):
+async def listar_reunioes(
+    request: Request,
+    sec_id: str,
+    pagina: int = 1
+):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     filtradas = obter_reunioes_supabase(sec_id)
-    return templates.TemplateResponse(request=request, name="reunioes.html", context={
-        "usuario": usuario_db, "sec_id": sec_id, "reunioes": filtradas, "pagina_atual": pagina,
-        "total_paginas": 1, "de_registro": 1 if filtradas else 0, "ate_registro": len(filtradas),
-        "total_registros": len(filtradas), "logo_secretaria": obter_logo_secretaria(sec_id)
-    })
+
+    return templates.TemplateResponse(
+        request=request,
+        name="reunioes.html",
+        context={
+            "usuario": usuario,
+            "sec_id": sec_id,
+            "reunioes": filtradas,
+            "pagina_atual": pagina,
+            "total_paginas": 1,
+            "de_registro": 1 if filtradas else 0,
+            "ate_registro": len(filtradas),
+            "total_registros": len(filtradas),
+            "logo_secretaria": obter_logo_secretaria(sec_id)
+        }
+    )
 
 
 @app.get("/secretaria/{sec_id}/reuniao/{meeting_id}", response_class=HTMLResponse)
-async def ver_reuniao(request: Request, sec_id: str, meeting_id: int):
+async def ver_reuniao(
+    request: Request,
+    sec_id: str,
+    meeting_id: int
+):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     reuniao = _get_reuniao_supabase(meeting_id)
-    if not reuniao: return RedirectResponse(url=f"/secretaria/{sec_id}/reunioes", status_code=303)
+
+    if not reuniao:
+        return RedirectResponse(
+            url=f"/secretaria/{sec_id}/reunioes",
+            status_code=303
+        )
+
     sec_real = reuniao.get("secretaria_id", sec_id)
-    demandas = [d for d in await extract_all_demandas_supabase("home") if d.get("reuniao_id") == meeting_id]
-    return templates.TemplateResponse(request=request, name="ver_reuniao.html", context={
-        "sec_id": sec_real, "secretaria_nome": NOMES_SECRETARIAS.get(sec_real, sec_real), "reuniao": reuniao,
-        "demandas_reuniao": demandas, "usuario": usuario_db, "logo_secretaria": obter_logo_secretaria(sec_real)
-    })
+
+    demandas = [
+        d
+        for d in await extract_all_demandas_supabase("home")
+        if d.get("reuniao_id") == meeting_id
+    ]
+
+    return templates.TemplateResponse(
+        request=request,
+        name="ver_reuniao.html",
+        context={
+            "sec_id": sec_real,
+            "secretaria_nome": NOMES_SECRETARIAS.get(sec_real, sec_real),
+            "reuniao": reuniao,
+            "demandas_reuniao": demandas,
+            "usuario": usuario,
+            "logo_secretaria": obter_logo_secretaria(sec_real)
+        }
+    )
 
 
 @app.get("/reuniao/{meeting_id}")
@@ -666,117 +1006,257 @@ def _build_kanban(demandas):
 @app.get("/dashboard", response_class=HTMLResponse)
 @app.get("/dashboard/", response_class=HTMLResponse)
 async def gabinete_dashboard(request: Request):
+
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     demandas = await extract_all_demandas_supabase("home")
     colunas, kpis = _build_kanban(demandas)
     reunioes = obter_reunioes_supabase("home")
 
+    secretarias_oficiais = {
+        "SADM": "Administração",
+        "SDR": "Desenvolvimento Rural",
+        "SDS": "Desenvolvimento Social",
+        "SDTEC": "Desenvolvimento Econômico, Ciência e Tecnologia",
+        "SDUO": "Desenvolvimento Urbano e Obras",
+        "SECULTE": "Cultura e Esportes",
+        "SEDUC": "Educação",
+        "SFIN": "Finanças",
+        "SPMA": "Planejamento e Meio Ambiente",
+        "SSAU": "Saúde",
+        "SSP": "Serviços Públicos",
+    }
+
     secretarias_info = []
-    for sid, nome in NOMES_SECRETARIAS.items():
-        secretarias_oficiais = {
-            "SADM": "Administração",
-            "SDR": "Desenvolvimento Rural",
-            "SDS": "Desenvolvimento Social",
-            "SDTEC": "Desenvolvimento Econômico, Ciência e Tecnologia",
-            "SDUO": "Desenvolvimento Urbano e Obras",
-            "SECULTE": "Cultura e Esportes",
-            "SEDUC": "Educação",
-            "SFIN": "Finanças",
-            "SPMA": "Planejamento e Meio Ambiente",
-            "SSAU": "Saúde",
-            "SSP": "Serviços Públicos",
+
+    for sid, nome in secretarias_oficiais.items():
+
+        sd = [
+            d for d in demandas
+            if canonical_sec_id(d.get("secretaria_id")) == sid
+        ]
+
+        sr = [
+            r for r in reunioes
+            if canonical_sec_id(r.get("secretaria_id")) == sid
+        ]
+
+        secretarias_info.append({
+            "id": sid,
+            "nome": nome,
+            "icone": "fa-solid fa-building-columns",
+            "cor": "primary",
+            "demandas_total": len(sd),
+            "demandas_abertas": sum(
+                1 for d in sd
+                if d["status"] in ("aberta", "em_andamento")
+            ),
+            "demandas_atrasadas": sum(
+                1 for d in sd
+                if d["status"] == "atrasada"
+            ),
+            "demandas_concluidas": sum(
+                1 for d in sd
+                if d["status"] == "concluida"
+            ),
+            "reunioes_qtd": len(sr),
+        })
+
+    notificacoes = _montar_notificacoes(
+        demandas,
+        reunioes
+    )[:12]
+
+    reunioes_fmt = [
+        {
+            **r,
+            "data_hora": f"{r.get('data', '')} às {r.get('hora', '')}",
+            "secretaria_nome": NOMES_SECRETARIAS.get(
+                r.get("secretaria_id"),
+                "Gabinete"
+            ),
+            "encaminhamentos_qtd": sum(
+                1 for d in demandas
+                if d.get("reuniao_id") == r.get("id")
+            ),
+            "participantes_qtd": 0,
         }
+        for r in reunioes
+    ]
 
-        secretarias_info = []
-
-        for sid, nome in secretarias_oficiais.items():
-            sd = [
-                d for d in demandas
-                if canonical_sec_id(d.get("secretaria_id")) == sid
-            ]
-            
-            sr = [
-                r for r in reunioes
-                if canonical_sec_id(r.get("secretaria_id")) == sid
-            ]
-
-            secretarias_info.append({
-                "id": sid, "nome": nome, "icone": "fa-solid fa-building-columns", "cor": "primary",
-                "demandas_total": len(sd),
-                "demandas_abertas": sum(1 for d in sd if d["status"] in ("aberta", "em_andamento")),
-                "demandas_atrasadas": sum(1 for d in sd if d["status"] == "atrasada"),
-                "demandas_concluidas": sum(1 for d in sd if d["status"] == "concluida"),
-                "reunioes_qtd": len(sr),
-            })
-
-            notificacoes = _montar_notificacoes(demandas, reunioes)[:12]
-            reunioes_fmt = [{
-                **r,
-                "data_hora": f"{r.get('data','')} às {r.get('hora','')}",
-                "secretaria_nome": NOMES_SECRETARIAS.get(r.get("secretaria_id"), "Gabinete"),
-                "encaminhamentos_qtd": sum(1 for d in demandas if d.get("reuniao_id") == r.get("id")),
-                "participantes_qtd": 0,
-            } for r in reunioes]
-
-    return templates.TemplateResponse(request=request, name="gabinete_dashboard.html", context={
-        "sec_id": "home", "secretaria_nome": "Gabinete", "kpis": kpis, "colunas": colunas,
-        "demandas": demandas, "notificacoes": notificacoes, "reunioes_gerais": reunioes_fmt,
-        "secretarias_stats": secretarias_info, "usuario": usuario_db,
-        "logo_secretaria": obter_logo_secretaria("home")
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="gabinete_dashboard.html",
+        context={
+            "sec_id": "home",
+            "secretaria_nome": "Gabinete",
+            "kpis": kpis,
+            "colunas": colunas,
+            "demandas": demandas,
+            "notificacoes": notificacoes,
+            "reunioes_gerais": reunioes_fmt,
+            "secretarias_stats": secretarias_info,
+            "usuario": usuario,
+            "logo_secretaria": obter_logo_secretaria("home")
+        }
+    )
 
 
 @app.get("/secretaria/{sec_id}", response_class=HTMLResponse)
 @app.get("/secretaria/{sec_id}/", response_class=HTMLResponse)
 async def secretaria_dashboard(request: Request, sec_id: str):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     original_sec_id = sec_id
     sec_id = canonical_sec_id(sec_id)
+
     if sec_id == "home":
         return await gabinete_dashboard(request)
-    demandas = await extract_all_demandas_supabase(sec_id)
-    _, kpis = _build_kanban(demandas)
-    reunioes = obter_reunioes_supabase(sec_id)
-    prazos = []
-    hoje = datetime.now(TZ_RECIFE).replace(hour=0, minute=0, second=0, microsecond=0)
-    for d in demandas:
-        if d["status"] == "concluida": continue
-        dt = _parse_any_date(d.get("prazo"))
-        if dt:
-            prazos.append({"titulo": d["tarefa"], "data_limite": d["prazo"], "dias_restantes": (dt-hoje).days})
-    prazos.sort(key=lambda p: p["dias_restantes"])
-    reunioes_fmt = [{**r, "data_hora": f"{r.get('data','')} às {r.get('hora','')}",
-                     "encaminhamentos_qtd": sum(1 for d in demandas if d.get("reuniao_id") == r.get("id"))} for r in reunioes]
-    return templates.TemplateResponse(request=request, name="sec_home.html", context={
-        "sec_id": sec_id, "secretaria_nome": NOMES_SECRETARIAS.get(sec_id, sec_id),
-        "notificacoes_qtd": kpis["atrasadas"] + kpis["vencem_hoje"], "kpis": kpis,
-        "prazos": prazos[:5], "reunioes": reunioes_fmt, "usuario": usuario_db,
-        "logo_secretaria": obter_logo_secretaria(sec_id)
-    })
 
+    demandas = await extract_all_demandas_supabase(sec_id)
+
+    _, kpis = _build_kanban(demandas)
+
+    reunioes = obter_reunioes_supabase(sec_id)
+
+    prazos = []
+
+    hoje = datetime.now(TZ_RECIFE).replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0
+    )
+
+    for d in demandas:
+        if d["status"] == "concluida":
+            continue
+
+        dt = _parse_any_date(d.get("prazo"))
+
+        if dt:
+            prazos.append({
+                "titulo": d["tarefa"],
+                "data_limite": d["prazo"],
+                "dias_restantes": (dt - hoje).days
+            })
+
+    prazos.sort(
+        key=lambda p: p["dias_restantes"]
+    )
+
+    reunioes_fmt = [
+        {
+            **r,
+            "data_hora": f"{r.get('data', '')} às {r.get('hora', '')}",
+            "encaminhamentos_qtd": sum(
+                1 for d in demandas
+                if d.get("reuniao_id") == r.get("id")
+            )
+        }
+        for r in reunioes
+    ]
+
+    return templates.TemplateResponse(
+        request=request,
+        name="sec_home.html",
+        context={
+            "sec_id": sec_id,
+            "secretaria_nome": NOMES_SECRETARIAS.get(sec_id, sec_id),
+            "notificacoes_qtd": (
+                kpis["atrasadas"] + kpis["vencem_hoje"]
+            ),
+            "kpis": kpis,
+            "prazos": prazos[:5],
+            "reunioes": reunioes_fmt,
+            "usuario": usuario,
+            "logo_secretaria": obter_logo_secretaria(sec_id)
+        }
+    )
 
 @app.get("/secretaria/{sec_id}/kanban", response_class=HTMLResponse)
-async def kanban_board(request: Request, sec_id: str, status: str = "todos", status_filtro: str = "todos"):
+async def kanban_board(
+    request: Request,
+    sec_id: str,
+    status: str = "todos",
+    status_filtro: str = "todos"
+):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     sec_id = canonical_sec_id(sec_id)
+
     filtro = status if status != "todos" else status_filtro
+
     demandas = await extract_all_demandas_supabase(sec_id)
+
     colunas, kpis = _build_kanban(demandas)
-    return templates.TemplateResponse(request=request, name="kanban.html", context={
-        "sec_id": sec_id, "secretaria_nome": NOMES_SECRETARIAS.get(sec_id, sec_id),
-        "secretarias": NOMES_SECRETARIAS, "todas_reunioes": obter_reunioes_supabase(sec_id),
-        "participantes_db": obter_participantes_supabase(), "usuario": usuario_db,
-        "logo_secretaria": obter_logo_secretaria(sec_id), "demandas": demandas,
-        "colunas": colunas, "kpis": kpis, "status_filtro": filtro
-    })
+
+    return templates.TemplateResponse(
+        request=request,
+        name="kanban.html",
+        context={
+            "sec_id": sec_id,
+            "secretaria_nome": NOMES_SECRETARIAS.get(sec_id, sec_id),
+            "secretarias": NOMES_SECRETARIAS,
+            "todas_reunioes": obter_reunioes_supabase(sec_id),
+            "participantes_db": obter_participantes_supabase(),
+            "usuario": usuario,
+            "logo_secretaria": obter_logo_secretaria(sec_id),
+            "demandas": demandas,
+            "colunas": colunas,
+            "kpis": kpis,
+            "status_filtro": filtro
+        }
+    )
 
 
 @app.get("/kanban", response_class=HTMLResponse)
 async def kanban_geral(request: Request, status: str = "todos", status_filtro: str = "todos"):
+    user_id = request.session.get("user_id")
+    user_email = request.session.get("user_email", "")
+
+    if not user_id:
+        return RedirectResponse(url="/", status_code=303)
+
+    usuario = obter_perfil_usuario(
+        user_id=user_id,
+        email=user_email
+    )
+
     filtro = status if status != "todos" else status_filtro
     demandas = await extract_all_demandas_supabase("home")
     colunas, kpis = _build_kanban(demandas)
     return templates.TemplateResponse(request=request, name="kanban.html", context={
         "sec_id": "home", "secretaria_nome": "Todas as Secretarias", "secretarias": NOMES_SECRETARIAS,
         "todas_reunioes": obter_reunioes_supabase("home"), "participantes_db": obter_participantes_supabase(),
-        "usuario": usuario_db, "logo_secretaria": obter_logo_secretaria("home"),
+        "usuario": usuario, "logo_secretaria": obter_logo_secretaria("home"),
         "demandas": demandas, "colunas": colunas, "kpis": kpis, "status_filtro": filtro
     })
 
