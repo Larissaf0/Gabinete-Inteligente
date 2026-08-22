@@ -1,0 +1,224 @@
+{% extends "sidebar.html" %} 
+
+{% block botao_navegacao %}
+    <a class="nav-link active" href="/secretaria/{{ sec_id }}/">
+        <span class="nav-link-icon"><i class="ti ti-arrow-back-up"></i></span>
+        <span class="nav-link-title">Voltar</span>
+    </a>
+{% endblock %}
+
+{% block reunioes_sec %}
+    <a class="nav-link" href="/secretaria/{{ sec_id }}/reunioes">
+        <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
+        <span class="nav-link-title">Reuniões</span>
+    </a>
+{% endblock %}
+
+{% block content %}
+<!-- Container principal com imagem de fundo da secretaria dinâmica e máscara de contraste -->
+<div class="page-bg-container" style="background-image: url('{{ logo_secretaria }}');">
+    <div class="page-bg-overlay p-4 p-md-5">
+
+        <!-- Cabeçalho da Página -->
+        <div class="page-header d-print-none mb-4">
+            <div class="row align-items-center justify-content-between">
+                <div class="col">
+                    <h2 class="page-title fs-1 fw-bold text-white">Controle de Reuniões</h2>
+                    <div class="text-white-50 fs-4">Gerenciamento e acompanhamento de atas do Gabinete Municipal</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-modern shadow-sm border-0">
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap align-middle">
+                    <thead style="background: rgba(26, 8, 59, 0.9);">
+                        <tr>
+                            <th class="py-3 fs-5 text-white">Reunião</th>
+                            <th class="py-3 fs-5 text-white">Data e Hora</th>
+                            <th class="py-3 fs-5 text-white">Local</th>
+                            <th class="py-3 fs-5 text-white">Participantes</th>
+                            <th class="py-3 fs-5 text-end text-white">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reuniao in reunioes %}
+                        <tr>
+                            <!-- Coluna: Título e Assunto -->
+                            <td>
+                                <a href="/reuniao/{{ reuniao.id }}" class="fw-bold text-white mb-1 text-decoration-none d-block fs-4 text-primary-hover">
+                                    {{ reuniao.titulo }}
+                                </a>
+                                <div class="text-white-50 small">{{ reuniao.assunto }}</div>
+                            </td>
+                            
+                            <!-- Coluna: Data e Hora -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="text-white p-2 rounded-circle shadow-sm" style="background-color: #FF6B00;">
+                                        <i class="ti ti-calendar fs-3"></i>
+                                    </span>
+                                    <div>
+                                        <div class="fw-semibold text-white">{{ reuniao.data }}</div>
+                                        <div class="text-white-50 small">{{ reuniao.hora }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <!-- Coluna: Local -->
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span style="color: #FF8800;">
+                                        <i class="ti ti-map-pin fs-3"></i>
+                                    </span>
+                                    <span class="text-white fw-medium">{{ reuniao.local }}</span>
+                                </div>
+                            </td>
+                            
+                            <!-- Coluna: Participantes -->
+                            <td>
+                                <div class="text-white-50 small">
+                                    {% if reuniao.participantes %}
+                                        {% if is_string(reuniao.participantes) %}
+                                            <span class="badge bg-secondary-lt text-white"><i class="ti ti-user me-1"></i>{{ reuniao.participantes }}</span>
+                                        {% elif reuniao.participantes|length > 0 %}
+                                            {% for p in reuniao.participantes %}
+                                                <span class="badge bg-secondary-lt text-white me-1 mb-1" style="font-size: 0.78rem;">
+                                                    <i class="ti ti-user me-1"></i>{{ p.nome if p.nome else p }}
+                                                </span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="text-white-50 opacity-75">Sem participantes</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-white-50 opacity-75">Sem participantes</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            
+                            <!-- Coluna: Botões de Ação Dinâmicos -->
+                            <td class="text-end">
+                                <div class="d-flex align-items-center justify-content-end gap-2">
+                                    <!-- Botão Visualizar -->
+                                    <a href="/reuniao/{{ reuniao.id }}" class="btn btn-sm btn-outline-info" title="Visualizar Reunião">
+                                        <i class="ti ti-eye me-1"></i> Visualizar
+                                    </a>
+
+                                    <!-- Botão Editar Reunião -->
+                                    <a href="/secretaria/{{ sec_id }}/reuniao/{{ reuniao.id }}/editar" class="btn btn-sm btn-outline-warning" title="Editar Reunião">
+                                        <i class="ti ti-edit me-1"></i> Editar
+                                    </a>
+                                    
+                                    <!-- Botão Excluir Reunião -->
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-danger btn-excluir-reuniao" 
+                                            title="Excluir Reunião"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalConfirmarExcluir"
+                                            data-id="{{ reuniao.id }}"
+                                            data-titulo="{{ reuniao.titulo }}"
+                                            data-sec-id="{{ sec_id }}">
+                                        <i class="ti ti-trash me-1"></i> Excluir
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-white-50 py-5">
+                                <i class="ti ti-calendar-off fs-1 d-block mb-2 text-info opacity-75"></i>
+                                <div class="fs-3 fw-semibold mb-1 text-white">Nenhuma reunião registrada no banco de dados</div>
+                                <p class="small text-white-50 mb-3">Clique em "Nova Reunião" para cadastrar uma pauta.</p>
+                                <a href="/secretaria/{{ sec_id }}/nova-reuniao" class="btn btn-sm btn-primary px-3">
+                                    <i class="ti ti-plus me-1"></i> Criar Reunião
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Rodapé com Informações -->
+            <div class="card-footer d-flex align-items-center justify-content-between py-3" style="background: rgba(26, 8, 59, 0.9); border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <p class="m-0 text-white-50 small">
+                    Exibindo <span class="fw-bold text-white">{{ reunioes|length if reunioes else 0 }}</span> reuniões registradas
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Confirmar Exclusão de Reunião -->
+<div class="modal fade" id="modalConfirmarExcluir" tabindex="-1" aria-labelledby="modalConfirmarExcluirLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="background: #270f50; border: 1px solid rgba(255, 107, 0, 0.3) !important; color: #ffffff;">
+            <div class="modal-header border-bottom py-3" style="background: rgba(26, 8, 59, 0.95); border-color: rgba(255, 255, 255, 0.15) !important;">
+                <h5 class="modal-title font-weight-bold text-white d-flex align-items-center gap-2" id="modalConfirmarExcluirLabel">
+                    <i class="ti ti-alert-triangle text-danger fs-2"></i> Confirmar Exclusão
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <i class="ti ti-trash-x text-danger fs-1 d-block mb-3 opacity-90"></i>
+                <h3 class="text-white fw-bold mb-2">Deseja realmente excluir esta reunião?</h3>
+                <p class="text-white-50 small mb-0">
+                    A reunião <strong class="text-white" id="tituloReuniaoExcluir"></strong> será permanentemente removida do sistema.
+                </p>
+            </div>
+            <div class="modal-footer py-3 d-flex justify-content-center gap-3" style="background: rgba(26, 8, 59, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.15);">
+                <button type="button" class="btn btn-outline-light px-4 py-2 fw-bold" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <form id="formExcluirReuniao" method="POST" action="">
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-bold shadow-sm">
+                        <i class="ti ti-trash me-1"></i> Sim, Excluir
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEl = document.getElementById('modalConfirmarExcluir');
+    if (modalEl) {
+        modalEl.addEventListener('show.bs.modal', function(event) {
+            const btn = event.relatedTarget;
+            if (btn) {
+                const id = btn.getAttribute('data-id');
+                const titulo = btn.getAttribute('data-titulo') || ('#' + id);
+                const secId = btn.getAttribute('data-sec-id') || 'home';
+                
+                const tituloEl = document.getElementById('tituloReuniaoExcluir');
+                if (tituloEl) tituloEl.textContent = titulo;
+                
+                const form = document.getElementById('formExcluirReuniao');
+                if (form) {
+                    form.action = '/secretaria/' + secId + '/reuniao/' + id + '/excluir';
+                }
+            }
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-excluir-reuniao');
+        if (btn) {
+            const id = btn.getAttribute('data-id');
+            const titulo = btn.getAttribute('data-titulo') || ('#' + id);
+            const secId = btn.getAttribute('data-sec-id') || 'home';
+            
+            const tituloEl = document.getElementById('tituloReuniaoExcluir');
+            if (tituloEl) tituloEl.textContent = titulo;
+            
+            const form = document.getElementById('formExcluirReuniao');
+            if (form) {
+                form.action = '/secretaria/' + secId + '/reuniao/' + id + '/excluir';
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

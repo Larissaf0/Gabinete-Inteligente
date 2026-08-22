@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Container principal com imagem de fundo preservada e marca d'água legível -->
+<div class="page-bg-container" style="background-image: url('{{ logo_secretaria }}');">
+    <div class="page-bg-overlay p-4 p-md-5">
+
+        <div class="row col-12 mb-4">
+            <h2 class="page-title fs-1 text-white fw-bold">O que deseja iniciar?</h2>
+            <p class="text-white-50 fs-4">Selecione uma secretaria ou inicie uma pauta livre</p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+
+            <div class="col-lg-8">
+                <h3 class="mb-3 h4 text-white font-weight-normal fw-semibold">Escolha uma secretaria</h3>
+
+                <!-- Cards de seleção das secretarias-->
+                <div class="row g-3">
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/ADM" class="sec-card-btn h-100">
+                            <div class="text-info sec-icon">
+                                <i class="fa-solid fa-clipboard"></i>
+                            </div>
+                            <div class="sec-title">Administração</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/FIN" class="sec-card-btn h-100">
+                            <div class="text-success sec-icon">    
+                                <i class="fa-solid fa-wallet"></i>
+                            </div>
+                            <div class="sec-title">Finanças</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/SEDUC" class="sec-card-btn h-100">
+                            <div class="text-primary sec-icon">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div class="sec-title">Educação</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/Saude" class="sec-card-btn h-100">
+                            <div class="text-danger sec-icon">
+                                <i class="fa-regular fa-heart"></i>
+                            </div>
+                            <div class="sec-title">Saúde</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/Obras" class="sec-card-btn h-100">
+                            <div class="text-warning sec-icon">
+                                <i class="fa-solid fa-helmet-safety"></i>
+                            </div>
+                            <div class="sec-title">Desenvolvimento Urbano e Obras</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/Social" class="sec-card-btn h-100">
+                            <div class="text-info sec-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="sec-title">Desenvolvimento Social</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/SEPLAMA" class="sec-card-btn h-100">
+                            <div class="text-success sec-icon">
+                                <i class="fa-solid fa-tree-city"></i>
+                            </div>
+                            <div class="sec-title">Planejamento e Meio Ambiente</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/Rural" class="sec-card-btn h-100">
+                            <div class="text-warning sec-icon">
+                                <i class="fa-solid fa-tractor"></i>
+                            </div>
+                            <div class="sec-title">Desenvolvimento Rural</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/CulturaEsportes" class="sec-card-btn h-100">
+                            <div class="text-purple sec-icon">
+                                <i class="fa-solid fa-masks-theater"></i>
+                            </div>
+                            <div class="sec-title">Cultura e Esportes</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/SEDTEC" class="sec-card-btn h-100">
+                            <div class="text-info sec-icon">
+                                <i class="fa-solid fa-laptop-code"></i>
+                            </div>
+                            <div class="sec-title">Desenvolvimento Econômico, Ciência e Tecnologia</div>
+                        </a>
+                    </div>
+
+                    <div class="col-6 col-sm-6 col-md-4">
+                        <a href="/secretaria/ServicosPublicos" class="sec-card-btn h-100">
+                            <div class="text-warning sec-icon">
+                                <i class="fa-solid fa-traffic-light"></i>
+                            </div>                
+                            <div class="sec-title">Serviços Públicos</div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Opção de pauta livre -->
+            <div class="col-lg-4">
+                <div class="card card-modern p-4 text-center h-100 d-flex flex-column justify-content-center align-items-center">
+                    <div class="mb-3">
+                        <span class="avatar avatar-xl rounded-circle text-white shadow-sm" style="background-color: #FF6B00;"><i class="fa-regular fa-comment-dots fs-1"></i></span>
+                    </div>
+                    <h3 class="card-title h2 mb-2 fw-bold text-white">Pauta de Reunião Livre</h3>
+                    <p class="text-white-50 mb-4">Inicie uma reunião sem vincular a uma secretaria específica.</p>
+                    <a href="/pauta-livre" class="btn btn-primary w-100 py-2.5 fw-bold shadow-sm">
+                        <i class="ti ti-plus me-1"></i> Criar Pauta Livre
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

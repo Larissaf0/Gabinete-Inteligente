@@ -1,0 +1,154 @@
+<div class="kanban-card card-demanda-item" 
+     id="card-demanda-{{ d.id }}"
+     data-id="{{ d.id }}"
+     data-reuniao-id="{{ d.reuniao_id }}"
+     data-encaminhamento-index="{{ d.encaminhamento_index }}"
+     data-status="{{ d.status }}"
+     data-vence-hoje="{{ 'true' if d.vence_hoje else 'false' }}"
+     data-vence-semana="{{ 'true' if d.vence_semana else 'false' }}"
+     data-search-term="{{ d.tarefa | lower }} {{ d.responsavel | lower }} {{ d.secretaria_nome | lower }} {{ d.reuniao_titulo | lower }} {{ (d.emenda_deputado or '') | lower }} {{ (d.local_definicao or '') | lower }} {{ (d.pendencias or '') | lower }}">
+    
+    <!-- Cabeçalho do Card: Prioridade e Secretaria -->
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="badge {% if d.prioridade == 'Alta' %}bg-danger-lt{% elif d.prioridade == 'Média' %}bg-warning-lt{% else %}bg-orange-lt text-warning{% endif %} text-uppercase fw-bold" style="font-size: 0.65rem;">
+            <i class="fa-solid fa-fire me-1"></i> {{ d.prioridade }}
+        </span>
+        <span class="badge text-white fw-semibold" style="font-size: 0.65rem; background-color: #FF6B00;" title="{{ d.secretaria_nome }}">
+            {{ d.secretaria_id }}
+        </span>
+    </div>
+
+    <!-- Título da Demanda / Ação -->
+    <div class="kanban-card-title mb-2">
+        {{ d.tarefa }}
+    </div>
+
+    <!-- Informações Detalhadas -->
+    <div class="kanban-card-meta small text-white-50">
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Origem: {{ d.reuniao_titulo }}">
+            <i class="fa-solid fa-users opacity-75" style="color: #FF8800;"></i>
+            <span class="text-truncate text-white-75">{{ d.reuniao_titulo }}</span>
+        </div>
+        
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Responsável pela execução: {{ d.responsavel }}">
+            <i class="fa-solid fa-user-gear text-success opacity-75"></i>
+            <span class="text-truncate text-white-75">{{ d.responsavel }}</span>
+        </div>
+
+        {% if d.valor %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Valor: {{ d.valor }}" style="color: #fbbf24;">
+            <i class="fa-solid fa-coins text-warning opacity-75"></i>
+            <span class="text-truncate">Valor: {{ d.valor }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.custo %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Custo: {{ d.custo }}" style="color: #38bdf8;">
+            <i class="fa-solid fa-money-bill-wave text-info opacity-75"></i>
+            <span class="text-truncate">Custo: {{ d.custo }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.emenda_deputado %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Emenda / Deputado: {{ d.emenda_deputado }}" style="color: #fbbf24;">
+            <i class="fa-solid fa-landmark text-warning opacity-75"></i>
+            <span class="text-truncate">{{ d.emenda_deputado }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.local_definicao %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Definição de local: {{ d.local_definicao }}">
+            <i class="fa-solid fa-location-dot opacity-75" style="color: #FF8800;"></i>
+            <span class="text-truncate text-white-75">{{ d.local_definicao }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.pendencias %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate text-danger" title="Pendências: {{ d.pendencias }}">
+            <i class="fa-solid fa-circle-exclamation text-danger opacity-75"></i>
+            <span class="text-truncate">{{ d.pendencias }}</span>
+        </div>
+        {% endif %}
+
+        <div class="d-flex align-items-center justify-content-between mt-2">
+            <span class="{% if d.status == 'atrasada' %}text-danger fw-bold{% elif d.vence_hoje %}text-warning fw-bold{% else %}text-white-75{% endif %}">
+                <i class="fa-regular fa-calendar me-1"></i> {{ d.prazo }}
+            </span>
+            <span class="badge bg-dark-lt text-white-75 fs-6 text-capitalize">{{ d.status | replace('_', ' ') }}</span>
+        </div>
+    </div>
+
+    <!-- Barra de Progresso Visual -->
+    <div class="kanban-progress-bar mb-3">
+        <div class="progress-bar {% if d.status == 'concluida' %}bg-purple{% elif d.status == 'atrasada' %}bg-danger{% elif d.status == 'em_andamento' %}bg-success{% else %}bg-orange{% endif %}" 
+             role="progressbar" 
+             style="width: {{ d.progresso }}%; height: 100%; transition: width 0.3s ease; {% if d.status == 'aberta' %}background-color: #FF6B00;{% endif %}" 
+             aria-valuenow="{{ d.progresso }}" 
+             aria-valuemin="0" 
+             aria-valuemax="100">
+        </div>
+    </div>
+
+    <!-- Ações do Card: Mover Status, Histórico & Link para Reunião -->
+    <div class="d-flex align-items-center justify-content-between pt-2 border-top border-secondary gap-1" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+        
+        <!-- Mover de Status (Dropdown Elegante e Funcional) -->
+        <div class="dropdown position-relative">
+            <button class="btn btn-xs btn-outline-secondary text-white-50 dropdown-toggle py-1 px-2 btn-mover-dropdown" 
+                    type="button" 
+                    data-reuniao-id="{{ d.reuniao_id }}"
+                    data-encaminhamento-index="{{ d.encaminhamento_index }}"
+                    data-card-id="{{ d.id }}"
+                    style="font-size: 0.7rem; border-color: rgba(255, 255, 255, 0.2);">
+                <i class="fa-solid fa-arrows-split-up-and-left me-1" style="color: #FF8800;"></i> Mover
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark shadow-lg border border-secondary menu-mover-status" style="background-color: #270f50; border-color: rgba(255, 107, 0, 0.3) !important; font-size: 0.8rem;">
+                <li>
+                    <a class="dropdown-item {% if d.status == 'aberta' %}active{% endif %}" 
+                       href="javascript:void(0)" 
+                       onclick="executarMoverStatus(this, '{{ d.reuniao_id }}', '{{ d.encaminhamento_index }}', 'aberta', '{{ d.id }}')">
+                        <i class="fa-regular fa-clipboard me-2" style="color: #FF8800;"></i> Abertas / A Fazer
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item {% if d.status == 'em_andamento' %}active{% endif %}" 
+                       href="javascript:void(0)" 
+                       onclick="executarMoverStatus(this, '{{ d.reuniao_id }}', '{{ d.encaminhamento_index }}', 'em_andamento', '{{ d.id }}')">
+                        <i class="fa-solid fa-rotate me-2 text-success"></i> Em Andamento
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item {% if d.status == 'concluida' %}active{% endif %}" 
+                       href="javascript:void(0)" 
+                       onclick="executarMoverStatus(this, '{{ d.reuniao_id }}', '{{ d.encaminhamento_index }}', 'concluida', '{{ d.id }}')">
+                        <i class="fa-regular fa-circle-check me-2 text-purple"></i> Concluída
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item {% if d.status == 'atrasada' %}active{% endif %}" 
+                       href="javascript:void(0)" 
+                       onclick="executarMoverStatus(this, '{{ d.reuniao_id }}', '{{ d.encaminhamento_index }}', 'atrasada', '{{ d.id }}')">
+                        <i class="fa-solid fa-triangle-exclamation me-2 text-danger"></i> Atrasada
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="d-flex align-items-center gap-1">
+            <!-- Botão de Histórico de Atualizações -->
+            <button type="button" 
+                    class="btn btn-xs btn-outline-info text-white-75 py-1 px-2" 
+                    style="font-size: 0.7rem; border-color: rgba(56, 189, 248, 0.4);" 
+                    title="Ver histórico de atualizações"
+                    onclick='abrirModalHistorico({{ d | tojson }})'>
+                <i class="fa-solid fa-clock-rotate-left me-1 text-info"></i> Histórico
+            </button>
+
+            <!-- Link para Ver Reunião de Origem -->
+            <a href="/reuniao/{{ d.reuniao_id }}" class="btn btn-xs btn-outline-warning text-white py-1 px-2" style="font-size: 0.7rem; border-color: #FF8800;" title="Ver detalhes da reunião">
+                <i class="fa-solid fa-arrow-right-to-bracket me-1" style="color: #FF8800;"></i> Reunião
+            </a>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esqueci minha Senha - Gabinete Inteligente</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Fredoka:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}?v=3.0">
+</head>
+<body class="login-body">
+
+    <div class="login-wrapper">
+        
+        <header class="header-plataforma">
+            <div class="logo-container">
+                <img src="{{ url_for('static', path='/imagens/lo_go.png') }}" alt="Vetor Gabinete" class="logo-img">
+                <h1 class="titulo-plataforma">
+                    Gabinete <br>
+                    <span class="titulo-destaque">Inteligente</span>
+                </h1>
+            </div>
+            
+            <p class="subtitulo-prefeitura">
+                Recuperação de Acesso e Redefinição de Senha
+            </p>
+        </header>
+
+        <div class="login-area-direita">
+            <main class="login-card">
+                <h2 class="card-title">Recuperar Senha</h2>
+                
+                {% if enviado %}
+                <div style="background-color: rgba(255, 107, 0, 0.15); border: 1px solid #FF6B00; color: #FF8800; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; text-align: center; font-weight: 500;">
+                    <i class="fa-solid fa-envelope-circle-check" style="font-size: 1.2rem; display: block; margin-bottom: 6px;"></i>
+                    <strong>Instruções enviadas!</strong><br>
+                    Verifique sua caixa de e-mail para seguir as orientações de redefinição.
+                </div>
+                {% endif %}
+
+                <p style="color: #64748b; font-size: 0.85rem; text-align: center; margin-bottom: 20px;">
+                    Informe seu e-mail cadastrado para receber o link de redefinição de senha.
+                </p>
+                
+                <form action="/enviar-recuperacao" method="POST">
+                    <div class="input-group">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+                        <input type="email" name="email" placeholder="Seu e-mail cadastrado" required>
+                    </div>
+
+                    <button type="submit" class="btn-entrar" style="margin-top: 10px;">
+                        <i class="fa-solid fa-key me-2"></i> Enviar Link de Recuperação
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 25px;">
+                    <a href="/" style="font-weight: bold; color: #656d77; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar para o Login
+                    </a>
+                </div>
+            </main>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,1416 @@
+/* Importação de Fontes Padronizadas */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
+
+/* ==========================================================================
+   1. VARIÁVEIS DE TEMA E RESET GLOBAL
+   ========================================================================== */
+:root {
+    --bg-dark-primary: #1a083b;
+    --bg-dark-surface: #270f50;
+    --primary-blue: #FF6B00;
+    --primary-blue-hover: #E55C00;
+    --primary-blue-light: rgba(255, 107, 0, 0.18);
+    --primary-orange: #FF6B00;
+    --accent-purple: #A855F7;
+    --accent-green: #10b981;
+    --accent-warning: #FF8800;
+    --accent-danger: #ef4444;
+    --neutral-bg: #1a083b;
+    --surface-white: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: #e2d9f3;
+    --text-muted: #a898c6;
+    --border-color: rgba(255, 255, 255, 0.18);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    --shadow-hover: 0 12px 28px -4px rgba(255, 107, 0, 0.35);
+}
+
+/* Modo Noturno (Padrão Escuro) / Modo Claro */
+body.theme-light {
+    --bg-dark-primary: #faf5ff;
+    --bg-dark-surface: #ffffff;
+    --neutral-bg: #f5f0fb;
+    --text-primary: #270f50;
+    --text-secondary: #581c87;
+    --text-muted: #7e22ce;
+    --border-color: rgba(168, 85, 247, 0.2);
+    background-color: #faf5ff !important;
+    color: #270f50 !important;
+}
+
+body.theme-light .page-bg-overlay {
+    background: linear-gradient(135deg, rgba(250, 245, 255, 0.95) 0%, rgba(243, 232, 255, 0.90) 100%) !important;
+}
+
+body.theme-light .navbar.navbar-dark,
+body.theme-light header.navbar {
+    background-color: #ede9fe !important;
+    border-bottom: 1px solid rgba(255, 107, 0, 0.3) !important;
+}
+
+body.theme-light .mobile-header {
+    background-color: #ede9fe !important;
+    color: #270f50 !important;
+    border-bottom: 1px solid rgba(255, 107, 0, 0.3) !important;
+}
+
+body.theme-light .mobile-header .brand-font {
+    color: #270f50 !important;
+}
+
+body.theme-light #btn-toggle-mobile-menu {
+    background-color: #ffffff !important;
+    color: #270f50 !important;
+    border: 1px solid #d8b4fe !important;
+    box-shadow: 0 2px 6px rgba(107, 33, 168, 0.08) !important;
+}
+
+body.theme-light #btn-toggle-mobile-menu:hover,
+body.theme-light #btn-toggle-mobile-menu:focus {
+    background-color: #FF6B00 !important;
+    border-color: #FF6B00 !important;
+    color: #ffffff !important;
+    box-shadow: 0 3px 12px rgba(255, 107, 0, 0.3) !important;
+}
+
+body.theme-light .card-modern,
+body.theme-light .card {
+    background: #ffffff !important;
+    color: #270f50 !important;
+    border: 1px solid #e9d5ff !important;
+    box-shadow: 0 4px 18px rgba(107, 33, 168, 0.08) !important;
+}
+
+body.theme-light .page-title,
+body.theme-light .card-title,
+body.theme-light h1, body.theme-light h2, body.theme-light h3, body.theme-light h4 {
+    color: #270f50 !important;
+}
+
+body.theme-light .text-white {
+    color: #270f50 !important;
+}
+
+body.theme-light .text-white-50 {
+    color: #6b21a8 !important;
+}
+
+body.theme-light .text-secondary {
+    color: #7e22ce !important;
+}
+
+body.theme-light .navbar-vertical {
+    background-color: #ffffff !important;
+    border-right: 1px solid #e9d5ff !important;
+}
+
+body.theme-light .navbar-vertical .brand-font {
+    color: #270f50 !important;
+}
+
+body.theme-light .navbar-vertical .nav-link {
+    color: #4c1d95 !important;
+    font-weight: 500;
+}
+
+body.theme-light .navbar-vertical .nav-link.active,
+body.theme-light .navbar-vertical .nav-link:hover {
+    color: #FF6B00 !important;
+    background: rgba(255, 107, 0, 0.1) !important;
+    border-radius: 8px;
+}
+
+body.theme-light .sec-card-btn {
+    background: #ffffff !important;
+    border: 1px solid #e9d5ff !important;
+    box-shadow: 0 4px 16px rgba(107, 33, 168, 0.08) !important;
+}
+
+body.theme-light .sec-card-btn:hover {
+    background: #faf5ff !important;
+    border-color: #FF6B00 !important;
+    box-shadow: 0 8px 24px rgba(255, 107, 0, 0.25) !important;
+}
+
+body.theme-light .sec-card-btn .sec-title {
+    color: #270f50 !important;
+}
+
+body.theme-light .kpi-card {
+    background: #ffffff !important;
+    border: 1px solid #e9d5ff !important;
+    box-shadow: 0 4px 16px rgba(107, 33, 168, 0.08) !important;
+}
+
+body.theme-light .kpi-card:hover {
+    background: #faf5ff !important;
+    border-color: #FF6B00 !important;
+}
+
+body.theme-light .kpi-value {
+    color: #270f50 !important;
+}
+
+body.theme-light .kpi-label {
+    color: #6b21a8 !important;
+}
+
+body.theme-light .table-responsive table {
+    background-color: #ffffff !important;
+    color: #270f50 !important;
+}
+
+body.theme-light .table-responsive table thead,
+body.theme-light .table-responsive table thead th {
+    background: #ede9fe !important;
+    color: #270f50 !important;
+    border-bottom: 1px solid #d8b4fe !important;
+}
+
+body.theme-light .table-responsive table tbody td {
+    background-color: #ffffff !important;
+    color: #270f50 !important;
+    border-bottom: 1px solid #f3e8ff !important;
+}
+
+body.theme-light .table-responsive table tbody tr:hover td {
+    background: rgba(255, 107, 0, 0.05) !important;
+}
+
+body.theme-light .form-control,
+body.theme-light .form-select,
+body.theme-light .modal-content .form-control,
+body.theme-light .modal-content textarea {
+    background-color: #ffffff !important;
+    color: #270f50 !important;
+    border: 1px solid #d8b4fe !important;
+}
+
+body.theme-light .form-control:focus,
+body.theme-light .form-select:focus,
+body.theme-light .modal-content .form-control:focus,
+body.theme-light .modal-content textarea:focus {
+    background-color: #ffffff !important;
+    border-color: #FF6B00 !important;
+    color: #270f50 !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2) !important;
+}
+
+body.theme-light .form-control::placeholder,
+body.theme-light .form-select::placeholder {
+    color: #a855f7 !important;
+}
+
+body.theme-light .modal-content {
+    background-color: #ffffff !important;
+    color: #270f50 !important;
+    border: 1px solid #d8b4fe !important;
+    box-shadow: 0 10px 30px rgba(107, 33, 168, 0.15) !important;
+}
+
+body.theme-light .modal-header,
+body.theme-light .modal-footer {
+    border-color: #ede9fe !important;
+}
+
+body.theme-light .kanban-board-container {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid #e9d5ff !important;
+}
+
+body.theme-light .kanban-column {
+    background: #f5f0fb !important;
+    border: 1px solid #e9d5ff !important;
+}
+
+body.theme-light .kanban-column-header {
+    border-bottom: 2px solid #e9d5ff !important;
+}
+
+body.theme-light .kanban-column-header span {
+    color: #270f50 !important;
+}
+
+body.theme-light .kanban-card {
+    background: #ffffff !important;
+    border: 1px solid #e9d5ff !important;
+    box-shadow: 0 2px 10px rgba(107, 33, 168, 0.06) !important;
+}
+
+body.theme-light .kanban-card:hover {
+    border-color: #FF6B00 !important;
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.2) !important;
+}
+
+body.theme-light .kanban-card-title {
+    color: #270f50 !important;
+}
+
+body.theme-light .kanban-card-meta {
+    color: #6b21a8 !important;
+}
+
+body.theme-light .dropdown-menu {
+    background-color: #ffffff !important;
+    border: 1px solid #e9d5ff !important;
+    color: #270f50 !important;
+    box-shadow: 0 10px 30px rgba(107, 33, 168, 0.12) !important;
+}
+
+body.theme-light .dropdown-item {
+    color: #270f50 !important;
+}
+
+body.theme-light .dropdown-item:hover {
+    background-color: #f3e8ff !important;
+    color: #FF6B00 !important;
+}
+
+body.theme-light .btn-outline-light {
+    border-color: #d8b4fe !important;
+    color: #270f50 !important;
+}
+
+body.theme-light .btn-outline-light:hover {
+    background-color: #FF6B00 !important;
+    border-color: #FF6B00 !important;
+    color: #ffffff !important;
+}
+
+body.theme-light .badge-secondary-lt {
+    background: #ede9fe !important;
+    color: #6b21a8 !important;
+}
+
+body.theme-light .notification-item {
+    border-bottom: 1px solid #f3e8ff !important;
+    color: #270f50 !important;
+}
+
+body.theme-light .notification-item:hover {
+    background-color: #faf5ff !important;
+}
+
+body.theme-light .notification-item.unread {
+    background-color: #f3e8ff !important;
+}
+
+/* Custom scrollbar para tabelas e reuniões (otimizado para mobile) */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: #FF6B00 rgba(255, 255, 255, 0.08);
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #FF6B00;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #E55C00;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, .page-title, .card-title {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.brand-font {
+    font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+/* ==========================================================================
+   2. FONDOS COM MARCA D'ÁGUA E MÁSCARA AZUL SEM DESFOQUE (IMAGENS VISÍVEIS)
+   ========================================================================== */
+.page-bg-container {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.page-bg-overlay {
+    background: linear-gradient(135deg, rgba(26, 8, 59, 0.84) 0%, rgba(39, 15, 80, 0.74) 100%);
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* ==========================================================================
+   3. ESTILIZAÇÃO DA TELA DE LOGIN E SOLICITAR ACESSO
+   ========================================================================== */
+.login-body {
+    background-color: var(--bg-dark-primary);
+    background-image: linear-gradient(135deg, rgba(26, 8, 59, 0.90) 0%, rgba(39, 15, 80, 0.85) 100%), url('/static/imagens/padrao_bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.login-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.header-plataforma {
+    flex: 1;
+    text-align: left;
+    color: #ffffff;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.logo-img {
+    max-height: 100px;
+    width: auto;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.titulo-plataforma {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.15;
+}
+
+.titulo-destaque {
+    color: var(--primary-blue);
+    display: block; 
+    font-weight: 800;
+}
+
+.subtitulo-prefeitura {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.login-area-direita {
+    flex: 1;
+    max-width: 440px;
+    width: 100%;
+}
+
+.login-card {
+    background-color: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 36px 30px;
+    box-shadow: var(--shadow-hover);
+}
+
+.login-card .card-title {
+    color: var(--bg-dark-surface);
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* Campos de Entrada na tela de Login / Solicitação / Esqueci Senha */
+.input-group {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+    z-index: 2;
+}
+
+.input-group input, 
+.input-group select,
+.login-card input,
+.login-card select {
+    width: 100%;
+    padding: 13px 16px 13px 48px;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #0f172a !important; /* Texto escuro de alto contraste para leitura clara */
+    background-color: #ffffff !important;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.input-group input::placeholder,
+.login-card input::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1;
+    font-weight: 400;
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.login-card input:focus,
+.login-card select:focus {
+    border-color: var(--primary-blue) !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2) !important;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.btn-entrar {
+    width: 100%;
+    padding: 13px;
+    background-color: var(--primary-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.btn-entrar:hover {
+    background-color: var(--primary-blue-hover);
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+}
+
+/* ==========================================================================
+   4. CARDS E COMPONENTES MODERNOS PARA TEMA ROXO E LARANJA INTENSO
+   ========================================================================== */
+.card-modern {
+    background: rgba(39, 15, 80, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-subtle);
+    color: #ffffff;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover-efeito {
+    transition: all 0.25s ease !important;
+}
+
+.card-hover-efeito:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: var(--shadow-hover) !important;
+    border-color: rgba(255, 107, 0, 0.4) !important;
+}
+
+.sec-card-btn {
+    background: rgba(39, 15, 80, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-md);
+    padding: 22px 16px;
+    transition: all 0.25s ease;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.sec-card-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(255, 107, 0, 0.35);
+    border-color: var(--primary-orange);
+    background: rgba(52, 20, 102, 0.95);
+}
+
+.sec-card-btn .sec-icon {
+    font-size: 2.3rem;
+    margin-bottom: 12px;
+    transition: transform 0.2s ease;
+}
+
+.sec-card-btn:hover .sec-icon {
+    transform: scale(1.12);
+}
+
+.sec-card-btn .sec-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* KPIs Modernos no Tema Roxo e Laranja */
+.kpi-card {
+    background: rgba(39, 15, 80, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-md);
+    padding: 18px 16px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    background: rgba(52, 20, 102, 0.95);
+}
+
+.kpi-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.kpi-label {
+    font-size: 0.8rem;
+    color: #e2d9f3;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Formulários e Tabelas no Tema Roxo / Laranja */
+.form-control,
+.form-select,
+.card-modern .form-control, 
+.card-modern .form-select,
+.page-bg-overlay .form-control,
+.modal-body .form-control {
+    background-color: rgba(26, 8, 59, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+.card-modern .form-control:focus, 
+.card-modern .form-select:focus,
+.page-bg-overlay .form-control:focus,
+.modal-body .form-control:focus {
+    background-color: rgba(26, 8, 59, 0.98) !important;
+    border-color: var(--primary-orange) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.3) !important;
+}
+
+.form-control::placeholder,
+.card-modern .form-control::placeholder,
+.modal-body .form-control::placeholder {
+    color: #a898c6 !important;
+}
+
+/* Exceção explícita para Login, Solicitar Acesso e Esqueci Senha (fundo branco do card) */
+.login-card .form-control,
+.login-card input,
+.login-card select,
+.input-group input,
+.input-group select {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.card-modern .form-control[readonly] {
+    background-color: rgba(39, 15, 80, 0.95) !important;
+    color: #e2d9f3 !important;
+}
+
+/* Tabelas em modo escuro */
+.card-modern .table {
+    color: #ffffff !important;
+}
+
+.card-modern .table thead th {
+    background-color: rgba(26, 8, 59, 0.9) !important;
+    color: #e2d9f3 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+    font-weight: 700;
+}
+
+.card-modern .table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff;
+}
+
+.card-modern .table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Badges e Tags */
+.badge-modern {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+/* Modal e Abas de Compartilhamento no Tema Escuro */
+.modal-content {
+    background-color: #270f50 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-content .nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.modal-content .nav-tabs .nav-link {
+    color: #e2d9f3 !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-bottom: none !important;
+    padding: 10px 18px;
+    font-weight: 600;
+    margin-right: 4px;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s ease;
+}
+
+.modal-content .nav-tabs .nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 107, 0, 0.3) !important;
+    border-color: rgba(255, 107, 0, 0.5) !important;
+}
+
+.modal-content .nav-tabs .nav-link.active {
+    color: #ffffff !important;
+    background-color: #FF6B00 !important;
+    border-color: #FF6B00 !important;
+    font-weight: 700;
+    box-shadow: 0 -2px 10px rgba(255, 107, 0, 0.4);
+}
+
+.modal-content .nav-tabs .nav-link.active i,
+.modal-content .nav-tabs .nav-link.active span {
+    color: #ffffff !important;
+}
+
+.modal-content .form-control,
+.modal-content textarea {
+    background-color: rgba(26, 8, 59, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+.modal-content .form-control:focus,
+.modal-content textarea:focus {
+    background-color: rgba(26, 8, 59, 0.98) !important;
+    border-color: #FF6B00 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.35) !important;
+}
+
+.modal-content .form-control::placeholder,
+.modal-content textarea::placeholder {
+    color: #a898c6 !important;
+}
+
+/* ==========================================================================
+   5. AJUSTES RESPONSIVOS MOBILE
+   ========================================================================== */
+@media (max-width: 991.98px) {
+    .page-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    .mobile-header {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px;
+        background-color: var(--bg-dark-primary);
+        color: #ffffff;
+        position: sticky;
+        top: 0;
+        z-index: 1040;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    #btn-toggle-mobile-menu {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 107, 0, 0.35) !important;
+        border-radius: var(--radius-sm);
+        padding: 6px 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    #btn-toggle-mobile-menu:hover,
+    #btn-toggle-mobile-menu:focus {
+        background-color: rgba(255, 107, 0, 0.25) !important;
+        border-color: #FF6B00 !important;
+        color: #FF8800 !important;
+        box-shadow: 0 0 12px rgba(255, 107, 0, 0.35) !important;
+    }
+
+    #btn-toggle-mobile-menu i {
+        color: inherit;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-wrapper {
+        flex-direction: column;
+        gap: 30px;
+        padding: 30px 16px;
+    }
+    
+    .header-plataforma {
+        text-align: center;
+    }
+    
+    .logo-container {
+        justify-content: center;
+    }
+
+    .titulo-plataforma, 
+    .subtitulo-prefeitura {
+        text-align: center;
+    }
+
+    .page-header {
+        padding: 16px !important;
+    }
+
+    .page-title {
+        font-size: 1.35rem !important;
+    }
+}
+
+/* ==========================================================================
+   5. QUADRO KANBAN E CARDS DE KPIS INTERATIVOS
+   ========================================================================== */
+.kpi-card-clickable {
+    cursor: pointer !important;
+    position: relative;
+    user-select: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.kpi-card-clickable:hover {
+    transform: translateY(-4px) scale(1.02) !important;
+    box-shadow: 0 10px 28px rgba(255, 107, 0, 0.35) !important;
+    background: rgba(52, 20, 102, 0.98) !important;
+}
+
+.kpi-card-clickable.active-kpi {
+    border-color: #FF6B00 !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+    background: rgba(52, 20, 102, 1) !important;
+}
+
+.kpi-hint-badge {
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    background: rgba(255, 107, 0, 0.25);
+    color: #FF8800;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.kpi-card-clickable:hover .kpi-hint-badge {
+    opacity: 1;
+}
+
+/* Estilos do Quadro Kanban */
+.kanban-board-container {
+    background: rgba(26, 8, 59, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-subtle);
+}
+
+.kanban-column {
+    background: rgba(39, 15, 80, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.kanban-column.highlight-column {
+    box-shadow: 0 0 25px rgba(255, 107, 0, 0.45) !important;
+    border-color: #FF6B00 !important;
+    background: rgba(52, 20, 102, 0.95) !important;
+}
+
+.kanban-column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.kanban-cards-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 650px;
+    padding-right: 4px;
+}
+
+.kanban-cards-wrapper::-webkit-scrollbar {
+    width: 5px;
+}
+
+.kanban-cards-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.kanban-card {
+    background: rgba(26, 8, 59, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.kanban-card.card-dropdown-active {
+    z-index: 9999 !important;
+}
+
+.menu-mover-status.show {
+    display: block !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: auto !important;
+    z-index: 10000 !important;
+    min-width: 170px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+.kanban-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 107, 0, 0.45);
+    box-shadow: 0 8px 24px rgba(255, 107, 0, 0.25);
+}
+
+.kanban-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.35;
+    margin-bottom: 8px;
+}
+
+.kanban-card-meta {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    margin-bottom: 10px;
+}
+
+.kanban-progress-bar {
+    height: 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   DROPDOWN DE NOTIFICAÇÕES (MODO NOTURNO E CLARO)
+   ========================================================================== */
+.dropdown-notifications-menu {
+    min-width: 360px !important;
+    max-width: 400px !important;
+    background-color: #1a083b !important;
+    border: 1px solid rgba(255, 107, 0, 0.35) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+    padding: 0 !important;
+    overflow: hidden;
+    z-index: 1060 !important;
+}
+
+body.theme-light .dropdown-notifications-menu {
+    background-color: #ffffff !important;
+    border: 1px solid #e9d5ff !important;
+    box-shadow: 0 16px 36px rgba(107, 33, 168, 0.15) !important;
+}
+
+.notif-header {
+    background: rgba(39, 15, 80, 0.95);
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.theme-light .notif-header {
+    background: #ede9fe;
+    border-bottom: 1px solid #e9d5ff;
+}
+
+.notif-list {
+    max-height: 380px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.notif-item {
+    display: block;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    color: #ffffff;
+}
+
+.notif-item:hover {
+    background-color: rgba(255, 107, 0, 0.12);
+}
+
+body.theme-light .notif-item {
+    border-bottom: 1px solid #f3e8ff;
+    color: #270f50;
+}
+
+body.theme-light .notif-item:hover {
+    background-color: #faf5ff;
+}
+
+.notif-item.notif-unread {
+    background-color: rgba(255, 107, 0, 0.06);
+}
+
+body.theme-light .notif-item.notif-unread {
+    background-color: #f3e8ff;
+}
+
+.notif-footer {
+    padding: 10px 16px;
+    background: rgba(39, 15, 80, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: center;
+}
+
+body.theme-light .notif-footer {
+    background: #ede9fe;
+    border-top: 1px solid #e9d5ff;
+}
+
+/* ==========================================================================
+   6. RESPONSIVIDADE TOTAL (MOBILE, TABLET, DESKTOP) & COMPATIBILIDADE
+   ========================================================================== */
+@media (max-width: 1200px) {
+    .kanban-col-container {
+        margin-bottom: 1.25rem;
+    }
+    .kanban-cards-wrapper {
+        max-height: 550px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .login-wrapper {
+        flex-direction: column;
+        gap: 30px;
+        padding: 30px 16px;
+    }
+    .header-plataforma {
+        text-align: center;
+    }
+    .logo-container {
+        justify-content: center;
+    }
+    .kanban-board-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 1rem;
+    }
+    .page-header .d-flex {
+        flex-wrap: wrap;
+    }
+    .page-header h2 {
+        font-size: 1.5rem !important;
+    }
+    .btn {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .kanban-cards-wrapper {
+        max-height: 420px;
+    }
+    .kanban-column {
+        padding: 12px;
+    }
+    .kanban-filter-scroll {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    .card-modern {
+        padding: 16px !important;
+    }
+    .table-responsive {
+        border-radius: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Cross-browser input & button consistency */
+button, input, select, textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+select.form-select {
+    -webkit-appearance: listbox;
+    -moz-appearance: listbox;
+    appearance: auto;
+}
+input[type="date"] {
+    color-scheme: dark;
+}
+/* Suavização de rolagem */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ==========================================================================
+   7. ESTILOS DE IMPRESSÃO E GERAÇÃO DE PDF (window.print)
+   ========================================================================== */
+@media print {
+    /* Esconde elementos de navegação e botões interativos */
+    .sidebar,
+    .mobile-header,
+    .btn,
+    .modal,
+    .modal-backdrop,
+    .page-header .d-flex.align-items-center.gap-2.flex-wrap,
+    .no-print {
+        display: none !important;
+    }
+
+    /* Ajusta a página para impressão em folha A4 em fundo claro */
+    body,
+    .page-wrapper,
+    .page-body,
+    .page-header {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    .page-wrapper {
+        margin-left: 0 !important;
+    }
+
+    /* Estilização dos cards e conteúdos para o PDF */
+    .card,
+    .card-modern {
+        background-color: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        margin-bottom: 20px !important;
+        page-break-inside: avoid;
+    }
+
+    .page-title,
+    h1, h2, h3, h4, h5, h6,
+    strong, span, p, div {
+        color: #000000 !important;
+    }
+
+    .text-white-50,
+    .text-secondary {
+        color: #555555 !important;
+    }
+
+    .badge {
+        border: 1px solid #333333 !important;
+        color: #000000 !important;
+        background: #f0f0f0 !important;
+    }
+
+    .table {
+        color: #000000 !important;
+        border-color: #dddddd !important;
+    }
+
+    .table th, .table td {
+        background-color: transparent !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #dddddd !important;
+    }
+}
+
+/* ==========================================================================
+   DASHBOARD GABINETE (VISÃO GERAL CONSOLIDADA) - IDENTIDADE VISUAL EXECUTIVA
+   ========================================================================== */
+.gabinete-master-header {
+    background: linear-gradient(135deg, rgba(39, 15, 80, 0.96) 0%, rgba(20, 5, 48, 0.98) 100%) !important;
+    border-bottom: 2px solid rgba(255, 107, 0, 0.4) !important;
+}
+
+.gabinete-emblem-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, #FF6B00 0%, #d95a00 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35);
+}
+
+.gabinete-kpi-card {
+    background: rgba(26, 8, 59, 0.92) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.25s ease-in-out;
+}
+
+.gabinete-kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    border-color: rgba(255, 107, 0, 0.5) !important;
+}
+
+.gabinete-kpi-alert {
+    animation: pulse-border 2.5s infinite;
+}
+
+@keyframes pulse-border {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    }
+}
+
+.gabinete-block-card {
+    background: rgba(20, 5, 48, 0.94) !important;
+    border: 1px solid rgba(255, 107, 0, 0.25) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+.notif-gabinete-item {
+    transition: all 0.2s ease;
+}
+
+.notif-gabinete-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: translateX(3px);
+}
+
+.notif-border-danger {
+    border-left: 4px solid #ef4444 !important;
+}
+
+.notif-border-warning {
+    border-left: 4px solid #f59e0b !important;
+}
+
+.notif-border-info {
+    border-left: 4px solid #38bdf8 !important;
+}
+
+.notif-border-success {
+    border-left: 4px solid #10b981 !important;
+}
+
+.gabinete-mini-card {
+    transition: all 0.2s ease;
+}
+
+.gabinete-mini-card:hover {
+    transform: translateY(-2px);
+    border-color: #FF8800 !important;
+}
+
+.gabinete-sec-summary-card {
+    transition: all 0.2s ease;
+}
+
+.gabinete-sec-summary-card:hover {
+    background: rgba(255, 107, 0, 0.12) !important;
+    border-color: #FF8800 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* Modo Claro para o Dashboard do Gabinete */
+body.theme-light .gabinete-master-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%) !important;
+    border-bottom: 2px solid #FF6B00 !important;
+}
+
+body.theme-light .gabinete-kpi-card {
+    background: #ffffff !important;
+    border: 1px solid #e9d5ff !important;
+    box-shadow: 0 3px 12px rgba(107, 33, 168, 0.06) !important;
+}
+
+body.theme-light .gabinete-kpi-card .kpi-value {
+    color: #270f50 !important;
+}
+
+body.theme-light .gabinete-block-card {
+    background: #ffffff !important;
+    border: 1px solid #d8b4fe !important;
+    box-shadow: 0 4px 18px rgba(107, 33, 168, 0.08) !important;
+}
+
+body.theme-light .gabinete-block-card .card-header {
+    background: #f5f3ff !important;
+    border-color: #e9d5ff !important;
+}
+
+body.theme-light .gabinete-block-card .card-title {
+    color: #270f50 !important;
+}
+
+body.theme-light .notif-gabinete-item {
+    background: #faf5ff !important;
+    border-color: #e9d5ff !important;
+}
+
+body.theme-light .notif-gabinete-item:hover {
+    background: #f3e8ff !important;
+}
+
+body.theme-light .notif-gabinete-item strong,
+body.theme-light .notif-gabinete-item .text-white {
+    color: #270f50 !important;
+}
+
+body.theme-light .notif-gabinete-item .text-white-50 {
+    color: #6b21a8 !important;
+}
+
+body.theme-light .gabinete-kanban-column {
+    background: #fdfcff !important;
+    border-color: #d8b4fe !important;
+}
+
+body.theme-light .gabinete-mini-card {
+    background: #ffffff !important;
+    border-color: #e9d5ff !important;
+    box-shadow: 0 1px 4px rgba(107, 33, 168, 0.05);
+}
+
+body.theme-light .gabinete-mini-card .text-white {
+    color: #270f50 !important;
+}
+
+body.theme-light .gabinete-mini-card .text-white-50 {
+    color: #7e22ce !important;
+}
+
+body.theme-light .gabinete-sec-summary-card {
+    background: #ffffff !important;
+    border-color: #e9d5ff !important;
+    box-shadow: 0 2px 8px rgba(107, 33, 168, 0.05);
+}
+
+body.theme-light .gabinete-sec-summary-card:hover {
+    background: #fff7ed !important;
+    border-color: #FF6B00 !important;
+}
+
+body.theme-light .gabinete-sec-summary-card .text-white {
+    color: #270f50 !important;
+}
+
+body.theme-light .gabinete-sec-summary-card .text-white-50 {
+    color: #6b21a8 !important;
+}
+
+
