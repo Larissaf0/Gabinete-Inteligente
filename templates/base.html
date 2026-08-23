@@ -76,41 +76,41 @@
                         <span style="color: #FF8800; font-weight: 800; display: block;">INTELIGENTE</span>
                     </h1>
                 </div>
-                
+                <!-- <--! Sidebar Menu --> 
                 <div class="collapse navbar-collapse show" id="sidebar-menu">
                     <ul class="navbar-nav pt-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/home">
+                            <a class="nav-link {{ 'active' if request.url.path == '/home' else '' }}" href="/home">
                                 <span class="nav-link-icon"><i class="ti ti-home"></i></span>
                                 <span class="nav-link-title">Início</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/secretaria/home/">
+                            <a class="nav-link {{ 'active' if request.url.path == '/secretaria/home/' else '' }}" href="/secretaria/home/">
                                 <span class="nav-link-icon"><i class="ti ti-layout-dashboard"></i></span>
-                                <span class="nav-link-title">Dashboard</span>
+                                <span class="nav-link-title">Visão Geral</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/reunioes">
+                            <a class="nav-link {{ 'active' if request.url.path == '/reunioes' else '' }}" href="/reunioes">
                                 <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
                                 <span class="nav-link-title">Reuniões</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/kanban">
+                            <a class="nav-link {{ 'active' if request.url.path == '/kanban' else '' }}" href="/kanban">
                                 <span class="nav-link-icon"><i class="ti ti-layout-kanban"></i></span>
                                 <span class="nav-link-title">Demandas</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/pauta-livre">
+                            <a class="nav-link {{ 'active' if request.url.path == '/pauta-livre' else '' }}" href="/pauta-livre">
                                 <span class="nav-link-icon"><i class="ti ti-notes"></i></span>
                                 <span class="nav-link-title">Pauta Livre</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/configuracoes">
+                            <a class="nav-link {{ 'active' if request.url.path == '/configuracoes' else '' }}" href="/configuracoes">
                                 <span class="nav-link-icon"><i class="ti ti-settings"></i></span>
                                 <span class="nav-link-title">Configurações</span>
                             </a>
@@ -203,7 +203,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script> -->
     <script>
         function updateThemeUI(isLight) {
             const iconMobile = document.getElementById("icon-theme-mobile");

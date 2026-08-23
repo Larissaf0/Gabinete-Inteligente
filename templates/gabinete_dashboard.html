@@ -1,9 +1,9 @@
 {% extends 'sidebar.html' %}
 
 {% block dashboard_gabinete %}
-<a class="nav-link active" href="/secretaria/home/">
+<a class="nav-link {{ 'active' if request.url.path == '/secretaria/home/' else '' }}" href="/secretaria/home/">
     <span class="nav-link-icon"><i class="ti ti-layout-dashboard"></i></span>
-    <span class="nav-link-title">Dashboard</span>
+    <span class="nav-link-title">Visão Geral</span>
 </a>
 {% endblock %}
 
@@ -35,17 +35,17 @@
                     </div>
 
                     <div class="col-md-5 col-12 d-flex align-items-center justify-content-md-end gap-2 flex-wrap">
-                        <a href="/kanban" class="btn btn-outline-light d-flex align-items-center gap-1 shadow-sm">
+                        <!-- <a href="/kanban" class="btn btn-outline-light d-flex align-items-center gap-1 shadow-sm">
                             <i class="fa-solid fa-kanban text-warning"></i>
                             <span>Painel Geral</span>
-                        </a>
-                        <a href="/reunioes" class="btn btn-outline-light d-flex align-items-center gap-1 shadow-sm">
+                        </a> -->
+                        <!-- <a href="/reunioes" class="btn btn-outline-light d-flex align-items-center gap-1 shadow-sm">
                             <i class="fa-solid fa-calendar-days text-info"></i>
                             <span>Todas as Reuniões</span>
                         </a>
                         <a href="/pauta-livre" class="btn btn-primary d-flex align-items-center gap-1 shadow-sm">
                             <i class="ti ti-plus"></i>
-                            <span>Nova Pauta Livre</span>
+                            <span>Nova Pauta Livre</span> -->
                         </a>
                     </div>
                 </div>
