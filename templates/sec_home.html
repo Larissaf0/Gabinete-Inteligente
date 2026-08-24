@@ -1,4 +1,4 @@
-{% extends 'sidebar.html' %}
+{% extends 'sidebar_sec.html' %}
 
 {% block content %}
 <!-- Container principal com imagem de fundo da secretaria mantida com overlay suave -->
@@ -40,7 +40,8 @@
             <div class="container-fluid px-4">
                 
                 <!-- Fileira de Cards KPIs Dinâmicos e Interativos -> Abrem a Tela do Kanban -->
-                <div class="row row-cards g-3 mb-4">
+                <!-- <div class="row row-cards g-3 mb-4"> -->
+                <div class="row justify-content-center g-3 mb-4">
                     
                     <!-- Card 1: Demandas Abertas -->
                     <div class="col-6 col-sm-4 col-xl-2">
@@ -99,7 +100,7 @@
                     </div>
 
                     <!-- Card 5: Vencem Hoje -->
-                    <div class="col-6 col-sm-4 col-xl-2">
+                    <!-- <div class="col-6 col-sm-4 col-xl-2">
                         <a href="/secretaria/{{ sec_id }}/kanban?status=vencem_hoje" class="text-decoration-none">
                             <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #f59e0b !important;" title="Clique para abrir demandas que vencem hoje">
                                 <div class="kpi-label text-warning">Vencem hoje</div>
@@ -107,13 +108,13 @@
                                     <span class="kpi-value text-warning me-2">{{ kpis.vencem_hoje if kpis else 0 }}</span>
                                     <i class="fa-regular fa-calendar-xmark fs-3 text-warning opacity-50"></i>
                                 </div>
-                                <!-- <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span> -->
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span> -->
                             </div>
                         </a>
                     </div>
 
                     <!-- Card 6: Vencem na Semana -->
-                    <div class="col-6 col-sm-4 col-xl-2">
+                    <!-- <div class="col-6 col-sm-4 col-xl-2">
                         <a href="/secretaria/{{ sec_id }}/kanban?status=vencem_semana" class="text-decoration-none">
                             <div class="kpi-card kpi-card-clickable" style="border-top: 3px solid #3b82f6 !important;" title="Clique para abrir demandas que vencem na semana">
                                 <div class="kpi-label">Vencem a semana</div>
@@ -121,12 +122,12 @@
                                     <span class="kpi-value text-info me-2">{{ kpis.vencem_semana if kpis else 0 }}</span>
                                     <i class="fa-regular fa-calendar-days fs-3 text-info opacity-50"></i>
                                 </div>
-                                <!-- <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span> -->
-                            </div>
+                                <span class="kpi-hint-badge"><i class="fa-solid fa-square-poll-vertical me-1"></i>Abrir Kanban</span> -->
+                            <!-- </div>
                         </a>
                     </div>
 
-                </div>
+                </div> -->
 
                 <!-- Seções Inferiores: Prazos e Reuniões -->
                 <div class="row row-cards g-4">

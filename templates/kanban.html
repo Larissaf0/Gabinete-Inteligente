@@ -485,6 +485,16 @@ window.currentDemandaData = null;
 
 function filtrarKanbanPorStatus(categoria) {
     window.currentKanbanFilter = categoria;
+    // Atualiza a URL sem recarregar a página
+    const url = new URL(window.location.href);
+
+    if (categoria === 'todos') {
+        url.searchParams.delete('status');
+    } else {
+        url.searchParams.set('status', categoria);
+    }
+
+    window.history.replaceState({}, '', url);
 
     // Atualizar visual dos botões de filtro
     document.querySelectorAll('.filter-tab-btn').forEach(btn => {
