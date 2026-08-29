@@ -18,6 +18,20 @@ NOMES_SECRETARIAS = {
     "pauta-livre": "Pauta Livre"
 }
 
+# Aliases oficiais atuais preservando compatibilidade com IDs legados
+NOMES_SECRETARIAS.update({
+    "SADM": "Administração",
+    "SDR": "Desenvolvimento Rural",
+    "SDS": "Desenvolvimento Social",
+    "SDTEC": "Desenvolvimento Econômico, Ciência e Tecnologia",
+    "SDUO": "Desenvolvimento Urbano e Obras",
+    "SECULTE": "Cultura e Esportes",
+    "SFIN": "Finanças",
+    "SPMA": "Planejamento e Meio Ambiente",
+    "SSAU": "Saúde",
+    "SSP": "Serviços Públicos",
+})
+
 LOGOS_SECRETARIAS = {
     "ADM": "/static/imagens/adm_bg.png",
     "Saude": "/static/imagens/saude_bg.png",
@@ -34,95 +48,24 @@ LOGOS_SECRETARIAS = {
     "pauta-livre": "/static/imagens/padrao_bg.png"
 }
 
+LOGOS_SECRETARIAS.update({
+    "SADM": "/static/imagens/adm_bg.png",
+    "SDR": "/static/imagens/rural_bg.png",
+    "SDS": "/static/imagens/social_bg.png",
+    "SDTEC": "/static/imagens/sedtec_bg.png",
+    "SDUO": "/static/imagens/obras_bg.png",
+    "SECULTE": "/static/imagens/secult_bg.png",
+    "SFIN": "/static/imagens/fin_bg.png",
+    "SPMA": "/static/imagens/seplama_bg.png",
+    "SSAU": "/static/imagens/saude_bg.png",
+    "SSP": "/static/imagens/servpub_bg.png",
+})
+
 def obter_logo_secretaria(sec_id: str) -> str:
     return LOGOS_SECRETARIAS.get(sec_id, "/static/imagens/padrao_bg.png")
 
-# Banco de dados de Usuário
-usuario_db = {
-    "nome": "Administrador",
-    "inicial": "AD",
-    "email": "admin@prefeitura.gov.br",
-    "cargo": "Chefe de Gabinete",
-    "secretaria": "home",
-    "telefone": "(81) 99888-7777",
-    "notif_email": True,
-    "notif_whatsapp": True,
-    "senha": "1234"
-}
-
-# Banco de dados Global de Participantes Cadastrados
-participantes_db = [
-    {"id": 1, "nome": "Fabiana Souza", "cargo": "Secretária de Administração", "secretaria": "ADM"},
-    {"id": 2, "nome": "Carlos Oliveira", "cargo": "Diretor Geral", "secretaria": "ADM"},
-    {"id": 3, "nome": "Roberto Lima", "cargo": "Secretário de Finanças", "secretaria": "FIN"},
-    {"id": 4, "nome": "Maria Silva", "cargo": "Coordenadora de Projetos", "secretaria": "SEDUC"},
-    {"id": 5, "nome": "João Santos", "cargo": "Assessor Técnico", "secretaria": "home"},
-    {"id": 6, "nome": "Juliana Costa", "cargo": "Coordenadora de Processos", "secretaria": "ADM"}
-]
+# Compatibilidade legada: dados dinâmicos agora vêm do Supabase.
+participantes_db = []
 
 # Banco de dados de Reuniões e Encaminhamentos (Demandas)
-reunioes_db = [
-    {
-        "id": 1,
-        "titulo": "Alinhamento Estratégico de Metas",
-        "assunto": "Planejamento Semestral de Ações do Gabinete",
-        "data": "04/08/2026",
-        "hora": "09:00",
-        "secretaria_id": "ADM",
-        "status": "Agendada",
-        "local": "Sala da Secretaria de Administração",
-        "anotacoes": "Reunião para alinhamento das metas prioritárias do gabinete do prefeito para o segundo semestre de 2026.",
-        "participantes": [
-            {"nome": "Fabiana Souza", "iniciais": "FS", "cargo": "Secretária de Adm"},
-            {"nome": "Carlos Oliveira", "iniciais": "CO", "cargo": "Diretor Geral"}
-        ],
-        "encaminhamentos": [
-            {
-                "id": 1,
-                "tarefa": "Elaborar minuta do novo fluxo de processos internos",
-                "responsavel": "Fabiana Souza",
-                "prazo": "10/08/2026",
-                "prioridade": "Alta",
-                "status": "em_andamento",
-                "progresso": 50,
-                "concluido": False
-            },
-            {
-                "id": 2,
-                "tarefa": "Consolidar relatório de infraestrutura municipal",
-                "responsavel": "Carlos Oliveira",
-                "prazo": "05/08/2026",
-                "prioridade": "Alta",
-                "status": "atrasada",
-                "progresso": 30,
-                "concluido": False
-            }
-        ]
-    },
-    {
-        "id": 2,
-        "titulo": "Revisão Orçamentária e Finanças",
-        "assunto": "Captação de Recursos e Balanço Fiscal",
-        "data": "05/08/2026",
-        "hora": "14:00",
-        "secretaria_id": "FIN",
-        "status": "Agendada",
-        "local": "Auditório da Secretaria de Finanças",
-        "anotacoes": "Discussão dos repasses estaduais e federais.",
-        "participantes": [
-            {"nome": "Roberto Lima", "iniciais": "RL", "cargo": "Secretário de Finanças"}
-        ],
-        "encaminhamentos": [
-            {
-                "id": 1,
-                "tarefa": "Apresentar prestação de contas trimestral",
-                "responsavel": "Roberto Lima",
-                "prazo": "12/08/2026",
-                "prioridade": "Média",
-                "status": "aberta",
-                "progresso": 10,
-                "concluido": False
-            }
-        ]
-    }
-]
+reunioes_db = []

@@ -1,7 +1,7 @@
-{% extends 'sidebar.html' %}
+{% extends 'base.html' %}
 
-{% block botao_navegacao %}
-    <a class="nav-link active" href="/secretaria/{{ sec_id }}/reunioes">
+{% block home_sec %}
+    <a class="nav-link" href="/secretaria/{{ sec_id }}/reunioes">
         <span class="nav-link-icon"><i class="ti ti-arrow-back-up ti-stroke-2"></i></span>
         <span class="nav-link-title">Voltar</span>
     </a>
@@ -202,43 +202,154 @@
                         </div>
                     </div>
 
-                    <!-- Encaminhamentos da Reunião -->
+                    <!-- Encaminhamentos / Demandas Geradas pela Reunião (Requisito 4) -->
                     <div class="card card-modern p-4 mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom" style="border-color: rgba(255, 255, 255, 0.15) !important;">
                             <h3 class="h4 mb-0 d-flex align-items-center gap-2 font-weight-bold text-white">
-                                <i class="ti ti-click" style="color: #FF8800;"></i> Encaminhamentos
+                                <i class="ti ti-layout-kanban" style="color: #FF8800;"></i> Demandas Geradas
                             </h3>
-                            <span class="badge bg-green-lt px-2 py-1 font-weight-bold">{{ (reuniao.encaminhamentos | length) or 0 }} registrados</span>
+                            <span class="badge bg-green-lt px-2 py-1 font-weight-bold">{{ (demandas_reuniao | length) or 0 }} vinculada(s)</span>
                         </div>
 
-                        {% if reuniao.encaminhamentos and reuniao.encaminhamentos|length > 0 %}
-                            {% for enc in reuniao.encaminhamentos %}
-                            <div class="p-3 mb-3 rounded shadow-sm" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.25);">
+                        {% if demandas_reuniao and demandas_reuniao|length > 0 %}
+                            {% for enc in demandas_reuniao %}
+                            {% set enc_idx = enc.encaminhamento_index if enc.encaminhamento_index is defined else loop.index0 %}
+                            <div class="p-3 mb-4 rounded shadow-sm" style="background: rgba(26, 8, 59, 0.95); border: 1px solid rgba(255, 107, 0, 0.35);">
+                                
+                                <!-- Cabeçalho da Demanda -->
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <span class="font-weight-bold fs-5 d-flex align-items-center gap-2" style="color: #FF8800;">
                                         <i class="ti ti-user" style="color: #FF8800;"></i> {{ enc.responsavel or 'Gabinete' }}
                                     </span>
-                                    <span class="badge {% if enc.concluido %}bg-success{% else %}text-white{% endif %} px-2 py-0.5" style="font-size: 0.7rem; {% if not enc.concluido %}background-color: #FF6B00;{% endif %}">
-                                        {% if enc.concluido %}Concluído{% else %}Em aberto{% endif %}
+                                    <span class="badge {% if enc.concluido or enc.status == 'concluida' %}bg-success{% elif enc.status == 'atrasada' %}bg-danger{% elif enc.status == 'em_andamento' %}bg-info text-dark{% else %}text-white{% endif %} px-2 py-1 text-capitalize" style="font-size: 0.72rem; {% if not enc.concluido and (not enc.status or enc.status == 'aberta') %}background-color: #FF6B00;{% endif %}">
+                                        {{ enc.status | replace('_', ' ') }}
                                     </span>
                                 </div>
-                                <p class="small text-white-50 mb-2 font-weight-medium"><strong class="text-white">Tarefa:</strong> {{ enc.tarefa }}</p>
-                                <div class="d-flex justify-content-between align-items-center pt-2 border-top text-white-50" style="border-color: rgba(255, 255, 255, 0.1) !important; font-size: 0.8rem;">
-                                    <span><i class="ti ti-calendar me-1" style="color: #FF8800;"></i> Prazo: {{ enc.prazo or 'A definir' }}</span>
+                                
+                                <p class="small text-white mb-2 font-weight-bold" style="font-size: 0.95rem;">
+                                    {{ enc.tarefa }}
+                                </p>
+
+                                <!-- Detalhes da Ação -->
+                                <div class="small text-white mb-2" style="color: #cbd5e1 !important;">
+                                    {% if enc.valor %}
+                                    <div class="text-warning mb-1">
+                                        <i class="ti ti-coin me-1"></i> <strong class="text-white">Valor:</strong> {{ enc.valor }}
+                                    </div>
+                                    {% endif %}
+                                    {% if enc.custo %}
+                                    <div class="text-info mb-1">
+                                        <i class="ti ti-currency-dollar me-1"></i> <strong class="text-white">Custo:</strong> {{ enc.custo }}
+                                    </div>
+                                    {% endif %}
+                                    {% if enc.emenda_deputado %}
+                                    <div class="text-warning mb-1">
+                                        <i class="ti ti-building-bank me-1"></i> <strong class="text-white">Emenda/Dep.:</strong> {{ enc.emenda_deputado }}
+                                    </div>
+                                    {% endif %}
+                                    {% if enc.local_definicao %}
+                                    <div class="text-white-75 mb-1">
+                                        <i class="ti ti-map-pin me-1" style="color: #FF8800;"></i> <strong class="text-white">Local:</strong> {{ enc.local_definicao }}
+                                    </div>
+                                    {% endif %}
+                                    {% if enc.pendencias %}
+                                    <div class="text-danger mb-1 p-1.5 rounded" style="background: rgba(239, 68, 68, 0.15); border-left: 2px solid #ef4444;">
+                                        <i class="ti ti-alert-triangle me-1"></i> <strong class="text-white">Pendências:</strong> {{ enc.pendencias }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center pt-2 border-top text-white mb-3" style="border-color: rgba(255, 255, 255, 0.1) !important; font-size: 0.8rem;">
+                                    <span><i class="ti ti-calendar me-1" style="color: #FF8800;"></i> Prazo: <strong class="text-white">{{ enc.prazo or 'A definir' }}</strong></span>
                                     <span class="badge {% if enc.prioridade == 'Alta' %}bg-red-lt text-danger{% else %}bg-orange-lt text-warning{% endif %} font-weight-bold">
-                                        {{ enc.prioridade or 'Normal' }}
+                                        {{ enc.prioridade or 'Média' }}
                                     </span>
                                 </div>
+
+                                <!-- Histórico de Atualizações da Demanda (Requisito 4) -->
+                                <div class="mt-3 pt-2 border-top" style="border-color: rgba(255, 255, 255, 0.15) !important;">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="text-white fw-bold small d-flex align-items-center gap-1">
+                                            <i class="ti ti-history text-info"></i> Histórico de Atualizações
+                                        </span>
+                                        <button type="button" class="btn btn-xs btn-outline-info py-0 px-2" style="font-size: 0.7rem;" onclick="abrirAtualizacaoDireta('{{ reuniao.id }}', '{{ enc_idx }}', '{{ enc.tarefa | escape }}', '{{ enc.status or 'aberta' }}', '{{ enc.valor or '' }}', '{{ enc.custo or '' }}', '{{ enc.prazo or '' }}', '{{ enc.pendencias or '' }}')">
+                                            <i class="ti ti-plus me-1"></i> Nova Versão
+                                        </button>
+                                    </div>
+
+                                    <div class="history-list-wrapper d-flex flex-column gap-2">
+                                        {% if enc.historico and enc.historico|length > 0 %}
+                                            {% for h in enc.historico | reverse %}
+                                                {% if loop.first or h.is_atual %}
+                                                <!-- Versão Atual: Destacada, 100% Opacidade, Borda Forte -->
+                                                <div class="p-2.5 rounded shadow-sm" style="background: rgba(39, 15, 80, 0.95); border: 1.5px solid #FF6B00; opacity: 1.0;">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="badge text-white fw-bold" style="background-color: #FF6B00; font-size: 0.65rem;">
+                                                            <i class="ti ti-star me-1"></i> VERSÃO {{ h.versao }} (ATUAL)
+                                                        </span>
+                                                        <span class="text-white fw-semibold" style="font-size: 0.7rem; color: #ffffff !important;">{{ h.data_hora }}</span>
+                                                    </div>
+                                                    <div class="text-white small fw-bold mb-1" style="color: #ffffff !important;">{{ h.descricao or 'Versão Atual' }}</div>
+                                                    <div class="text-white small" style="font-size: 0.75rem; color: #cbd5e1 !important;">
+                                                        <span>Status: <strong class="text-white text-capitalize">{{ h.status | replace('_', ' ') }}</strong></span>
+                                                        {% if h.prazo %} | <span>Prazo: <strong class="text-white">{{ h.prazo }}</strong></span>{% endif %}
+                                                        {% if h.valor %} | <span>Valor: <strong class="text-white">{{ h.valor }}</strong></span>{% endif %}
+                                                        {% if h.custo %} | <span>Custo: <strong class="text-white">{{ h.custo }}</strong></span>{% endif %}
+                                                    </div>
+                                                    {% if h.pendencias %}
+                                                    <div class="text-danger small mt-1" style="font-size: 0.7rem;">
+                                                        <i class="ti ti-alert-circle me-1"></i> <strong>Pendências:</strong> {{ h.pendencias }}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                                {% else %}
+                                                <!-- Versão Anterior: Opacidade Reduzida, Cor Mais Clara / Suave -->
+                                                <div class="p-2 rounded" style="background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.25); opacity: 0.7;">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="badge bg-secondary text-white" style="font-size: 0.62rem;">
+                                                            <i class="ti ti-clock me-1"></i> Versão {{ h.versao }} (Anterior)
+                                                        </span>
+                                                        <span class="text-white-75" style="font-size: 0.68rem;">{{ h.data_hora }}</span>
+                                                    </div>
+                                                    <div class="text-white small fw-semibold" style="color: #f1f5f9 !important;">{{ h.descricao or 'Registro anterior' }}</div>
+                                                    <div class="text-white-50 small" style="font-size: 0.7rem;">
+                                                        <span>Status: {{ h.status | replace('_', ' ') }}</span>
+                                                        {% if h.valor %} | <span>Valor: {{ h.valor }}</span>{% endif %}
+                                                        {% if h.custo %} | <span>Custo: {{ h.custo }}</span>{% endif %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <!-- Versão Inicial Padrão (Destacada) -->
+                                            <div class="p-2.5 rounded shadow-sm" style="background: rgba(39, 15, 80, 0.95); border: 1.5px solid #FF6B00; opacity: 1.0;">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <span class="badge text-white fw-bold" style="background-color: #FF6B00; font-size: 0.65rem;">
+                                                        <i class="ti ti-star me-1"></i> VERSÃO 1 (ATUAL)
+                                                    </span>
+                                                    <span class="text-white fw-semibold" style="font-size: 0.7rem; color: #ffffff !important;">{{ reuniao.data }}</span>
+                                                </div>
+                                                <div class="text-white small fw-bold">Demanda gerada na reunião</div>
+                                                <div class="text-white-75" style="font-size: 0.72rem;">
+                                                    <span>Status: <strong class="text-white">{{ 'Concluído' if enc.concluido else 'Em aberto' }}</strong></span>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
                             </div>
                             {% endfor %}
                         {% else %}
                             <div class="p-3 text-white-50 rounded text-center" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.2);">
-                                <span class="small"><i class="ti ti-info-circle me-1" style="color: #FF8800;"></i> Nenhum encaminhamento cadastrado.</span>
+                                <span class="small"><i class="ti ti-info-circle me-1" style="color: #FF8800;"></i> Nenhuma demanda vinculada a esta reunião.</span>
                             </div>
                         {% endif %}
 
                         <div class="p-3 text-white-50 rounded text-center mt-3" style="background: rgba(26, 8, 59, 0.9); border: 1px solid rgba(255, 107, 0, 0.2);">
-                            <span class="small"><i class="ti ti-database me-1" style="color: #FF8800;"></i> Dados registrados no Gabinete Inteligente.</span>
+                            <a href="/secretaria/{{ sec_id }}/kanban" class="btn btn-sm btn-outline-warning w-100 text-white" style="border-color: #FF8800;">
+                                <i class="ti ti-layout-kanban me-1" style="color: #FF8800;"></i> Ver no Painel Geral
+                            </a>
                         </div>
                     </div>
 
@@ -266,7 +377,7 @@
                 <!-- Abas WhatsApp / E-mail / Copiar -->
                 <ul class="nav nav-tabs nav-fill mb-4" id="tabCompartilhar" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active font-weight-bold" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp-pane" type="button" role="tab">
+                        <button class="nav-link font-weight-bold" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp-pane" type="button" role="tab">
                             <i class="ti ti-brand-whatsapp me-1"></i> WhatsApp / PDF
                         </button>
                     </li>
@@ -423,7 +534,123 @@ Anotações:
     </div>
 </div>
 
+<!-- Modal de Atualização Direta de Demanda -->
+<div class="modal fade" id="modalAtualizarDemandaReuniao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-white" style="background: #270f50; border: 1px solid rgba(255, 107, 0, 0.4);">
+            <div class="modal-header border-bottom py-3" style="background: rgba(26, 8, 59, 0.95); border-color: rgba(255, 255, 255, 0.15) !important;">
+                <h5 class="modal-title font-weight-bold text-white d-flex align-items-center gap-2">
+                    <i class="ti ti-history" style="color: #FF8800;"></i> Registrar Nova Versão da Demanda
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <form id="formAtualizarDemandaReuniao" onsubmit="enviarAtualizacaoReuniao(event)">
+                <input type="hidden" id="reu_enc_reuniao_id">
+                <input type="hidden" id="reu_enc_index">
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label text-white fw-bold">Demanda</label>
+                        <input type="text" id="reu_enc_tarefa" class="form-control bg-dark text-white border-secondary" readonly>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-white-75 small">Novo Status</label>
+                            <select id="reu_enc_status" class="form-select bg-dark text-white border-secondary">
+                                <option value="aberta">Aberta / A Fazer</option>
+                                <option value="em_andamento">Em Andamento</option>
+                                <option value="concluida">Concluída</option>
+                                <option value="atrasada">Atrasada</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-white-75 small">Prazo</label>
+                            <input type="text" id="reu_enc_prazo" class="form-control bg-dark text-white border-secondary" placeholder="DD/MM/AAAA">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-white-75 small">Valor</label>
+                            <input type="text" id="reu_enc_valor" class="form-control bg-dark text-white border-secondary" placeholder="R$ 0,00">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-white-75 small">Custo</label>
+                            <input type="text" id="reu_enc_custo" class="form-control bg-dark text-white border-secondary" placeholder="R$ 0,00">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-75 small">Descrição da Atualização / O que mudou</label>
+                        <input type="text" id="reu_enc_descricao" class="form-control bg-dark text-white border-secondary" placeholder="Ex: Fase de aprovação técnica concluída" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-white-75 small">Pendências</label>
+                        <input type="text" id="reu_enc_pendencias" class="form-control bg-dark text-white border-secondary" placeholder="Ex: Aguardando liberação orçamentária">
+                    </div>
+                </div>
+                <div class="modal-footer py-2" style="background: rgba(26, 8, 59, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.15);">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn text-white fw-bold" style="background-color: #FF6B00; border-color: #FF6B00;">
+                        <i class="ti ti-check me-1"></i> Salvar Versão
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+function abrirAtualizacaoDireta(reuniaoId, encIndex, tarefa, status, valor, custo, prazo, pendencias) {
+    document.getElementById('reu_enc_reuniao_id').value = reuniaoId;
+    document.getElementById('reu_enc_index').value = encIndex;
+    document.getElementById('reu_enc_tarefa').value = tarefa;
+    document.getElementById('reu_enc_status').value = status || 'aberta';
+    document.getElementById('reu_enc_valor').value = valor || '';
+    document.getElementById('reu_enc_custo').value = custo || '';
+    document.getElementById('reu_enc_prazo').value = prazo || '';
+    document.getElementById('reu_enc_descricao').value = '';
+    document.getElementById('reu_enc_pendencias').value = pendencias || '';
+
+    const modalEl = document.getElementById('modalAtualizarDemandaReuniao');
+    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    modal.show();
+}
+
+function enviarAtualizacaoReuniao(e) {
+    e.preventDefault();
+    const reuniaoId = document.getElementById('reu_enc_reuniao_id').value;
+    const encIndex = document.getElementById('reu_enc_index').value;
+    const novoStatus = document.getElementById('reu_enc_status').value;
+    const valor = document.getElementById('reu_enc_valor').value;
+    const custo = document.getElementById('reu_enc_custo').value;
+    const prazo = document.getElementById('reu_enc_prazo').value;
+    const descricao = document.getElementById('reu_enc_descricao').value;
+    const pendencias = document.getElementById('reu_enc_pendencias').value;
+
+    fetch('/api/demanda/atualizar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            reuniao_id: reuniaoId,
+            encaminhamento_index: encIndex,
+            novo_status: novoStatus,
+            valor: valor,
+            custo: custo,
+            prazo: prazo,
+            descricao: descricao,
+            pendencias: pendencias,
+            autor: "{{ usuario.nome }}"
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert('Não foi possível salvar a atualização.');
+        }
+    })
+    .catch(err => console.error('Erro:', err));
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const modalEl = document.getElementById('modalConfirmarExcluir');
     if (modalEl) {

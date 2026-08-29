@@ -1,7 +1,7 @@
-{% extends "sidebar.html" %} 
+{% extends "base.html" %} 
 
-{% block botao_navegacao %}
-    <a class="nav-link active" href="/secretaria/{{ sec_id }}/">
+{% block home_sec %}
+    <a class="nav-link" href="/secretaria/{{ sec_id }}/">
         <span class="nav-link-icon"><i class="ti ti-arrow-back-up"></i></span>
         <span class="nav-link-title">Voltar</span>
     </a>
@@ -79,7 +79,7 @@
                             <td>
                                 <div class="text-white-50 small">
                                     {% if reuniao.participantes %}
-                                        {% if reuniao.participantes is string %}
+                                        {% if is_string(reuniao.participantes) %}
                                             <span class="badge bg-secondary-lt text-white"><i class="ti ti-user me-1"></i>{{ reuniao.participantes }}</span>
                                         {% elif reuniao.participantes|length > 0 %}
                                             {% for p in reuniao.participantes %}

@@ -6,7 +6,7 @@
      data-status="{{ d.status }}"
      data-vence-hoje="{{ 'true' if d.vence_hoje else 'false' }}"
      data-vence-semana="{{ 'true' if d.vence_semana else 'false' }}"
-     data-search-term="{{ d.tarefa | lower }} {{ d.responsavel | lower }} {{ d.secretaria_nome | lower }} {{ d.reuniao_titulo | lower }}">
+     data-search-term="{{ d.tarefa | lower }} {{ d.responsavel | lower }} {{ d.secretaria_nome | lower }} {{ d.reuniao_titulo | lower }} {{ (d.emenda_deputado or '') | lower }} {{ (d.local_definicao or '') | lower }} {{ (d.pendencias or '') | lower }}">
     
     <!-- Cabeçalho do Card: Prioridade e Secretaria -->
     <div class="d-flex align-items-center justify-content-between mb-2">
@@ -18,26 +18,63 @@
         </span>
     </div>
 
-    <!-- Título da Demanda -->
+    <!-- Título da Demanda / Ação -->
     <div class="kanban-card-title mb-2">
         {{ d.tarefa }}
     </div>
 
-    <!-- Informações da Reunião e Responsável -->
+    <!-- Informações Detalhadas -->
     <div class="kanban-card-meta small text-white-50">
         <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Origem: {{ d.reuniao_titulo }}">
             <i class="fa-solid fa-users opacity-75" style="color: #FF8800;"></i>
-            <span class="text-truncate">{{ d.reuniao_titulo }}</span>
+            <span class="text-truncate text-white-75">{{ d.reuniao_titulo }}</span>
         </div>
-        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Responsável: {{ d.responsavel }}">
+        
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Responsável pela execução: {{ d.responsavel }}">
             <i class="fa-solid fa-user-gear text-success opacity-75"></i>
-            <span class="text-truncate">{{ d.responsavel }}</span>
+            <span class="text-truncate text-white-75">{{ d.responsavel }}</span>
         </div>
+
+        {% if d.valor %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Valor: {{ d.valor }}" style="color: #fbbf24;">
+            <i class="fa-solid fa-coins text-warning opacity-75"></i>
+            <span class="text-truncate">Valor: {{ d.valor }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.custo %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Custo: {{ d.custo }}" style="color: #38bdf8;">
+            <i class="fa-solid fa-money-bill-wave text-info opacity-75"></i>
+            <span class="text-truncate">Custo: {{ d.custo }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.emenda_deputado %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Emenda / Deputado: {{ d.emenda_deputado }}" style="color: #fbbf24;">
+            <i class="fa-solid fa-landmark text-warning opacity-75"></i>
+            <span class="text-truncate">{{ d.emenda_deputado }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.local_definicao %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate" title="Definição de local: {{ d.local_definicao }}">
+            <i class="fa-solid fa-location-dot opacity-75" style="color: #FF8800;"></i>
+            <span class="text-truncate text-white-75">{{ d.local_definicao }}</span>
+        </div>
+        {% endif %}
+
+        {% if d.pendencias %}
+        <div class="d-flex align-items-center gap-1 mb-1 text-truncate text-danger" title="Pendências: {{ d.pendencias }}">
+            <i class="fa-solid fa-circle-exclamation text-danger opacity-75"></i>
+            <span class="text-truncate">{{ d.pendencias }}</span>
+        </div>
+        {% endif %}
+
         <div class="d-flex align-items-center justify-content-between mt-2">
-            <span class="{% if d.status == 'atrasada' %}text-danger fw-bold{% elif d.vence_hoje %}text-warning fw-bold{% else %}text-white-50{% endif %}">
+            <span class="{% if d.status == 'atrasada' %}text-danger fw-bold{% elif d.vence_hoje %}text-warning fw-bold{% else %}text-white-75{% endif %}">
                 <i class="fa-regular fa-calendar me-1"></i> {{ d.prazo }}
             </span>
-            <span class="badge bg-dark-lt text-white-50 fs-6">{{ d.progresso }}%</span>
+            <span class="badge bg-dark-lt text-white-75 fs-6 text-capitalize">{{ d.status | replace('_', ' ') }}</span>
         </div>
     </div>
 
@@ -52,8 +89,8 @@
         </div>
     </div>
 
-    <!-- Ações do Card: Mover Status & Link para Reunião -->
-    <div class="d-flex align-items-center justify-content-between pt-2 border-top border-secondary" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+    <!-- Ações do Card: Mover Status, Histórico & Link para Reunião -->
+    <div class="d-flex align-items-center justify-content-between pt-2 border-top border-secondary gap-1" style="border-color: rgba(255, 255, 255, 0.1) !important;">
         
         <!-- Mover de Status (Dropdown Elegante e Funcional) -->
         <div class="dropdown position-relative">
@@ -97,10 +134,21 @@
             </ul>
         </div>
 
-        <!-- Link para Ver Reunião de Origem -->
-        <a href="/reuniao/{{ d.reuniao_id }}" class="btn btn-xs btn-outline-warning text-white py-1 px-2" style="font-size: 0.7rem; border-color: #FF8800;" title="Ver detalhes da reunião">
-            <i class="fa-solid fa-arrow-right-to-bracket me-1" style="color: #FF8800;"></i> Reunião
-        </a>
+        <div class="d-flex align-items-center gap-1">
+            <!-- Botão de Histórico de Atualizações -->
+            <button type="button" 
+                    class="btn btn-xs btn-outline-info text-white-75 py-1 px-2" 
+                    style="font-size: 0.7rem; border-color: rgba(56, 189, 248, 0.4);" 
+                    title="Ver histórico de atualizações"
+                    onclick='abrirModalHistorico({{ d | tojson }})'>
+                <i class="fa-solid fa-clock-rotate-left me-1 text-info"></i> Histórico
+            </button>
+
+            <!-- Link para Ver Reunião de Origem -->
+            <a href="/reuniao/{{ d.reuniao_id }}" class="btn btn-xs btn-outline-warning text-white py-1 px-2" style="font-size: 0.7rem; border-color: #FF8800;" title="Ver detalhes da reunião">
+                <i class="fa-solid fa-arrow-right-to-bracket me-1" style="color: #FF8800;"></i> Reunião
+            </a>
+        </div>
     </div>
 
 </div>

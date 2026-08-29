@@ -1,7 +1,7 @@
-{% extends 'sidebar.html' %}
+{% extends 'base.html' %}
 
-{% block botao_navegacao %}
-    <a class="nav-link active" href="/secretaria/{{ sec_id }}/reuniao/{{ reuniao.id }}">
+{% block home_sec %}
+    <a class="nav-link" href="/secretaria/{{ sec_id }}/reuniao/{{ reuniao.id }}">
         <span class="nav-link-icon"><i class="ti ti-arrow-back-up"></i></span>
         <span class="nav-link-title">Voltar</span>
     </a>
@@ -103,16 +103,19 @@
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
                                     <label class="form-label fw-bold text-white mb-0">Anotações / Ata da Reunião</label>
-                                    <span class="badge bg-success-lt text-success fw-bold px-2.5 py-1 rounded-pill">
+                                    <!-- <span class="badge bg-success-lt text-success fw-bold px-2.5 py-1 rounded-pill">
                                         <i class="ti ti-spellcheck me-1"></i> Corretor Ortográfico Ativado (PT-BR)
-                                    </span>
+                                    </span> -->
                                 </div>
                                 <p class="text-white-50 small mb-2">Edite e ajuste livremente o texto da ata e deliberações.</p>
                                 <textarea name="anotacoes" class="form-control" rows="10" spellcheck="true" lang="pt-BR" placeholder="Digite aqui o resumo dos acontecimentos e deliberações..." style="resize: vertical; font-size: 1rem; line-height: 1.6; padding: 16px; border-radius: var(--radius-sm);" required>{{ reuniao.anotacoes or '' }}</textarea>
                             </div>
 
-                            <div class="d-flex gap-3 pt-3 justify-content-end" style="border-top: 1px solid rgba(255, 255, 255, 0.15);">
+                            <div class="d-flex gap-3 pt-3 justify-content-end flex-wrap align-items-center" style="border-top: 1px solid rgba(255, 255, 255, 0.15);">
                                 <a href="/secretaria/{{ sec_id }}/reuniao/{{ reuniao.id }}" class="btn btn-outline-light px-4 py-2 fw-bold">Cancelar</a>
+                                <button type="button" class="btn btn-outline-info px-4 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2" id="btnAnaliseIA" onclick="executarAnaliseIA()">
+                                    <i class="ti ti-sparkles fs-3" style="color: #38bdf8;"></i> Análise da IA
+                                </button>
                                 <button type="submit" class="btn btn-warning text-dark px-5 py-2 fw-bold shadow-sm">
                                     <i class="ti ti-device-floppy me-2"></i> Salvar Alterações
                                 </button>
@@ -126,6 +129,41 @@
 
         </form>
 
+    </div>
+</div>
+
+<!-- Modal de Análise da IA -->
+<div class="modal fade" id="modalAnaliseIA" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content text-white" style="background: #270f50; border: 1px solid rgba(56, 189, 248, 0.4);">
+            <div class="modal-header border-bottom py-3" style="background: rgba(26, 8, 59, 0.95); border-color: rgba(255, 255, 255, 0.15) !important;">
+                <h5 class="modal-title font-weight-bold text-white d-flex align-items-center gap-2">
+                    <i class="ti ti-sparkles" style="color: #38bdf8;"></i> Análise Inteligente da Reunião (IA)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="aiLoadingSpinner" class="text-center py-5 d-none">
+                    <div class="spinner-border text-info mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+                    <div class="text-white fw-bold fs-4">Processando Ata com Inteligência Artificial...</div>
+                    <div class="text-white-50 small mt-1">Extraindo decisões, ações prioritárias e pontos de atenção.</div>
+                </div>
+                <div id="aiResultContent" class="d-none">
+                    <div class="p-3.5 rounded bg-dark border border-secondary text-white" style="white-space: pre-wrap; font-family: inherit; font-size: 0.95rem; line-height: 1.6;" id="aiResultText"></div>
+                </div>
+            </div>
+            <div class="modal-footer py-2 d-flex justify-content-between" style="background: rgba(26, 8, 59, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.15);">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Fechar</button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-info" id="btnCopiarIA" onclick="copiarAnaliseIA()">
+                        <i class="ti ti-copy me-1"></i> Copiar Análise
+                    </button>
+                    <button type="button" class="btn btn-info text-dark fw-bold" onclick="inserirAnaliseNasNotas()">
+                        <i class="ti ti-arrow-down me-1"></i> Inserir nas Anotações
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -144,6 +182,77 @@ function adicionarParticipanteChip(nome) {
         names.splice(index, 1);
     }
     input.value = names.join(', ');
+}
+
+let ultimaAnaliseIA = "";
+
+function executarAnaliseIA() {
+    const titulo = document.querySelector('input[name="titulo"]')?.value || "";
+    const anotacoes = document.querySelector('textarea[name="anotacoes"]')?.value || "";
+    const local = document.querySelector('input[name="local"]')?.value || "";
+    const participantes = document.querySelector('input[name="participantes"]')?.value || "";
+    const secretariaNome = "{{ secretaria_nome }}";
+
+    const modalEl = document.getElementById('modalAnaliseIA');
+    const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+    modal.show();
+
+    const spinner = document.getElementById('aiLoadingSpinner');
+    const resultDiv = document.getElementById('aiResultContent');
+    const resultText = document.getElementById('aiResultText');
+
+    spinner.classList.remove('d-none');
+    resultDiv.classList.add('d-none');
+
+    fetch('/api/analise-ia', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            titulo,
+            anotacoes,
+            local,
+            participantes,
+            secretaria_nome: secretariaNome
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        spinner.classList.add('d-none');
+        resultDiv.classList.remove('d-none');
+        if (data && data.analise) {
+            ultimaAnaliseIA = data.analise;
+            resultText.innerText = data.analise;
+        } else {
+            resultText.innerText = "Não foi possível gerar a análise no momento.";
+        }
+    })
+    .catch(err => {
+        spinner.classList.add('d-none');
+        resultDiv.classList.remove('d-none');
+        resultText.innerText = "Erro ao conectar com a IA: " + err.message;
+    });
+}
+
+function copiarAnaliseIA() {
+    if (!ultimaAnaliseIA) return;
+    navigator.clipboard.writeText(ultimaAnaliseIA).then(() => {
+        const btn = document.getElementById('btnCopiarIA');
+        btn.innerHTML = '<i class="ti ti-check me-1"></i> Copiado!';
+        setTimeout(() => {
+            btn.innerHTML = '<i class="ti ti-copy me-1"></i> Copiar Análise';
+        }, 2000);
+    });
+}
+
+function inserirAnaliseNasNotas() {
+    if (!ultimaAnaliseIA) return;
+    const txtArea = document.querySelector('textarea[name="anotacoes"]');
+    if (txtArea) {
+        txtArea.value = (txtArea.value ? txtArea.value + "\n\n" : "") + "--- Análise da IA ---\n" + ultimaAnaliseIA;
+    }
+    const modalEl = document.getElementById('modalAnaliseIA');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) modal.hide();
 }
 </script>
 {% endblock %}

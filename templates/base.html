@@ -3,69 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gabinete Inteligente</title>
+    <title>{% block title %}Gabinete Inteligente{% endblock %}</title>
 
+    <!-- Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
 
-    <!-- CSS do Tabler, FontAwesome, Tabler Icons -->
+    <!-- Frameworks & Ícones -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- CSSs Customizados do Sistema -->
+    <!-- Estilos do Sistema -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/sidebar.css') }}?v=3.1">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}?v=3.1">
+    {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-dark-app">
     <div class="page">
-        <!-- Header para Dispositivos Móveis -->
+        <!-- Header Mobile -->
         <div class="mobile-header d-lg-none d-print-none">
             <div class="d-flex align-items-center gap-2">
-                <button type="button" class="btn btn-dark btn-icon border-0" id="btn-toggle-mobile-menu">
+                <button type="button" class="btn btn-icon" id="btn-toggle-mobile-menu" title="Menu">
                     <i class="ti ti-menu-2 fs-2"></i>
                 </button>
                 <div class="fw-bold fs-3 text-white brand-font">GABINETE INTELIGENTE</div>
             </div>
-            <a href="/" class="btn btn-sm btn-outline-light"><i class="ti ti-logout me-1"></i>Sair</a>
+            <div class="d-flex align-items-center gap-2">
+                <!-- Dropdown Notificações Mobile -->
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-light position-relative border-0" data-bs-toggle="dropdown" aria-expanded="false" title="Notificações">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle d-none notif-badge-pill" id="notif-badge-mobile">0</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-notifications-menu shadow-lg border">
+                        <div class="notif-header d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-bell" style="color: #FF8800;"></i>
+                                <strong class="text-white notif-header-title">Notificações</strong>
+                                <span class="badge bg-danger rounded-pill notif-count-badge">0</span>
+                            </div>
+                            <button class="btn btn-sm btn-link text-white-50 text-decoration-none p-0" onclick="marcarTodasNotificacoesComoLidas()">
+                                <i class="fa-solid fa-check-double me-1"></i> Ler todas
+                            </button>
+                        </div>
+                        <div class="notif-list" id="notif-list-mobile">
+                            <div class="p-3 text-center text-white-50 small">Carregando...</div>
+                        </div>
+                        <div class="notif-footer">
+                            <a href="/kanban" class="small fw-bold text-decoration-none" style="color: #FF8800;">
+                                Ver no Painel Geral <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-sm btn-outline-light btn-toggle-theme" title="Alternar Modo Noturno / Claro" onclick="toggleModoNoturno()">
+                    <i class="ti ti-moon" id="icon-theme-mobile"></i>
+                </button>
+                <a href="/home" class="btn btn-sm btn-outline-light" title="Início"><i class="ti ti-home"></i></a>
+            </div>
         </div>
 
+        <!-- Sidebar -->
         <aside id="dynamic-sidebar" class="navbar navbar-vertical navbar-dark">
             <div class="container-fluid">
-
                 <div class="px-3 py-4 text-center w-100 border-bottom border-dark">
                     <div class="mb-2">
-                        <img src="{{ url_for('static', path='/imagens/lo_go.png') }}" alt="Gabinete Logo" class="img-fluid" style="max-height: 50px; object-fit: contain;">
+                        <img src="{{ url_for('static', path='/imagens/lo_go.png') }}" alt="Gabinete Logo" class="img-fluid" style="max-height: 52px; object-fit: contain;">
                     </div>
                     <h1 class="brand-font" style="color: #ffffff; text-align: center; font-size: 1.15rem; line-height: 1.3; margin: 0;">
                         <strong>GABINETE</strong> <br>
                         <span style="color: #FF8800; font-weight: 800; display: block;">INTELIGENTE</span>
                     </h1>
                 </div>
-                
+
+                <!-- Menu da Sidebar -->
                 <div class="collapse navbar-collapse show" id="sidebar-menu">
                     <ul class="navbar-nav pt-lg-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/home">
+                            {% block home_sec %}
+                            <a class="nav-link {{ 'active' if request.url.path == '/home' else '' }}" href="/home">
                                 <span class="nav-link-icon"><i class="ti ti-home"></i></span>
                                 <span class="nav-link-title">Início</span>
                             </a>
+                            {% endblock %}
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/reunioes">
-                                <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
-                                <span class="nav-link-title">Reuniões</span>
+                            <a class="nav-link {{ 'active' if request.url.path == '/secretaria/home/' else '' }}" href="/secretaria/home/">
+                                <span class="nav-link-icon"><i class="ti ti-layout-dashboard"></i></span>
+                                <span class="nav-link-title">Visão Geral</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/pauta-livre">
+                            {% block reunioes_sec %}
+                            <a class="nav-link {{ 'active' if request.url.path == '/reunioes' else '' }}" href="/reunioes">
+                                <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
+                                <span class="nav-link-title">Reuniões</span>
+                            </a>
+                            {% endblock %}
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.url.path == '/kanban' else '' }}" href="/kanban">
+                                <span class="nav-link-icon"><i class="ti ti-layout-kanban"></i></span>
+                                <span class="nav-link-title">Demandas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ 'active' if request.url.path == '/pauta-livre' else '' }}" href="/pauta-livre">
                                 <span class="nav-link-icon"><i class="ti ti-notes"></i></span>
                                 <span class="nav-link-title">Pauta Livre</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/configuracoes">
+                            <a class="nav-link {{ 'active' if request.url.path == '/configuracoes' else '' }}" href="/configuracoes">
                                 <span class="nav-link-icon"><i class="ti ti-settings"></i></span>
                                 <span class="nav-link-title">Configurações</span>
                             </a>
@@ -73,7 +125,7 @@
                     </ul>
                     
                     <div class="mt-auto mb-3 px-3">
-                        <a href="/" class="nav-link text-danger">
+                        <a href="/" class="nav-link text-danger py-1">
                             <span class="nav-link-icon"><i class="ti ti-logout"></i></span>
                             <span class="nav-link-title">Sair do Sistema</span>
                         </a>
@@ -82,13 +134,49 @@
             </div>
         </aside>
 
+        <!-- Dynamic Content -->
         <div id="dynamic-content" class="page-wrapper">
             <header class="navbar navbar-expand-md navbar-dark d-none d-lg-flex d-print-none py-2 px-4" style="background-color: #270f50; border-bottom: 1px solid rgba(255, 107, 0, 0.25);">
                 <div class="container-xl d-flex justify-content-between align-items-center">
-                    <!-- <div class="text-white-50 small">
-                        <i class="ti ti-shield-check text-success me-1"></i> Ambiente Seguro | Gabinete Digital
-                    </div> -->
-                    <div class="navbar-nav ms-auto">
+                    <div class="navbar-nav ms-auto d-flex align-items-center gap-3">
+                        
+                        <!-- Dropdown Notificações Desktop -->
+                        <div class="nav-item dropdown">
+                            <button class="btn btn-icon btn-outline-light position-relative border-0" data-bs-toggle="dropdown" aria-expanded="false" title="Central de Notificações" id="btn-notificacoes-desktop">
+                                <i class="fa-solid fa-bell fs-3"></i>
+                                <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle d-none notif-badge-pill" id="notif-badge-desktop">0</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-notifications-menu shadow-lg border">
+                                <div class="notif-header d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-bell" style="color: #FF8800;"></i>
+                                        <strong class="text-white notif-header-title">Notificações</strong>
+                                        <span class="badge bg-danger rounded-pill notif-count-badge">0</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-link text-white-50 text-decoration-none p-0" onclick="marcarTodasNotificacoesComoLidas()" title="Marcar todas como lidas">
+                                        <i class="fa-solid fa-check-double me-1"></i> Ler todas
+                                    </button>
+                                </div>
+                                <div class="notif-list" id="notif-list-desktop">
+                                    <div class="p-3 text-center text-white-50 small">
+                                        <i class="fa-solid fa-spinner fa-spin me-1"></i> Carregando alertas...
+                                    </div>
+                                </div>
+                                <div class="notif-footer">
+                                    <a href="/kanban" class="small fw-bold text-decoration-none" style="color: #FF8800;">
+                                        Ver todas <i class="fa-solid fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botão Tema -->
+                        <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center gap-2" onclick="toggleModoNoturno()" id="btn-theme-header">
+                            <i class="ti ti-moon" id="icon-theme-header"></i>
+                            <span id="label-theme-header" class="small fw-bold">Modo Noturno</span>
+                        </button>
+
+                        <!-- Dropdown de Perfil -->
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="ps-2 text-end me-2">
@@ -96,7 +184,7 @@
                                     <div class="small fw-bold text-white">{% if usuario and usuario.nome %}{{ usuario.nome }}{% else %}Administrador{% endif %}</div>
                                 </div>
                                 <span class="avatar avatar-sm rounded-circle fw-bold text-white shadow-sm" style="background-color: #FF6B00 !important;">
-                                    {% if usuario and usuario.inicial %}{{ usuario.inicial }}{% elif usuario and usuario.nome %}{{ usuario.nome }}{% else %}AD{% endif %}
+                                    {% if usuario and usuario.inicial %}{{ usuario.inicial }}{% elif usuario and usuario.nome %}{{ usuario.nome[0]|upper }}{% else %}AD{% endif %}
                                 </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end shadow-lg border text-white py-2" style="background-color: #1a083b !important; border-color: rgba(255, 107, 0, 0.3) !important; min-width: 220px;">
@@ -113,6 +201,7 @@
                                 </a>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </header>
@@ -123,10 +212,114 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
     <script>
+        function updateThemeUI(isLight) {
+            const iconMobile = document.getElementById("icon-theme-mobile");
+            const iconHeader = document.getElementById("icon-theme-header");
+            const labelHeader = document.getElementById("label-theme-header");
+            
+            if (isLight) {
+                document.body.classList.add("theme-light");
+                if (iconMobile) iconMobile.className = "ti ti-sun";
+                if (iconHeader) iconHeader.className = "ti ti-sun";
+                if (labelHeader) labelHeader.innerText = "Modo Claro";
+            } else {
+                document.body.classList.remove("theme-light");
+                if (iconMobile) iconMobile.className = "ti ti-moon";
+                if (iconHeader) iconHeader.className = "ti ti-moon";
+                if (labelHeader) labelHeader.innerText = "Modo Noturno";
+            }
+        }
+
+        function toggleModoNoturno() {
+            const isCurrentlyLight = document.body.classList.contains("theme-light");
+            const newIsLight = !isCurrentlyLight;
+            localStorage.setItem("gabinete_theme", newIsLight ? "light" : "dark");
+            updateThemeUI(newIsLight);
+        }
+
+        let globalNotifications = [];
+
+        function carregarNotificacoes() {
+            fetch('/api/notificacoes')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && Array.isArray(data.items)) {
+                        globalNotifications = data.items;
+                        renderizarNotificacoes(data.items);
+                    }
+                })
+                .catch(err => console.error('Erro ao buscar notificações:', err));
+        }
+
+        function renderizarNotificacoes(items) {
+            const lidas = JSON.parse(localStorage.getItem('gabinete_notificacoes_lidas') || '[]');
+            const naoLidas = items.filter(it => !lidas.includes(it.id));
+
+            document.querySelectorAll('.notif-count-badge').forEach(el => {
+                el.innerText = naoLidas.length;
+                el.style.display = naoLidas.length > 0 ? 'inline-block' : 'none';
+            });
+
+            document.querySelectorAll('.notif-badge-pill').forEach(el => {
+                el.innerText = naoLidas.length;
+                if (naoLidas.length > 0) el.classList.remove('d-none');
+                else el.classList.add('d-none');
+            });
+
+            const html = items.length === 0 
+                ? '<div class="p-4 text-center text-white-50"><i class="fa-regular fa-circle-check fs-2 d-block mb-2 text-success"></i>Nenhuma pendência ou alerta no momento!</div>'
+                : items.map(it => {
+                    const isUnread = !lidas.includes(it.id);
+                    return `
+                        <a href="${it.link}" class="notif-item ${isUnread ? 'notif-unread' : ''}" onclick="marcarNotificacaoComoLida('${it.id}')">
+                            <div class="d-flex align-items-start gap-2">
+                                <div class="mt-1"><i class="${it.icone} text-${it.badge_cor}"></i></div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                        <strong class="text-truncate small" style="color: ${it.badge_cor === 'danger' ? '#ef4444' : it.badge_cor === 'warning' ? '#f59e0b' : '#38bdf8'}; font-size: 0.8rem;">
+                                            ${it.titulo}
+                                        </strong>
+                                        <span class="badge bg-${it.badge_cor}-lt text-${it.badge_cor}" style="font-size: 0.65rem;">${it.badge_texto}</span>
+                                    </div>
+                                    <div class="text-white fw-semibold small text-truncate mb-1 notif-msg" style="font-size: 0.85rem;">${it.mensagem}</div>
+                                    <div class="text-white-50" style="font-size: 0.72rem;">${it.detalhes}</div>
+                                </div>
+                                ${isUnread ? '<span class="rounded-circle bg-danger mt-2" style="width: 7px; height: 7px; display: inline-block;"></span>' : ''}
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+
+            const listDesktop = document.getElementById('notif-list-desktop');
+            const listMobile = document.getElementById('notif-list-mobile');
+            if (listDesktop) listDesktop.innerHTML = html;
+            if (listMobile) listMobile.innerHTML = html;
+        }
+
+        function marcarNotificacaoComoLida(id) {
+            const lidas = JSON.parse(localStorage.getItem('gabinete_notificacoes_lidas') || '[]');
+            if (!lidas.includes(id)) {
+                lidas.push(id);
+                localStorage.setItem('gabinete_notificacoes_lidas', JSON.stringify(lidas));
+            }
+            renderizarNotificacoes(globalNotifications);
+        }
+
+        function marcarTodasNotificacoesComoLidas() {
+            const todosIds = globalNotifications.map(n => n.id);
+            localStorage.setItem('gabinete_notificacoes_lidas', JSON.stringify(todosIds));
+            renderizarNotificacoes(globalNotifications);
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem("gabinete_theme");
+            updateThemeUI(savedTheme === "light");
+            carregarNotificacoes();
+
             const sidebar = document.getElementById("dynamic-sidebar");
             const content = document.getElementById("dynamic-content");
             const btnMobile = document.getElementById("btn-toggle-mobile-menu");
@@ -153,5 +346,6 @@
             }
         });
     </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

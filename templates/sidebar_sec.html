@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+<!-- Link Customizado para o Contexto da Secretaria -->
+<li class="nav-item">
+
+    {% block home_sec %}
+    <a class="nav-link" href="/home">
+        <span class="nav-link-icon"><i class="ti ti-arrow-back-up"></i></span>
+        <span class="nav-link-title">Voltar</span>
+    </a>
+    {% endblock %}
+</li>
+
+<li class="nav-item">
+
+    {% block reunioes_sec %}
+    <a class="nav-link" href="/secretaria/{{sec_id}}/reunioes">
+        <span class="nav-link-icon"><i class="ti ti-calendar"></i></span>
+        <span class="nav-link-title">Reuniões</span>
+    </a>
+    {% endblock %}
+</li>
+
