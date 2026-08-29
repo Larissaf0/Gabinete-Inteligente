@@ -1,0 +1,5 @@
+- Funcionalidades que precisam ser corrigidas no Gi:
+- Na sidebar da tela inicial, o botão "Visão Geral" está com a rota incorreta, levando a secretaria/home, e não exibe todas as demandas.
+- Dentro da rota /kanban, o botão de "Histórico" não funciona
+- Demandas criadas no botão "adicionar demanda", não devem criar uma reunião falsa, nem exibir o botão Reunião no seu card
+- Dentro das reuniões existentes, no card das demandas geradas, o botão "Nova Versão" não funciona
