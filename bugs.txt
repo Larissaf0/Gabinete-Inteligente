@@ -1,0 +1,6 @@
+- Funcionalidades que precisam ser corrigidas no Gi:
+- Na sidebar da tela inicial, o botão "Visão Geral" está com a rota incorreta, levando a secretaria/home na url, mas na tela aparece o dashboard do gabinete do prefeito, e não exibe todas as demandas.
+- Dentro da rota /kanban, mudar a url para /demandas, o botão de "Histórico" não funciona. e não está aparecendo todas as demandas.
+- Demandas criadas no botão "adicionar demanda", não devem criar uma reunião falsa, nem exibir o botão Reunião no seu card
+- Dentro das reuniões existentes, no card das demandas geradas, o botão "Nova Versão" não funciona
+- sempre que clico em alguma rota, do sistema, muda o usuario para Admnistrador, ao inves do meu, que está logado.

@@ -1,0 +1,128 @@
+/* Importação de Fontes Padronizadas */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Playfair+Display:wght@700;800&display=swap');
+
+/* ==========================================================================
+   1. ESTRUTURA DA BARRA LATERAL (SIDEBAR)
+   ========================================================================== */
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 68px;
+    --sidebar-bg: #14042c;
+    --sidebar-hover-bg: rgba(255, 255, 255, 0.1);
+    --sidebar-active-bg: linear-gradient(135deg, #FF6B00 0%, #FF8800 100%);
+    --sidebar-border: rgba(255, 255, 255, 0.12);
+}
+
+.navbar-vertical {
+    background-color: var(--sidebar-bg) !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1030;
+    width: var(--sidebar-width) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden !important;
+    overflow-y: auto;
+    border-right: 1px solid var(--sidebar-border);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.navbar-vertical::-webkit-scrollbar {
+    width: 4px;
+}
+
+.navbar-vertical::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.navbar-vertical .nav-link, 
+.navbar-vertical .navbar-brand,
+.navbar-vertical h1 {
+    white-space: nowrap !important;
+}
+
+.navbar-vertical h1, 
+.navbar-vertical .navbar-brand {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Links de Navegação */
+.navbar-vertical .nav-link {
+    color: #e2d9f3 !important;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 3px 10px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.navbar-vertical .nav-link:hover {
+    color: #ffffff !important;
+    background-color: var(--sidebar-hover-bg) !important;
+}
+
+.navbar-vertical .nav-link.active {
+    background: var(--sidebar-active-bg) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 4px 16px rgba(255, 107, 0, 0.4);
+}
+
+.navbar-vertical .nav-link .nav-link-icon,
+.navbar-vertical .nav-link i {
+    font-size: 1.2rem;
+    min-width: 24px;
+    margin-right: 12px;
+    text-align: center;
+}
+
+/* ==========================================================================
+   2. RECOLHIMENTO DA BARRA LATERAL E EXPANSÃO DO CONTEÚDO
+   ========================================================================== */
+.navbar-vertical.collapsed {
+    transform: translateX(calc(-1 * var(--sidebar-width) + var(--sidebar-collapsed-width)));
+}
+
+.navbar-vertical.collapsed .container-fluid {
+    opacity: 0.85;
+}
+
+.navbar-vertical:not(.collapsed) .container-fluid {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.page-wrapper {
+    margin-left: var(--sidebar-width) !important;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+}
+
+.page-wrapper.expanded {
+    margin-left: var(--sidebar-collapsed-width) !important;
+}
+
+/* ==========================================================================
+   3. ADAPTAÇÃO PARA DISPOSITIVOS MÓVEIS (TELAS PEQUENAS)
+   ========================================================================== */
+@media (max-width: 991.98px) {
+    .navbar-vertical {
+        transform: translateX(-100%) !important;
+        width: 280px !important;
+    }
+
+    .navbar-vertical.show-mobile {
+        transform: translateX(0) !important;
+    }
+
+    .page-wrapper, .page-wrapper.expanded {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
